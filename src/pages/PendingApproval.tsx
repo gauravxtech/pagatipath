@@ -3,41 +3,49 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Clock, ShieldCheck, LogOut } from 'lucide-react';
+import { Clock, ShieldCheck, LogOut, RefreshCw } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 const PendingApproval = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [role, setRole] = useState<string>('');
+  const [checking, setChecking] = useState(false);
+
+  const checkApprovalStatus = async () => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
+    setChecking(true);
+    try {
+      // Use maybeSingle to avoid caching
+      const { data: userRole, error } = await supabase
+        .from('user_roles')
+        .select('role, approved')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      console.log('PendingApproval - Approval check:', { userRole, error });
+
+      if (userRole) {
+        setRole(userRole.role);
+        
+        // If approved, force a full page reload to refresh the session
+        if (userRole.approved) {
+          console.log('User approved! Redirecting...');
+          window.location.href = '/dashboard';
+        }
+      }
+    } catch (error) {
+      console.error('Error checking approval status:', error);
+    } finally {
+      setChecking(false);
+    }
+  };
 
   useEffect(() => {
-    const checkApprovalStatus = async () => {
-      if (!user) {
-        navigate('/login');
-        return;
-      }
-
-      try {
-        const { data: userRole } = await supabase
-          .from('user_roles')
-          .select('role, approved')
-          .eq('user_id', user.id)
-          .single();
-
-        if (userRole) {
-          setRole(userRole.role);
-          
-          // If approved, force a full page reload to refresh the session
-          if (userRole.approved) {
-            window.location.href = '/dashboard';
-          }
-        }
-      } catch (error) {
-        console.error('Error checking approval status:', error);
-      }
-    };
-
     checkApprovalStatus();
 
     // Check every 5 seconds for faster response after approval
@@ -92,7 +100,25 @@ const PendingApproval = () => {
             </ul>
           </div>
 
-          <div className="pt-4 border-t">
+          <div className="pt-4 border-t space-y-2">
+            <Button 
+              variant="default" 
+              className="w-full"
+              onClick={checkApprovalStatus}
+              disabled={checking}
+            >
+              {checking ? (
+                <>
+                  <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                  Checking Status...
+                </>
+              ) : (
+                <>
+                  <RefreshCw className="mr-2 h-4 w-4" />
+                  Check Status Now
+                </>
+              )}
+            </Button>
             <Button 
               variant="outline" 
               className="w-full"

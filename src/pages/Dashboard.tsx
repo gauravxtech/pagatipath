@@ -18,11 +18,14 @@ const Dashboard = () => {
 
       try {
         // Get user role from user_roles table with approval status
-        const { data: userRole } = await supabase
+        // Use maybeSingle to avoid errors and bypass any caching
+        const { data: userRole, error } = await supabase
           .from('user_roles')
           .select('role, approved')
           .eq('user_id', user.id)
-          .single();
+          .maybeSingle();
+
+        console.log('Dashboard - User role check:', { userRole, error });
 
         if (userRole) {
           // Check if role is approved
