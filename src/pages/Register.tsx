@@ -140,11 +140,18 @@ const Register = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="student">Student</SelectItem>
-                    <SelectItem value="recruiter">Recruiter</SelectItem>
-                    <SelectItem value="college">College Representative</SelectItem>
-                    <SelectItem value="department">Department Coordinator</SelectItem>
+                    <SelectItem value="dept_coordinator">Department Coordinator (HOD/TPC)</SelectItem>
+                    <SelectItem value="college_placement">College Placement Cell</SelectItem>
+                    <SelectItem value="recruiter">Recruiter / Company</SelectItem>
+                    <SelectItem value="dto">District Training Officer (DTO)</SelectItem>
+                    <SelectItem value="sto">State Training Officer (STO)</SelectItem>
+                    <SelectItem value="nto">National Training Officer (NTO)</SelectItem>
+                    <SelectItem value="admin">System Administrator</SelectItem>
                   </SelectContent>
                 </Select>
+                <p className="text-xs text-muted-foreground">
+                  Choose your role in the PragatiPath ecosystem
+                </p>
               </div>
 
               <div className="space-y-2">
