@@ -23,6 +23,13 @@ import DepartmentDashboard from "./pages/department/DepartmentDashboard";
 import DTODashboard from "./pages/dto/DTODashboard";
 import STODashboard from "./pages/sto/STODashboard";
 import NTODashboard from "./pages/nto/NTODashboard";
+import NTOStates from "./pages/nto/NTOStates";
+import NTODistricts from "./pages/nto/NTODistricts";
+import NTOColleges from "./pages/nto/NTOColleges";
+import NTOReports from "./pages/nto/NTOReports";
+import NTONotifications from "./pages/nto/NTONotifications";
+import NTOAudit from "./pages/nto/NTOAudit";
+import NTOSettings from "./pages/nto/NTOSettings";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminColleges from "./pages/admin/AdminColleges";
@@ -77,6 +84,13 @@ const App = () => (
             
             {/* NTO Routes */}
             <Route path="/nto/dashboard" element={<NTODashboard />} />
+            <Route path="/nto/states" element={<NTOStates />} />
+            <Route path="/nto/districts" element={<NTODistricts />} />
+            <Route path="/nto/colleges" element={<NTOColleges />} />
+            <Route path="/nto/reports" element={<NTOReports />} />
+            <Route path="/nto/notifications" element={<NTONotifications />} />
+            <Route path="/nto/audit" element={<NTOAudit />} />
+            <Route path="/nto/settings" element={<NTOSettings />} />
             
             {/* Admin Routes */}
             <Route path="/admin/dashboard" element={<AdminDashboard />} />

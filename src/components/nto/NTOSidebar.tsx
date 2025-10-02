@@ -2,21 +2,33 @@ import { NavLink } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import {
   LayoutDashboard,
-  TrendingUp,
+  MapPin,
+  Building,
+  Building2,
   FileText,
-  Award,
+  Bell,
+  FileSearch,
+  Settings,
 } from 'lucide-react';
 
 const navItems = [
   { to: '/nto/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/nto/rankings', label: 'Rankings', icon: Award },
-  { to: '/nto/analytics', label: 'Analytics', icon: TrendingUp },
-  { to: '/nto/reports', label: 'Reports', icon: FileText },
+  { to: '/nto/states', label: 'States (STOs)', icon: MapPin },
+  { to: '/nto/districts', label: 'Districts (DTOs)', icon: Building },
+  { to: '/nto/colleges', label: 'Colleges', icon: Building2 },
+  { to: '/nto/reports', label: 'Reports & Analytics', icon: FileText },
+  { to: '/nto/notifications', label: 'Notifications', icon: Bell },
+  { to: '/nto/audit', label: 'Audit Logs', icon: FileSearch },
+  { to: '/nto/settings', label: 'Settings', icon: Settings },
 ];
 
 export function NTOSidebar() {
   return (
     <nav className="p-4 space-y-2">
+      <div className="mb-6">
+        <h2 className="text-lg font-bold">NTO Panel</h2>
+        <p className="text-sm text-muted-foreground">National Training Officer</p>
+      </div>
       {navItems.map((item) => (
         <NavLink
           key={item.to}
