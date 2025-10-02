@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
+import PendingApproval from "./pages/PendingApproval";
 import StudentDashboard from "./pages/student/StudentDashboard";
 import StudentProfile from "./pages/student/StudentProfile";
 import StudentProfileSetup from "./pages/student/StudentProfileSetup";
@@ -55,6 +56,7 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/pending-approval" element={<PendingApproval />} />
             
             {/* Student Routes */}
             <Route path="/student/dashboard" element={<StudentDashboard />} />

@@ -41,12 +41,21 @@ export default function NTODistricts() {
 
   const handleApprove = async (userId: string) => {
     try {
-      const { error } = await (supabase as any)
-        .from('dto_officers')
-        .update({ approved: true })
-        .eq('user_id', userId);
+      // Update both the dto_officers table and user_roles table
+      const [officerUpdate, roleUpdate] = await Promise.all([
+        (supabase as any)
+          .from('dto_officers')
+          .update({ approved: true })
+          .eq('user_id', userId),
+        supabase
+          .from('user_roles')
+          .update({ approved: true })
+          .eq('user_id', userId)
+      ]);
       
-      if (error) throw error;
+      if (officerUpdate.error) throw officerUpdate.error;
+      if (roleUpdate.error) throw roleUpdate.error;
+      
       toast.success("DTO approved successfully");
       fetchDTOs();
     } catch (error) {
@@ -57,12 +66,21 @@ export default function NTODistricts() {
 
   const handleDisable = async (userId: string) => {
     try {
-      const { error } = await (supabase as any)
-        .from('dto_officers')
-        .update({ approved: false })
-        .eq('user_id', userId);
+      // Update both the dto_officers table and user_roles table
+      const [officerUpdate, roleUpdate] = await Promise.all([
+        (supabase as any)
+          .from('dto_officers')
+          .update({ approved: false })
+          .eq('user_id', userId),
+        supabase
+          .from('user_roles')
+          .update({ approved: false })
+          .eq('user_id', userId)
+      ]);
       
-      if (error) throw error;
+      if (officerUpdate.error) throw officerUpdate.error;
+      if (roleUpdate.error) throw roleUpdate.error;
+      
       toast.success("DTO disabled successfully");
       fetchDTOs();
     } catch (error) {

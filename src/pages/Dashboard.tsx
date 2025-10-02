@@ -17,15 +17,21 @@ const Dashboard = () => {
       }
 
       try {
-        // Get user role from user_roles table
+        // Get user role from user_roles table with approval status
         const { data: userRole } = await supabase
           .from('user_roles')
-          .select('role')
+          .select('role, approved')
           .eq('user_id', user.id)
           .single();
 
         if (userRole) {
-          // Route based on role
+          // Check if role is approved
+          if (!userRole.approved) {
+            navigate('/pending-approval');
+            return;
+          }
+
+          // Route based on role (only if approved)
           switch (userRole.role) {
             case 'student':
               navigate('/student/dashboard');
@@ -54,6 +60,9 @@ const Dashboard = () => {
             default:
               navigate('/');
           }
+        } else {
+          // No role found
+          navigate('/');
         }
       } catch (error) {
         console.error('Error checking user role:', error);
