@@ -54,19 +54,19 @@ export default function AdminUsers() {
   const handleApprove = async (userId: string, table: string) => {
     try {
       // Update both the officer table and user_roles table
-      const [officerUpdate, roleUpdate] = await Promise.all([
-        (supabase as any)
-          .from(table)
-          .update({ approved: true })
-          .eq('user_id', userId),
-        supabase
-          .from('user_roles')
-          .update({ approved: true })
-          .eq('user_id', userId)
-      ]);
+      const { error: officerError } = await (supabase as any)
+        .from(table)
+        .update({ approved: true })
+        .eq('user_id', userId);
       
-      if (officerUpdate.error) throw officerUpdate.error;
-      if (roleUpdate.error) throw roleUpdate.error;
+      if (officerError) throw officerError;
+      
+      const { error: roleError } = await supabase
+        .from('user_roles')
+        .update({ approved: true })
+        .eq('user_id', userId);
+      
+      if (roleError) throw roleError;
       
       toast.success("User approved successfully");
       fetchAllUsers();
@@ -79,19 +79,19 @@ export default function AdminUsers() {
   const handleDeactivate = async (userId: string, table: string) => {
     try {
       // Update both the officer table and user_roles table
-      const [officerUpdate, roleUpdate] = await Promise.all([
-        (supabase as any)
-          .from(table)
-          .update({ approved: false })
-          .eq('user_id', userId),
-        supabase
-          .from('user_roles')
-          .update({ approved: false })
-          .eq('user_id', userId)
-      ]);
+      const { error: officerError } = await (supabase as any)
+        .from(table)
+        .update({ approved: false })
+        .eq('user_id', userId);
       
-      if (officerUpdate.error) throw officerUpdate.error;
-      if (roleUpdate.error) throw roleUpdate.error;
+      if (officerError) throw officerError;
+      
+      const { error: roleError } = await supabase
+        .from('user_roles')
+        .update({ approved: false })
+        .eq('user_id', userId);
+      
+      if (roleError) throw roleError;
       
       toast.success("User deactivated successfully");
       fetchAllUsers();

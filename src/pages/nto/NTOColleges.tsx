@@ -24,13 +24,39 @@ export default function NTOColleges() {
   const fetchColleges = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      // Fetch colleges with TPO information and student counts
+      const { data: collegesData, error } = await supabase
         .from('colleges')
-        .select('*')
+        .select(`
+          *,
+          college_tpo(tpo_full_name, email, mobile_number)
+        `)
         .order('state');
 
       if (error) throw error;
-      setColleges(data || []);
+
+      // Fetch student counts for each college
+      const collegesWithCounts = await Promise.all(
+        (collegesData || []).map(async (college) => {
+          const { count: studentCount } = await supabase
+            .from('students')
+            .select('*', { count: 'exact', head: true })
+            .eq('college_id', college.id);
+
+          const { count: deptCount } = await supabase
+            .from('departments')
+            .select('*', { count: 'exact', head: true })
+            .eq('college_id', college.id);
+
+          return {
+            ...college,
+            student_count: studentCount || 0,
+            department_count: deptCount || 0
+          };
+        })
+      );
+
+      setColleges(collegesWithCounts);
     } catch (error) {
       toast.error("Failed to fetch colleges");
       console.error(error);
@@ -62,24 +88,39 @@ export default function NTOColleges() {
       )
     },
     {
-      key: 'state',
-      label: 'State',
-      render: (item: any) => item.state
+      key: 'location',
+      label: 'Location',
+      render: (item: any) => (
+        <div>
+          <p className="font-medium">{item.state}</p>
+          <p className="text-sm text-muted-foreground">{item.district}</p>
+        </div>
+      )
     },
     {
-      key: 'district',
-      label: 'District',
-      render: (item: any) => item.district
+      key: 'tpo',
+      label: 'College TPO',
+      render: (item: any) => {
+        const tpo = item.college_tpo?.[0];
+        return tpo ? (
+          <div>
+            <p className="font-medium">{tpo.tpo_full_name}</p>
+            <p className="text-sm text-muted-foreground">{tpo.email}</p>
+          </div>
+        ) : (
+          <span className="text-muted-foreground">Not Assigned</span>
+        );
+      }
     },
     {
-      key: 'email',
-      label: 'Email',
-      render: (item: any) => item.email || 'N/A'
-    },
-    {
-      key: 'phone',
-      label: 'Phone',
-      render: (item: any) => item.phone || 'N/A'
+      key: 'stats',
+      label: 'Stats',
+      render: (item: any) => (
+        <div className="space-y-1">
+          <p className="text-sm">{item.student_count || 0} Students</p>
+          <p className="text-sm text-muted-foreground">{item.department_count || 0} Departments</p>
+        </div>
+      )
     },
     {
       key: 'status',
@@ -90,10 +131,12 @@ export default function NTOColleges() {
       key: 'actions',
       label: 'Actions',
       render: (item: any) => (
-        <Button size="sm" variant="outline">
-          <Eye className="mr-2 h-4 w-4" />
-          View
-        </Button>
+        <div className="flex gap-2">
+          <Button size="sm" variant="outline">
+            <Eye className="mr-2 h-4 w-4" />
+            View
+          </Button>
+        </div>
       )
     }
   ];

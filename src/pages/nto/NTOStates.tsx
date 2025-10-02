@@ -42,19 +42,19 @@ export default function NTOStates() {
   const handleApprove = async (userId: string) => {
     try {
       // Update both the sto_officers table and user_roles table
-      const [officerUpdate, roleUpdate] = await Promise.all([
-        (supabase as any)
-          .from('sto_officers')
-          .update({ approved: true })
-          .eq('user_id', userId),
-        supabase
-          .from('user_roles')
-          .update({ approved: true })
-          .eq('user_id', userId)
-      ]);
+      const { error: officerError } = await (supabase as any)
+        .from('sto_officers')
+        .update({ approved: true })
+        .eq('user_id', userId);
       
-      if (officerUpdate.error) throw officerUpdate.error;
-      if (roleUpdate.error) throw roleUpdate.error;
+      if (officerError) throw officerError;
+      
+      const { error: roleError } = await supabase
+        .from('user_roles')
+        .update({ approved: true })
+        .eq('user_id', userId);
+      
+      if (roleError) throw roleError;
       
       toast.success("STO approved successfully");
       fetchSTOs();
@@ -67,19 +67,19 @@ export default function NTOStates() {
   const handleDisable = async (userId: string) => {
     try {
       // Update both the sto_officers table and user_roles table
-      const [officerUpdate, roleUpdate] = await Promise.all([
-        (supabase as any)
-          .from('sto_officers')
-          .update({ approved: false })
-          .eq('user_id', userId),
-        supabase
-          .from('user_roles')
-          .update({ approved: false })
-          .eq('user_id', userId)
-      ]);
+      const { error: officerError } = await (supabase as any)
+        .from('sto_officers')
+        .update({ approved: false })
+        .eq('user_id', userId);
       
-      if (officerUpdate.error) throw officerUpdate.error;
-      if (roleUpdate.error) throw roleUpdate.error;
+      if (officerError) throw officerError;
+      
+      const { error: roleError } = await supabase
+        .from('user_roles')
+        .update({ approved: false })
+        .eq('user_id', userId);
+      
+      if (roleError) throw roleError;
       
       toast.success("STO disabled successfully");
       fetchSTOs();
