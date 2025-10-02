@@ -70,6 +70,10 @@ import AdminAudit from "./pages/admin/AdminAudit";
 import AdminAccess from "./pages/admin/AdminAccess";
 import AdminSettings from "./pages/admin/AdminSettings";
 import AdminHelp from "./pages/admin/AdminHelp";
+import AdminRecruiters from "./pages/admin/AdminRecruiters";
+import NTORecruiters from "./pages/nto/NTORecruiters";
+import STORecruiters from "./pages/sto/STORecruiters";
+import DTORecruiters from "./pages/dto/DTORecruiters";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -132,6 +136,7 @@ const App = () => (
             <Route path="/dto/colleges" element={<DTOColleges />} />
             <Route path="/dto/departments" element={<DTODepartments />} />
             <Route path="/dto/students" element={<DTOStudents />} />
+            <Route path="/dto/recruiters" element={<DTORecruiters />} />
             <Route path="/dto/reports" element={<DTOReports />} />
             <Route path="/dto/notifications" element={<DTONotifications />} />
             <Route path="/dto/audit" element={<DTOAudit />} />
@@ -142,6 +147,7 @@ const App = () => (
             <Route path="/sto/districts" element={<STODistricts />} />
             <Route path="/sto/colleges" element={<STOColleges />} />
             <Route path="/sto/students" element={<STOStudents />} />
+            <Route path="/sto/recruiters" element={<STORecruiters />} />
             <Route path="/sto/reports" element={<STOReports />} />
             <Route path="/sto/analytics" element={<STOAnalytics />} />
             <Route path="/sto/settings" element={<STOSettings />} />
@@ -151,6 +157,7 @@ const App = () => (
             <Route path="/nto/states" element={<NTOStates />} />
             <Route path="/nto/districts" element={<NTODistricts />} />
             <Route path="/nto/colleges" element={<NTOColleges />} />
+            <Route path="/nto/recruiters" element={<NTORecruiters />} />
             <Route path="/nto/reports" element={<NTOReports />} />
             <Route path="/nto/notifications" element={<NTONotifications />} />
             <Route path="/nto/audit" element={<NTOAudit />} />
@@ -160,6 +167,7 @@ const App = () => (
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/users" element={<AdminUsers />} />
             <Route path="/admin/colleges" element={<AdminColleges />} />
+            <Route path="/admin/recruiters" element={<AdminRecruiters />} />
             <Route path="/admin/reports" element={<AdminReports />} />
             <Route path="/admin/notifications" element={<AdminNotifications />} />
             <Route path="/admin/audit" element={<AdminAudit />} />

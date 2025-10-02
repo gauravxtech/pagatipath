@@ -10,6 +10,7 @@ import {
   Bell,
   Shield,
   Settings,
+  Briefcase,
 } from 'lucide-react';
 
 const navItems = [
@@ -17,6 +18,7 @@ const navItems = [
   { to: '/dto/colleges', label: 'Colleges', icon: Building2 },
   { to: '/dto/departments', label: 'Departments', icon: FolderTree },
   { to: '/dto/students', label: 'Students', icon: Users },
+  { to: '/dto/recruiters', label: 'Recruiters', icon: Briefcase },
   { to: '/dto/reports', label: 'Reports & Analytics', icon: FileText },
   { to: '/dto/notifications', label: 'Notifications', icon: Bell },
   { to: '/dto/audit', label: 'Audit Logs', icon: Shield },

@@ -1,4 +1,4 @@
-import { Home, Users, GraduationCap, Building2, BarChart3, Settings, Bell, LogOut, FileText, Shield, HelpCircle } from "lucide-react";
+import { Home, Users, GraduationCap, Building2, BarChart3, Settings, Bell, LogOut, FileText, Shield, HelpCircle, Briefcase } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -13,6 +13,7 @@ export const AdminSidebar = () => {
     { icon: Home, label: "Dashboard", path: "/admin/dashboard" },
     { icon: Users, label: "Users", path: "/admin/users" },
     { icon: Building2, label: "Colleges", path: "/admin/colleges" },
+    { icon: Briefcase, label: "Recruiters", path: "/admin/recruiters" },
     { icon: BarChart3, label: "Reports", path: "/admin/reports" },
     { icon: Bell, label: "Notifications", path: "/admin/notifications" },
     { icon: FileText, label: "Audit Logs", path: "/admin/audit" },

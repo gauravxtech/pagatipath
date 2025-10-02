@@ -9,6 +9,7 @@ import {
   Bell,
   FileSearch,
   Settings,
+  Briefcase,
 } from 'lucide-react';
 
 const navItems = [
@@ -16,6 +17,7 @@ const navItems = [
   { to: '/nto/states', label: 'States (STOs)', icon: MapPin },
   { to: '/nto/districts', label: 'Districts (DTOs)', icon: Building },
   { to: '/nto/colleges', label: 'Colleges', icon: Building2 },
+  { to: '/nto/recruiters', label: 'Recruiters', icon: Briefcase },
   { to: '/nto/reports', label: 'Reports & Analytics', icon: FileText },
   { to: '/nto/notifications', label: 'Notifications', icon: Bell },
   { to: '/nto/audit', label: 'Audit Logs', icon: FileSearch },
