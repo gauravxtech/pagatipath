@@ -12,27 +12,28 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { indianStates, stateDistricts } from "@/data/indianStates";
 
-const baseSchema = z.object({
+// Define base fields
+const baseFields = {
   fullName: z.string().min(2, "Full name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   confirmPassword: z.string().min(6, "Confirm password is required"),
   mobileNumber: z.string().min(10, "Mobile number must be at least 10 digits"),
   role: z.enum(["student", "recruiter", "nto", "sto", "dto", "college_placement", "dept_coordinator"]),
-}).refine((data) => data.password === data.confirmPassword, {
+};
+
+const registerSchema = z.discriminatedUnion("role", [
+  z.object({ ...baseFields, role: z.literal("student"), abcId: z.string().min(1, "ABC ID is required"), enrollmentNumber: z.string().min(1, "Enrollment number is required"), collegeId: z.string().min(1, "College is required"), departmentId: z.string().optional(), yearSemester: z.string().min(1, "Year/Semester is required") }),
+  z.object({ ...baseFields, role: z.literal("recruiter"), companyName: z.string().min(1, "Company name is required"), companyWebsite: z.string().optional(), industry: z.string().optional() }),
+  z.object({ ...baseFields, role: z.literal("nto"), nationalOfficerId: z.string().min(1, "National Officer ID is required") }),
+  z.object({ ...baseFields, role: z.literal("sto"), state: z.string().min(1, "State is required"), stateOfficerId: z.string().min(1, "State Officer ID is required") }),
+  z.object({ ...baseFields, role: z.literal("dto"), state: z.string().min(1, "State is required"), district: z.string().min(1, "District is required"), districtOfficerId: z.string().min(1, "District Officer ID is required") }),
+  z.object({ ...baseFields, role: z.literal("college_placement"), collegeRegistrationNumber: z.string().min(1, "College Registration Number is required"), collegeName: z.string().min(1, "College Name is required"), state: z.string().min(1, "State is required"), district: z.string().min(1, "District is required") }),
+  z.object({ ...baseFields, role: z.literal("dept_coordinator"), collegeId: z.string().min(1, "College is required"), departmentName: z.string().min(1, "Department name is required") }),
+]).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ["confirmPassword"],
 });
-
-const registerSchema = z.discriminatedUnion("role", [
-  z.object({ ...baseSchema.shape, role: z.literal("student"), abcId: z.string().min(1), enrollmentNumber: z.string().min(1), collegeId: z.string().min(1), departmentId: z.string().optional(), yearSemester: z.string().min(1) }),
-  z.object({ ...baseSchema.shape, role: z.literal("recruiter"), companyName: z.string().min(1), companyWebsite: z.string().optional(), industry: z.string().optional() }),
-  z.object({ ...baseSchema.shape, role: z.literal("nto"), nationalOfficerId: z.string().min(1) }),
-  z.object({ ...baseSchema.shape, role: z.literal("sto"), state: z.string().min(1), stateOfficerId: z.string().min(1) }),
-  z.object({ ...baseSchema.shape, role: z.literal("dto"), state: z.string().min(1), district: z.string().min(1), districtOfficerId: z.string().min(1) }),
-  z.object({ ...baseSchema.shape, role: z.literal("college_placement"), collegeRegistrationNumber: z.string().min(1), collegeName: z.string().min(1), state: z.string().min(1), district: z.string().min(1) }),
-  z.object({ ...baseSchema.shape, role: z.literal("dept_coordinator"), collegeId: z.string().min(1), departmentName: z.string().min(1) }),
-]);
 
 const Register = () => {
   const [formData, setFormData] = useState<Record<string, string>>({ fullName: "", email: "", password: "", confirmPassword: "", mobileNumber: "", role: "" });
@@ -67,7 +68,7 @@ const Register = () => {
       const validated = registerSchema.parse(formData);
       setLoading(true);
       
-      const metadata: Record<string, any> = { full_name: validated.fullName, role: validated.role, mobile_number: validated.mobileNumber };
+      const metadata: Record<string, any> = { role: validated.role, mobile_number: validated.mobileNumber };
       
       if (validated.role === 'student') {
         Object.assign(metadata, { abc_id: validated.abcId, enrollment_number: validated.enrollmentNumber, year_semester: validated.yearSemester });
@@ -85,22 +86,19 @@ const Register = () => {
         Object.assign(metadata, { college_id: validated.collegeId, department_name: validated.departmentName });
       }
       
-      const { error } = await signUp(validated.email, validated.password, metadata);
-      if (error) {
-        toast.error(error.message);
-      } else {
-        const messages: Record<string, string> = {
-          student: "Your registration is pending approval from your Department Coordinator",
-          dept_coordinator: "Your registration is pending approval from your College TPO",
-          college_placement: "Your registration is pending approval from your DTO",
-          dto: "Your registration is pending approval from your STO",
-          sto: "Your registration is pending approval from your NTO",
-          nto: "Your registration is pending approval from the Admin",
-          recruiter: "Your registration is pending verification"
-        };
-        toast.success(`Registration successful! ${messages[validated.role]}`);
-        navigate('/login');
-      }
+      await signUp(validated.email, validated.password, validated.fullName, metadata);
+      
+      const messages: Record<string, string> = {
+        student: "Your registration is pending approval from your Department Coordinator",
+        dept_coordinator: "Your registration is pending approval from your College TPO",
+        college_placement: "Your registration is pending approval from your DTO",
+        dto: "Your registration is pending approval from your STO",
+        sto: "Your registration is pending approval from your NTO",
+        nto: "Your registration is pending approval from the Admin",
+        recruiter: "Your registration is pending verification"
+      };
+      toast.success(`Registration successful! ${messages[validated.role]}`);
+      navigate('/login');
     } catch (error: any) {
       toast.error(error instanceof z.ZodError ? error.errors[0].message : error.message || "Registration failed");
     } finally {
@@ -186,21 +184,21 @@ const Register = () => {
                     <div className="space-y-2"><Label>Enrollment Number</Label><Input value={formData.enrollmentNumber || ''} onChange={(e) => setFormData({ ...formData, enrollmentNumber: e.target.value })} required /></div>
                   </div>
                   <div className="space-y-2"><Label>College</Label><Select value={formData.collegeId} onValueChange={(v) => setFormData({ ...formData, collegeId: v })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{colleges.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent></Select></div>
-                  {formData.collegeId && <div className="space-y-2"><Label>Department</Label><Select value={formData.departmentId} onValueChange={(v) => setFormData({ ...formData, departmentId: v })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{departments.map(d => <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>)}</SelectContent></Select></div>}
+                  {formData.collegeId && <div className="space-y-2"><Label>Department (Optional)</Label><Select value={formData.departmentId} onValueChange={(v) => setFormData({ ...formData, departmentId: v })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{departments.map(d => <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>)}</SelectContent></Select></div>}
                   <div className="space-y-2"><Label>Year / Semester</Label><Select value={formData.yearSemester} onValueChange={(v) => setFormData({ ...formData, yearSemester: v })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{['1st Year / Sem 1', '1st Year / Sem 2', '2nd Year / Sem 3', '2nd Year / Sem 4', '3rd Year / Sem 5', '3rd Year / Sem 6', '4th Year / Sem 7', '4th Year / Sem 8'].map(y => <SelectItem key={y} value={y}>{y}</SelectItem>)}</SelectContent></Select></div>
                 </>)}
 
                 {formData.role === 'recruiter' && (<>
                   <div className="space-y-2"><Label>Company Name</Label><Input value={formData.companyName || ''} onChange={(e) => setFormData({ ...formData, companyName: e.target.value })} required /></div>
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2"><Label>Company Website</Label><Input type="url" value={formData.companyWebsite || ''} onChange={(e) => setFormData({ ...formData, companyWebsite: e.target.value })} /></div>
-                    <div className="space-y-2"><Label>Industry</Label><Input value={formData.industry || ''} onChange={(e) => setFormData({ ...formData, industry: e.target.value })} /></div>
+                    <div className="space-y-2"><Label>Company Website (Optional)</Label><Input type="url" value={formData.companyWebsite || ''} onChange={(e) => setFormData({ ...formData, companyWebsite: e.target.value })} /></div>
+                    <div className="space-y-2"><Label>Industry (Optional)</Label><Input value={formData.industry || ''} onChange={(e) => setFormData({ ...formData, industry: e.target.value })} /></div>
                   </div>
                 </>)}
 
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2"><Label>Password</Label><div className="relative"><Input type={showPassword ? "text" : "password"} value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} required /><button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-3">{showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}</button></div></div>
-                  <div className="space-y-2"><Label>Confirm Password</Label><div className="relative"><Input type={showConfirmPassword ? "text" : "password"} value={formData.confirmPassword} onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })} required /><button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-3">{showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}</button></div></div>
+                  <div className="space-y-2"><Label>Password</Label><div className="relative"><Input type={showPassword ? "text" : "password"} value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} required /><button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-3 text-muted-foreground">{showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}</button></div></div>
+                  <div className="space-y-2"><Label>Confirm Password</Label><div className="relative"><Input type={showConfirmPassword ? "text" : "password"} value={formData.confirmPassword} onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })} required /><button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-3 text-muted-foreground">{showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}</button></div></div>
                 </div>
               </>)}
             </CardContent>
