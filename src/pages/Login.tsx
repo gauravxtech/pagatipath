@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { GraduationCap, Mail, Lock } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Mail, Lock, GraduationCap } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { toast } from "@/hooks/use-toast";
 import { z } from "zod";
-import { toast } from "sonner";
 
 const loginSchema = z.object({
-  email: z.string().email("Invalid email address"),
+  email: z.string().email("Please enter a valid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
@@ -18,12 +18,12 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const { signIn, user } = useAuth();
   const navigate = useNavigate();
+  const { user, signIn } = useAuth();
 
   useEffect(() => {
     if (user) {
-      navigate('/dashboard');
+      navigate("/dashboard");
     }
   }, [user, navigate]);
 
@@ -31,12 +31,16 @@ const Login = () => {
     e.preventDefault();
     
     try {
-      const validated = loginSchema.parse({ email, password });
+      loginSchema.parse({ email, password });
       setLoading(true);
-      await signIn(validated.email, validated.password);
-    } catch (error: any) {
+      await signIn(email, password);
+    } catch (error) {
       if (error instanceof z.ZodError) {
-        toast.error(error.errors[0].message);
+        toast({
+          title: "Validation Error",
+          description: error.errors[0].message,
+          variant: "destructive",
+        });
       }
     } finally {
       setLoading(false);
@@ -44,78 +48,74 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-subtle p-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2 mb-4">
-            <div className="p-2 bg-gradient-hero rounded-lg">
-              <GraduationCap className="h-8 w-8 text-primary-foreground" />
+    <div className="min-h-screen flex items-center justify-center bg-secondary/20 p-4">
+      <Card className="w-full max-w-md border-0 shadow-xl bg-white">
+        <CardHeader className="space-y-4 text-center pb-8">
+          <div className="flex justify-center">
+            <div className="w-16 h-16 bg-gradient-icon rounded-2xl flex items-center justify-center shadow-md">
+              <GraduationCap className="h-8 w-8 text-white" />
             </div>
-            <span className="font-bold text-2xl">PragatiPath</span>
-          </Link>
-          <p className="text-muted-foreground">Welcome back! Sign in to continue.</p>
-        </div>
-
-        <Card className="shadow-soft">
-          <CardHeader>
-            <CardTitle>Login to Your Account</CardTitle>
-            <CardDescription>Enter your credentials to access your dashboard</CardDescription>
-          </CardHeader>
-          <form onSubmit={handleSubmit}>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="your.email@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10"
-                    required
-                  />
-                </div>
+          </div>
+          <div className="space-y-2">
+            <CardTitle className="text-3xl font-bold">Welcome Back</CardTitle>
+            <CardDescription className="text-base">
+              Sign in to your PragatiPath account
+            </CardDescription>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-sm font-semibold">Email</Label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="pl-10 h-12 bg-secondary/30 border-0"
+                  required
+                />
               </div>
+            </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="Enter your password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10"
-                    required
-                  />
-                </div>
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-sm font-semibold">Password</Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="pl-10 h-12 bg-secondary/30 border-0"
+                  required
+                />
               </div>
+            </div>
 
-              <div className="flex items-center justify-between text-sm">
-                <a href="#" className="text-primary hover:underline">
-                  Forgot password?
-                </a>
-              </div>
-            </CardContent>
+            <Button
+              type="submit"
+              className="w-full h-14 bg-gradient-hero text-white text-lg font-semibold shadow-glow hover:opacity-90 transition-opacity"
+              disabled={loading}
+            >
+              {loading ? "Signing in..." : "Sign In"}
+            </Button>
 
-            <CardFooter className="flex flex-col space-y-4">
-              <Button type="submit" className="w-full bg-gradient-hero" size="lg" disabled={loading}>
-                {loading ? "Signing in..." : "Sign In"}
-              </Button>
-              <p className="text-sm text-center text-muted-foreground">
+            <div className="text-center pt-4 border-t">
+              <p className="text-sm text-muted-foreground">
                 Don't have an account?{" "}
-                <Link to="/register" className="text-primary hover:underline font-medium">
-                  Register here
+                <Link to="/register" className="text-primary font-semibold hover:underline">
+                  Create account
                 </Link>
               </p>
-            </CardFooter>
+            </div>
           </form>
-        </Card>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
