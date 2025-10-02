@@ -27,6 +27,16 @@ import RecruiterNotifications from "./pages/recruiter/RecruiterNotifications";
 import RecruiterAudit from "./pages/recruiter/RecruiterAudit";
 import RecruiterSettings from "./pages/recruiter/RecruiterSettings";
 import CollegeDashboard from "./pages/college/CollegeDashboard";
+import CollegeTPODashboard from "./pages/college/CollegeTPODashboard";
+import CollegeTPODepartments from "./pages/college/CollegeTPODepartments";
+import CollegeTPOStudents from "./pages/college/CollegeTPOStudents";
+import CollegeTPOJobs from "./pages/college/CollegeTPOJobs";
+import CollegeTPOApplications from "./pages/college/CollegeTPOApplications";
+import CollegeTPOInterviews from "./pages/college/CollegeTPOInterviews";
+import CollegeTPOReports from "./pages/college/CollegeTPOReports";
+import CollegeTPONotifications from "./pages/college/CollegeTPONotifications";
+import CollegeTPOAudit from "./pages/college/CollegeTPOAudit";
+import CollegeTPOSettings from "./pages/college/CollegeTPOSettings";
 import DepartmentDashboard from "./pages/department/DepartmentDashboard";
 import DTODashboard from "./pages/dto/DTODashboard";
 import DTOColleges from "./pages/dto/DTOColleges";
@@ -101,6 +111,18 @@ const App = () => (
             
             {/* College Routes */}
             <Route path="/college/dashboard" element={<CollegeDashboard />} />
+            
+            {/* College TPO Routes */}
+            <Route path="/clg-tpo/dashboard" element={<CollegeTPODashboard />} />
+            <Route path="/clg-tpo/departments" element={<CollegeTPODepartments />} />
+            <Route path="/clg-tpo/students" element={<CollegeTPOStudents />} />
+            <Route path="/clg-tpo/jobs" element={<CollegeTPOJobs />} />
+            <Route path="/clg-tpo/applications" element={<CollegeTPOApplications />} />
+            <Route path="/clg-tpo/interviews" element={<CollegeTPOInterviews />} />
+            <Route path="/clg-tpo/reports" element={<CollegeTPOReports />} />
+            <Route path="/clg-tpo/notifications" element={<CollegeTPONotifications />} />
+            <Route path="/clg-tpo/audit" element={<CollegeTPOAudit />} />
+            <Route path="/clg-tpo/settings" element={<CollegeTPOSettings />} />
             
             {/* Department Routes */}
             <Route path="/department/dashboard" element={<DepartmentDashboard />} />
