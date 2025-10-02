@@ -1,76 +1,60 @@
-import { Link, useLocation } from 'react-router-dom';
-import { cn } from '@/lib/utils';
-import {
-  LayoutDashboard,
-  Users,
-  Building2,
-  Briefcase,
-  Settings,
-  BarChart3,
-  Shield,
-} from 'lucide-react';
+import { Home, Users, GraduationCap, Building2, BarChart3, Settings, Bell, LogOut, FileText, Shield, HelpCircle } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
 
-const menuItems = [
-  {
-    title: 'Dashboard',
-    href: '/admin/dashboard',
-    icon: LayoutDashboard,
-  },
-  {
-    title: 'Users',
-    href: '/admin/users',
-    icon: Users,
-  },
-  {
-    title: 'Colleges',
-    href: '/admin/colleges',
-    icon: Building2,
-  },
-  {
-    title: 'Recruiters',
-    href: '/admin/recruiters',
-    icon: Briefcase,
-  },
-  {
-    title: 'Analytics',
-    href: '/admin/analytics',
-    icon: BarChart3,
-  },
-  {
-    title: 'Security',
-    href: '/admin/security',
-    icon: Shield,
-  },
-  {
-    title: 'Settings',
-    href: '/admin/settings',
-    icon: Settings,
-  },
-];
-
-export function AdminSidebar() {
+export const AdminSidebar = () => {
   const location = useLocation();
+  const { signOut } = useAuth();
+  
+  const isActive = (path: string) => location.pathname.startsWith(path);
+  
+  const menuItems = [
+    { icon: Home, label: "Dashboard", path: "/admin/dashboard" },
+    { icon: Users, label: "Users", path: "/admin/users" },
+    { icon: Building2, label: "Colleges", path: "/admin/colleges" },
+    { icon: BarChart3, label: "Reports", path: "/admin/reports" },
+    { icon: Bell, label: "Notifications", path: "/admin/notifications" },
+    { icon: FileText, label: "Audit Logs", path: "/admin/audit" },
+    { icon: Shield, label: "Access Control", path: "/admin/access" },
+    { icon: Settings, label: "Settings", path: "/admin/settings" },
+    { icon: HelpCircle, label: "Helpdesk", path: "/admin/help" },
+  ];
 
   return (
-    <div className="flex h-full flex-col gap-2 p-4">
-      <div className="flex-1 space-y-1">
-        {menuItems.map((item) => {
-          const isActive = location.pathname === item.href;
-          return (
-            <Link
-              key={item.href}
-              to={item.href}
-              className={cn(
-                'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent',
-                isActive ? 'bg-accent text-accent-foreground font-medium' : 'text-muted-foreground'
-              )}
-            >
-              <item.icon className="h-4 w-4" />
-              {item.title}
-            </Link>
-          );
-        })}
+    <div className="w-64 bg-card border-r min-h-screen p-4 flex flex-col">
+      <div className="mb-8">
+        <h2 className="text-xl font-bold">Admin Panel</h2>
+        <p className="text-sm text-muted-foreground">PragatiPath</p>
+      </div>
+      
+      <nav className="space-y-2 flex-1">
+        {menuItems.map((item) => (
+          <Link
+            key={item.path}
+            to={item.path}
+            className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-colors ${
+              isActive(item.path)
+                ? "bg-primary text-primary-foreground"
+                : "hover:bg-muted"
+            }`}
+          >
+            <item.icon className="h-5 w-5" />
+            <span>{item.label}</span>
+          </Link>
+        ))}
+      </nav>
+      
+      <div className="mt-auto pt-4">
+        <Button
+          variant="outline"
+          className="w-full justify-start"
+          onClick={() => signOut()}
+        >
+          <LogOut className="h-5 w-5 mr-3" />
+          Sign Out
+        </Button>
       </div>
     </div>
   );
-}
+};

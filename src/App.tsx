@@ -24,6 +24,14 @@ import DTODashboard from "./pages/dto/DTODashboard";
 import STODashboard from "./pages/sto/STODashboard";
 import NTODashboard from "./pages/nto/NTODashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminColleges from "./pages/admin/AdminColleges";
+import AdminReports from "./pages/admin/AdminReports";
+import AdminNotifications from "./pages/admin/AdminNotifications";
+import AdminAudit from "./pages/admin/AdminAudit";
+import AdminAccess from "./pages/admin/AdminAccess";
+import AdminSettings from "./pages/admin/AdminSettings";
+import AdminHelp from "./pages/admin/AdminHelp";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -72,6 +80,14 @@ const App = () => (
             
             {/* Admin Routes */}
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/users" element={<AdminUsers />} />
+            <Route path="/admin/colleges" element={<AdminColleges />} />
+            <Route path="/admin/reports" element={<AdminReports />} />
+            <Route path="/admin/notifications" element={<AdminNotifications />} />
+            <Route path="/admin/audit" element={<AdminAudit />} />
+            <Route path="/admin/access" element={<AdminAccess />} />
+            <Route path="/admin/settings" element={<AdminSettings />} />
+            <Route path="/admin/help" element={<AdminHelp />} />
             
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
