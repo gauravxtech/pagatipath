@@ -51,12 +51,89 @@ export default function AdminUsers() {
     }
   };
 
-  const renderUserTable = (data: any[], columnKeys: string[]) => {
-    const columns = columnKeys.map(key => ({
+  const handleApprove = async (userId: string, table: string) => {
+    try {
+      const { error } = await (supabase as any)
+        .from(table)
+        .update({ approved: true })
+        .eq('user_id', userId);
+      
+      if (error) throw error;
+      toast.success("User approved successfully");
+      fetchAllUsers();
+    } catch (error) {
+      toast.error("Failed to approve user");
+      console.error(error);
+    }
+  };
+
+  const handleDeactivate = async (userId: string, table: string) => {
+    try {
+      const { error } = await (supabase as any)
+        .from(table)
+        .update({ approved: false })
+        .eq('user_id', userId);
+      
+      if (error) throw error;
+      toast.success("User deactivated successfully");
+      fetchAllUsers();
+    } catch (error) {
+      toast.error("Failed to deactivate user");
+      console.error(error);
+    }
+  };
+
+  const handleExport = () => {
+    const allData = {
+      nto: ntoOfficers,
+      sto: stoOfficers,
+      dto: dtoOfficers,
+      tpo: collegeTpos,
+      dept: deptCoordinators,
+      students: students
+    };
+    
+    const dataStr = JSON.stringify(allData, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `users-export-${new Date().toISOString().split('T')[0]}.json`;
+    link.click();
+    toast.success("Data exported successfully");
+  };
+
+  const renderUserTable = (data: any[], columnKeys: string[], tableName: string) => {
+    const columns: any[] = columnKeys.map(key => ({
       key: key.toLowerCase().replace(/\s+/g, '_'),
       label: key,
-      render: (item: any) => item[key.toLowerCase().replace(/\s+/g, '_')] || 'N/A'
+      render: (item: any) => {
+        const value = item[key.toLowerCase().replace(/\s+/g, '_')];
+        if (key.toLowerCase() === 'status') {
+          return item.approved ? <Badge>Active</Badge> : <Badge variant="secondary">Pending</Badge>;
+        }
+        return value || 'N/A';
+      }
     }));
+    
+    columns.push({
+      key: 'actions',
+      label: 'Actions',
+      render: (item: any) => (
+        <div className="flex gap-2">
+          {!item.approved && (
+            <Button size="sm" onClick={() => handleApprove(item.user_id, tableName)}>
+              Approve
+            </Button>
+          )}
+          {item.approved && (
+            <Button size="sm" variant="outline" onClick={() => handleDeactivate(item.user_id, tableName)}>
+              Deactivate
+            </Button>
+          )}
+        </div>
+      )
+    });
     
     return <DataTable data={data} columns={columns} searchable searchPlaceholder="Search..." />;
   };
@@ -74,7 +151,7 @@ export default function AdminUsers() {
               <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
               Refresh
             </Button>
-            <Button variant="outline">
+            <Button variant="outline" onClick={handleExport}>
               <Download className="mr-2 h-4 w-4" />
               Export
             </Button>
@@ -110,7 +187,7 @@ export default function AdminUsers() {
                 <CardDescription>Manage NTO accounts and permissions</CardDescription>
               </CardHeader>
               <CardContent>
-                {renderUserTable(ntoOfficers, ['Full Name', 'Email', 'National Officer ID', 'Status'])}
+                {renderUserTable(ntoOfficers, ['Full Name', 'Email', 'National Officer ID', 'Status'], 'nto_officers')}
               </CardContent>
             </Card>
           </TabsContent>
@@ -122,7 +199,7 @@ export default function AdminUsers() {
                 <CardDescription>Manage STO accounts by state</CardDescription>
               </CardHeader>
               <CardContent>
-                {renderUserTable(stoOfficers, ['Full Name', 'Email', 'State', 'State Officer ID', 'Status'])}
+                {renderUserTable(stoOfficers, ['Full Name', 'Email', 'State', 'State Officer ID', 'Status'], 'sto_officers')}
               </CardContent>
             </Card>
           </TabsContent>
@@ -134,7 +211,7 @@ export default function AdminUsers() {
                 <CardDescription>Manage DTO accounts by district</CardDescription>
               </CardHeader>
               <CardContent>
-                {renderUserTable(dtoOfficers, ['Full Name', 'Email', 'State', 'District', 'District Officer ID'])}
+                {renderUserTable(dtoOfficers, ['Full Name', 'Email', 'State', 'District', 'District Officer ID'], 'dto_officers')}
               </CardContent>
             </Card>
           </TabsContent>
@@ -146,7 +223,7 @@ export default function AdminUsers() {
                 <CardDescription>Manage college TPO accounts</CardDescription>
               </CardHeader>
               <CardContent>
-                {renderUserTable(collegeTpos, ['TPO Full Name', 'Email', 'College Registration Number', 'Status'])}
+                {renderUserTable(collegeTpos, ['TPO Full Name', 'Email', 'College Registration Number', 'Status'], 'college_tpo')}
               </CardContent>
             </Card>
           </TabsContent>
@@ -158,7 +235,7 @@ export default function AdminUsers() {
                 <CardDescription>Manage department-level coordinators</CardDescription>
               </CardHeader>
               <CardContent>
-                {renderUserTable(deptCoordinators, ['Coordinator Name', 'Email', 'Department Name', 'Status'])}
+                {renderUserTable(deptCoordinators, ['Coordinator Name', 'Email', 'Department Name', 'Status'], 'department_coordinators')}
               </CardContent>
             </Card>
           </TabsContent>
@@ -170,7 +247,7 @@ export default function AdminUsers() {
                 <CardDescription>Manage student accounts</CardDescription>
               </CardHeader>
               <CardContent>
-                {renderUserTable(students, ['Full Name', 'Email', 'ABC ID', 'Enrollment Number', 'Status'])}
+                {renderUserTable(students, ['Full Name', 'Email', 'ABC ID', 'Enrollment Number', 'Status'], 'students')}
               </CardContent>
             </Card>
           </TabsContent>

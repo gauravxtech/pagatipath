@@ -41,7 +41,7 @@ export function DashboardLayout({ children, sidebar, title }: DashboardLayoutPro
   };
 
   return (
-    <div className="min-h-screen bg-gradient-subtle">
+    <div className="flex flex-col h-screen bg-gradient-subtle">
       {/* Top Navigation */}
       <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
@@ -100,14 +100,14 @@ export function DashboardLayout({ children, sidebar, title }: DashboardLayoutPro
         </div>
       </header>
 
-      <div className="flex">
-        {/* Desktop Sidebar */}
-        <aside className="hidden lg:block w-72 border-r bg-background min-h-[calc(100vh-64px)] sticky top-16">
+      <div className="flex flex-1 overflow-hidden">
+        {/* Desktop Sidebar - Fixed, scrollable independently */}
+        <aside className="hidden lg:block w-72 border-r bg-background overflow-y-auto">
           {sidebar}
         </aside>
 
-        {/* Main Content */}
-        <main className="flex-1 p-6">
+        {/* Main Content - Scrollable independently */}
+        <main className="flex-1 overflow-y-auto p-6">
           <div className="container mx-auto max-w-7xl">
             {children}
           </div>

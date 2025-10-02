@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { DashboardLayout } from "@/components/shared/DashboardLayout";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -5,8 +6,19 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Shield, Save } from "lucide-react";
+import { toast } from "sonner";
 
 export default function AdminAccess() {
+  const [permissions, setPermissions] = useState({
+    nto: { viewAll: true, approve: true, reports: true },
+    sto: { viewDistrict: true, approve: true, reports: true },
+    dto: { approveTPO: true, viewCollege: true, reports: true },
+    tpo: { approveCoord: true, manageStudents: true, reports: true }
+  });
+
+  const handleSavePermissions = () => {
+    toast.success("Permissions updated successfully");
+  };
   return (
     <DashboardLayout sidebar={<AdminSidebar />}>
       <div className="space-y-6">
@@ -24,17 +36,28 @@ export default function AdminAccess() {
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <Label>View All STO Data</Label>
-                <Switch defaultChecked />
+                <Switch 
+                  checked={permissions.nto.viewAll}
+                  onCheckedChange={(checked) => setPermissions({...permissions, nto: {...permissions.nto, viewAll: checked}})}
+                />
               </div>
               <div className="flex items-center justify-between">
                 <Label>Approve STO Accounts</Label>
-                <Switch defaultChecked />
+                <Switch 
+                  checked={permissions.nto.approve}
+                  onCheckedChange={(checked) => setPermissions({...permissions, nto: {...permissions.nto, approve: checked}})}
+                />
               </div>
               <div className="flex items-center justify-between">
                 <Label>Generate Reports</Label>
-                <Switch defaultChecked />
+                <Switch 
+                  checked={permissions.nto.reports}
+                  onCheckedChange={(checked) => setPermissions({...permissions, nto: {...permissions.nto, reports: checked}})}
+                />
               </div>
-              <Button className="w-full"><Save className="mr-2 h-4 w-4" />Save Changes</Button>
+              <Button className="w-full" onClick={handleSavePermissions}>
+                <Save className="mr-2 h-4 w-4" />Save Changes
+              </Button>
             </CardContent>
           </Card>
 

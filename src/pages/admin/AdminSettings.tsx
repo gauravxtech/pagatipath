@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { DashboardLayout } from "@/components/shared/DashboardLayout";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,8 +8,22 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Save } from "lucide-react";
+import { toast } from "sonner";
 
 export default function AdminSettings() {
+  const [settings, setSettings] = useState({
+    platformName: "PragatiPath",
+    twoFactorAuth: false,
+    sessionTimeout: 30,
+    passwordMinLength: 8,
+    emailNotifications: true,
+    smsNotifications: false
+  });
+
+  const handleSaveSettings = () => {
+    toast.success("Settings saved successfully");
+  };
+
   return (
     <DashboardLayout sidebar={<AdminSidebar />}>
       <div className="space-y-6">
@@ -33,20 +48,15 @@ export default function AdminSettings() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="siteName">Site Name</Label>
-                  <Input id="siteName" defaultValue="PragatiPath" />
+                  <Label htmlFor="platform-name">Platform Name</Label>
+                  <Input 
+                    id="platform-name" 
+                    value={settings.platformName}
+                    onChange={(e) => setSettings({...settings, platformName: e.target.value})}
+                  />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="siteUrl">Site URL</Label>
-                  <Input id="siteUrl" defaultValue="https://pragatipath.com" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="adminEmail">Admin Email</Label>
-                  <Input id="adminEmail" type="email" defaultValue="admin@pragatipath.com" />
-                </div>
-                <Button>
-                  <Save className="mr-2 h-4 w-4" />
-                  Save Changes
+                <Button onClick={handleSaveSettings}>
+                  <Save className="mr-2 h-4 w-4" />Save Changes
                 </Button>
               </CardContent>
             </Card>
@@ -64,26 +74,51 @@ export default function AdminSettings() {
                     <Label>Two-Factor Authentication</Label>
                     <p className="text-sm text-muted-foreground">Require 2FA for all admin accounts</p>
                   </div>
-                  <Switch />
+                  <Switch 
+                    checked={settings.twoFactorAuth}
+                    onCheckedChange={(checked) => setSettings({...settings, twoFactorAuth: checked})}
+                  />
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
-                    <Label>Email Verification</Label>
-                    <p className="text-sm text-muted-foreground">Require email verification for new users</p>
+                    <Label>Email Notifications</Label>
+                    <p className="text-sm text-muted-foreground">Send email alerts for important events</p>
                   </div>
-                  <Switch defaultChecked />
+                  <Switch 
+                    checked={settings.emailNotifications}
+                    onCheckedChange={(checked) => setSettings({...settings, emailNotifications: checked})}
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label>SMS Notifications</Label>
+                    <p className="text-sm text-muted-foreground">Send SMS alerts for critical events</p>
+                  </div>
+                  <Switch 
+                    checked={settings.smsNotifications}
+                    onCheckedChange={(checked) => setSettings({...settings, smsNotifications: checked})}
+                  />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="sessionTimeout">Session Timeout (minutes)</Label>
-                  <Input id="sessionTimeout" type="number" defaultValue="30" />
+                  <Label htmlFor="session-timeout">Session Timeout (minutes)</Label>
+                  <Input 
+                    id="session-timeout" 
+                    type="number" 
+                    value={settings.sessionTimeout}
+                    onChange={(e) => setSettings({...settings, sessionTimeout: parseInt(e.target.value)})}
+                  />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="maxLoginAttempts">Max Login Attempts</Label>
-                  <Input id="maxLoginAttempts" type="number" defaultValue="5" />
+                  <Label htmlFor="password-policy">Minimum Password Length</Label>
+                  <Input 
+                    id="password-policy" 
+                    type="number" 
+                    value={settings.passwordMinLength}
+                    onChange={(e) => setSettings({...settings, passwordMinLength: parseInt(e.target.value)})}
+                  />
                 </div>
-                <Button>
-                  <Save className="mr-2 h-4 w-4" />
-                  Save Security Settings
+                <Button onClick={handleSaveSettings}>
+                  <Save className="mr-2 h-4 w-4" />Save Security Settings
                 </Button>
               </CardContent>
             </Card>
@@ -101,18 +136,23 @@ export default function AdminSettings() {
                     <Label>Email Notifications</Label>
                     <p className="text-sm text-muted-foreground">Send email alerts for important events</p>
                   </div>
-                  <Switch defaultChecked />
+                  <Switch 
+                    checked={settings.emailNotifications}
+                    onCheckedChange={(checked) => setSettings({...settings, emailNotifications: checked})}
+                  />
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
                     <Label>SMS Notifications</Label>
                     <p className="text-sm text-muted-foreground">Send SMS for critical updates</p>
                   </div>
-                  <Switch />
+                  <Switch 
+                    checked={settings.smsNotifications}
+                    onCheckedChange={(checked) => setSettings({...settings, smsNotifications: checked})}
+                  />
                 </div>
-                <Button>
-                  <Save className="mr-2 h-4 w-4" />
-                  Save Notification Settings
+                <Button onClick={handleSaveSettings}>
+                  <Save className="mr-2 h-4 w-4" />Save Notification Settings
                 </Button>
               </CardContent>
             </Card>
