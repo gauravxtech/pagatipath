@@ -78,7 +78,7 @@ export default function RecruiterApplications() {
       const { error } = await supabase
         .from('applications')
         .update({
-          status: newStatus,
+          status: newStatus as any,
           recruiter_feedback: feedback,
         })
         .eq('id', selectedApp.id);

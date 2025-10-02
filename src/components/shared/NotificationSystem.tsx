@@ -46,8 +46,8 @@ export function NotificationSystem() {
         .limit(10);
 
       if (error) throw error;
-      setNotifications(data || []);
-      setUnreadCount(data?.filter(n => !n.read).length || 0);
+      setNotifications((data as Notification[]) || []);
+      setUnreadCount((data as Notification[])?.filter(n => !n.read).length || 0);
     } catch (error: any) {
       console.error('Failed to load notifications:', error);
     }

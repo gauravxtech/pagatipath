@@ -75,7 +75,12 @@ export default function RecruiterOpportunities() {
       if (!recruiterData) throw new Error('Recruiter profile not found');
 
       const payload = {
-        ...formData,
+        title: formData.title,
+        type: formData.type as any,
+        description: formData.description,
+        location: formData.location,
+        department: formData.department,
+        deadline: formData.deadline,
         recruiter_id: recruiterData.id,
         created_by: user?.id,
         stipend_min: formData.stipend_min ? parseInt(formData.stipend_min) : null,
