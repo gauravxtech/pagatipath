@@ -28,9 +28,9 @@ const PendingApproval = () => {
         if (userRole) {
           setRole(userRole.role);
           
-          // If approved, redirect to dashboard
+          // If approved, force a full page reload to refresh the session
           if (userRole.approved) {
-            navigate('/dashboard');
+            window.location.href = '/dashboard';
           }
         }
       } catch (error) {
@@ -40,8 +40,8 @@ const PendingApproval = () => {
 
     checkApprovalStatus();
 
-    // Check every 30 seconds if status has changed
-    const interval = setInterval(checkApprovalStatus, 30000);
+    // Check every 5 seconds for faster response after approval
+    const interval = setInterval(checkApprovalStatus, 5000);
     return () => clearInterval(interval);
   }, [user, navigate]);
 
@@ -86,9 +86,9 @@ const PendingApproval = () => {
               <strong>What happens next?</strong>
             </p>
             <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-              <li>Administrator will verify your credentials</li>
-              <li>You'll receive an email notification once approved</li>
-              <li>This page will automatically update when approved</li>
+                <li>Administrator will verify your credentials</li>
+                <li>You'll receive an email notification once approved</li>
+                <li>This page automatically checks every 5 seconds</li>
             </ul>
           </div>
 
