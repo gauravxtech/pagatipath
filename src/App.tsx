@@ -22,6 +22,13 @@ import RecruiterApplications from "./pages/recruiter/RecruiterApplications";
 import CollegeDashboard from "./pages/college/CollegeDashboard";
 import DepartmentDashboard from "./pages/department/DepartmentDashboard";
 import DTODashboard from "./pages/dto/DTODashboard";
+import DTOColleges from "./pages/dto/DTOColleges";
+import DTODepartments from "./pages/dto/DTODepartments";
+import DTOStudents from "./pages/dto/DTOStudents";
+import DTOReports from "./pages/dto/DTOReports";
+import DTONotifications from "./pages/dto/DTONotifications";
+import DTOAudit from "./pages/dto/DTOAudit";
+import DTOSettings from "./pages/dto/DTOSettings";
 import STODashboard from "./pages/sto/STODashboard";
 import STODistricts from "./pages/sto/STODistricts";
 import STOColleges from "./pages/sto/STOColleges";
@@ -86,6 +93,13 @@ const App = () => (
             
             {/* DTO Routes */}
             <Route path="/dto/dashboard" element={<DTODashboard />} />
+            <Route path="/dto/colleges" element={<DTOColleges />} />
+            <Route path="/dto/departments" element={<DTODepartments />} />
+            <Route path="/dto/students" element={<DTOStudents />} />
+            <Route path="/dto/reports" element={<DTOReports />} />
+            <Route path="/dto/notifications" element={<DTONotifications />} />
+            <Route path="/dto/audit" element={<DTOAudit />} />
+            <Route path="/dto/settings" element={<DTOSettings />} />
             
             {/* STO Routes */}
             <Route path="/sto/dashboard" element={<STODashboard />} />

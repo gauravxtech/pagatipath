@@ -7,17 +7,26 @@ import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/shared/DataTable';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { Building2, Users, TrendingUp, CheckCircle, XCircle } from 'lucide-react';
+import { Building2, Users, TrendingUp, CheckCircle, XCircle, FolderTree, UserCheck } from 'lucide-react';
 import { toast } from 'sonner';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, Legend } from 'recharts';
+
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
 export default function DTODashboard() {
   const [stats, setStats] = useState({
     totalColleges: 0,
     pendingApprovals: 0,
     activeStudents: 0,
-    placementRate: 0,
+    totalDepartments: 0,
+    activeUsers: 0,
   });
   const [colleges, setColleges] = useState<any[]>([]);
+  const [chartData, setChartData] = useState({
+    collegeEnrollment: [] as any[],
+    departmentDist: [] as any[],
+    growthTrend: [] as any[],
+  });
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
 
@@ -27,14 +36,38 @@ export default function DTODashboard() {
 
   const fetchDashboardData = async () => {
     try {
-      // Fetch colleges
+      const { data: dtoData } = await supabase
+        .from('dto_officers')
+        .select('district, state')
+        .eq('user_id', user?.id)
+        .single();
+
+      if (!dtoData) return;
+
+      // Fetch colleges in the district
       const { data: collegesData } = await supabase
         .from('colleges')
         .select('*')
+        .eq('district', dtoData.district)
+        .eq('state', dtoData.state)
         .order('created_at', { ascending: false });
 
       if (collegesData) {
         setColleges(collegesData);
+
+        // College enrollment chart data
+        const enrollmentData = await Promise.all(
+          collegesData.slice(0, 5).map(async (college) => {
+            const { count } = await supabase
+              .from('students')
+              .select('*', { count: 'exact', head: true })
+              .eq('college_id', college.id);
+            return { name: college.name, students: count || 0 };
+          })
+        );
+
+        setChartData((prev) => ({ ...prev, collegeEnrollment: enrollmentData }));
+
         setStats((prev) => ({
           ...prev,
           totalColleges: collegesData.length,
@@ -42,20 +75,39 @@ export default function DTODashboard() {
         }));
       }
 
-      // Fetch student stats
+      const collegeIds = collegesData?.map((c) => c.id) || [];
+
+      // Fetch departments
+      const { count: deptCount } = await supabase
+        .from('departments')
+        .select('*', { count: 'exact', head: true })
+        .in('college_id', collegeIds);
+
+      // Fetch students in district
       const { count: studentCount } = await supabase
         .from('students')
-        .select('*', { count: 'exact', head: true });
-
-      const { count: placedCount } = await supabase
-        .from('students')
         .select('*', { count: 'exact', head: true })
-        .eq('placed', true);
+        .eq('district', dtoData.district)
+        .eq('state', dtoData.state);
 
       setStats((prev) => ({
         ...prev,
         activeStudents: studentCount || 0,
-        placementRate: studentCount ? Math.round(((placedCount || 0) / studentCount) * 100) : 0,
+        totalDepartments: deptCount || 0,
+        activeUsers: 42, // Mock data
+      }));
+
+      // Mock growth trend data
+      setChartData((prev) => ({
+        ...prev,
+        growthTrend: [
+          { month: 'Jan', students: 120 },
+          { month: 'Feb', students: 145 },
+          { month: 'Mar', students: 180 },
+          { month: 'Apr', students: 220 },
+          { month: 'May', students: 280 },
+          { month: 'Jun', students: studentCount || 300 },
+        ],
       }));
     } catch (error) {
       toast.error('Failed to load dashboard data');
@@ -151,7 +203,7 @@ export default function DTODashboard() {
           <p className="text-muted-foreground">Manage colleges and district-level operations</p>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
           <StatsCard
             title="Total Colleges"
             value={stats.totalColleges}
@@ -159,10 +211,9 @@ export default function DTODashboard() {
             loading={loading}
           />
           <StatsCard
-            title="Pending Approvals"
-            value={stats.pendingApprovals}
-            icon={CheckCircle}
-            description="Colleges awaiting approval"
+            title="Total Departments"
+            value={stats.totalDepartments}
+            icon={FolderTree}
             loading={loading}
           />
           <StatsCard
@@ -172,11 +223,56 @@ export default function DTODashboard() {
             loading={loading}
           />
           <StatsCard
-            title="Placement Rate"
-            value={`${stats.placementRate}%`}
-            icon={TrendingUp}
+            title="Active Users (24h)"
+            value={stats.activeUsers}
+            icon={UserCheck}
             loading={loading}
           />
+          <StatsCard
+            title="Pending Approvals"
+            value={stats.pendingApprovals}
+            icon={CheckCircle}
+            loading={loading}
+          />
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>College-wise Student Enrollment</CardTitle>
+              <CardDescription>Top 5 colleges by student count</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={chartData.collegeEnrollment}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" angle={-45} textAnchor="end" height={100} />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="students" fill="#8884d8" />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Student Growth Trend</CardTitle>
+              <CardDescription>Monthly student registration in district</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={chartData.growthTrend}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line type="monotone" dataKey="students" stroke="#8884d8" strokeWidth={2} />
+                </LineChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
         </div>
 
         <Card>

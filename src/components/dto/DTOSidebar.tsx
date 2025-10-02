@@ -5,13 +5,22 @@ import {
   Building2,
   FileText,
   TrendingUp,
+  FolderTree,
+  Users,
+  Bell,
+  Shield,
+  Settings,
 } from 'lucide-react';
 
 const navItems = [
   { to: '/dto/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/dto/colleges', label: 'Colleges', icon: Building2 },
-  { to: '/dto/reports', label: 'Reports', icon: FileText },
-  { to: '/dto/analytics', label: 'Analytics', icon: TrendingUp },
+  { to: '/dto/departments', label: 'Departments', icon: FolderTree },
+  { to: '/dto/students', label: 'Students', icon: Users },
+  { to: '/dto/reports', label: 'Reports & Analytics', icon: FileText },
+  { to: '/dto/notifications', label: 'Notifications', icon: Bell },
+  { to: '/dto/audit', label: 'Audit Logs', icon: Shield },
+  { to: '/dto/settings', label: 'Settings', icon: Settings },
 ];
 
 export function DTOSidebar() {
