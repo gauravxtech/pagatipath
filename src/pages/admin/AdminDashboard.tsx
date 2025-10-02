@@ -36,6 +36,20 @@ export default function AdminDashboard() {
         supabase.from('user_roles').select('id', { count: 'exact', head: true }).eq('approved', false),
       ]);
 
+      console.log('Admin Dashboard Stats:', {
+        pendingRolesCount: pendingRoles.count,
+        pendingRolesError: pendingRoles.error,
+        allCounts: {
+          students: students.count,
+          colleges: colleges.count,
+          nto: nto.count,
+          sto: sto.count,
+          dto: dto.count,
+          tpo: tpo.count,
+          dept: dept.count
+        }
+      });
+
       const totalOfficers = (nto.count || 0) + (sto.count || 0) + (dto.count || 0);
       const totalUsers = (students.count || 0) + totalOfficers + (tpo.count || 0) + (dept.count || 0);
 
