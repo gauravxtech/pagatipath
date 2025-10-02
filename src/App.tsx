@@ -23,6 +23,12 @@ import CollegeDashboard from "./pages/college/CollegeDashboard";
 import DepartmentDashboard from "./pages/department/DepartmentDashboard";
 import DTODashboard from "./pages/dto/DTODashboard";
 import STODashboard from "./pages/sto/STODashboard";
+import STODistricts from "./pages/sto/STODistricts";
+import STOColleges from "./pages/sto/STOColleges";
+import STOStudents from "./pages/sto/STOStudents";
+import STOReports from "./pages/sto/STOReports";
+import STOAnalytics from "./pages/sto/STOAnalytics";
+import STOSettings from "./pages/sto/STOSettings";
 import NTODashboard from "./pages/nto/NTODashboard";
 import NTOStates from "./pages/nto/NTOStates";
 import NTODistricts from "./pages/nto/NTODistricts";
@@ -83,6 +89,12 @@ const App = () => (
             
             {/* STO Routes */}
             <Route path="/sto/dashboard" element={<STODashboard />} />
+            <Route path="/sto/districts" element={<STODistricts />} />
+            <Route path="/sto/colleges" element={<STOColleges />} />
+            <Route path="/sto/students" element={<STOStudents />} />
+            <Route path="/sto/reports" element={<STOReports />} />
+            <Route path="/sto/analytics" element={<STOAnalytics />} />
+            <Route path="/sto/settings" element={<STOSettings />} />
             
             {/* NTO Routes */}
             <Route path="/nto/dashboard" element={<NTODashboard />} />

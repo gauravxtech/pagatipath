@@ -5,13 +5,19 @@ import {
   MapPin,
   FileText,
   TrendingUp,
+  Building2,
+  Users,
+  Settings,
 } from 'lucide-react';
 
 const navItems = [
   { to: '/sto/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/sto/districts', label: 'Districts', icon: MapPin },
+  { to: '/sto/districts', label: 'Districts (DTOs)', icon: MapPin },
+  { to: '/sto/colleges', label: 'Colleges', icon: Building2 },
+  { to: '/sto/students', label: 'Students', icon: Users },
   { to: '/sto/reports', label: 'Reports', icon: FileText },
   { to: '/sto/analytics', label: 'Analytics', icon: TrendingUp },
+  { to: '/sto/settings', label: 'Settings', icon: Settings },
 ];
 
 export function STOSidebar() {
