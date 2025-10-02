@@ -19,6 +19,13 @@ import StudentSupport from "./pages/student/StudentSupport";
 import RecruiterDashboard from "./pages/recruiter/RecruiterDashboard";
 import RecruiterOpportunities from "./pages/recruiter/RecruiterOpportunities";
 import RecruiterApplications from "./pages/recruiter/RecruiterApplications";
+import RecruiterJobs from "./pages/recruiter/RecruiterJobs";
+import RecruiterInterviews from "./pages/recruiter/RecruiterInterviews";
+import RecruiterHired from "./pages/recruiter/RecruiterHired";
+import RecruiterReports from "./pages/recruiter/RecruiterReports";
+import RecruiterNotifications from "./pages/recruiter/RecruiterNotifications";
+import RecruiterAudit from "./pages/recruiter/RecruiterAudit";
+import RecruiterSettings from "./pages/recruiter/RecruiterSettings";
 import CollegeDashboard from "./pages/college/CollegeDashboard";
 import DepartmentDashboard from "./pages/department/DepartmentDashboard";
 import DTODashboard from "./pages/dto/DTODashboard";
@@ -82,8 +89,15 @@ const App = () => (
             
             {/* Recruiter Routes */}
             <Route path="/recruiter/dashboard" element={<RecruiterDashboard />} />
+            <Route path="/recruiter/jobs" element={<RecruiterJobs />} />
             <Route path="/recruiter/opportunities" element={<RecruiterOpportunities />} />
             <Route path="/recruiter/applications" element={<RecruiterApplications />} />
+            <Route path="/recruiter/interviews" element={<RecruiterInterviews />} />
+            <Route path="/recruiter/hired" element={<RecruiterHired />} />
+            <Route path="/recruiter/reports" element={<RecruiterReports />} />
+            <Route path="/recruiter/notifications" element={<RecruiterNotifications />} />
+            <Route path="/recruiter/audit" element={<RecruiterAudit />} />
+            <Route path="/recruiter/settings" element={<RecruiterSettings />} />
             
             {/* College Routes */}
             <Route path="/college/dashboard" element={<CollegeDashboard />} />

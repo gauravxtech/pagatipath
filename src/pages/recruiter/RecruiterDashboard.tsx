@@ -10,18 +10,16 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { SidebarProvider } from '@/components/ui/sidebar';
+import { RecruiterSidebar } from '@/components/recruiter/RecruiterSidebar';
 import { 
   Briefcase, 
-  LogOut, 
   Plus,
   Users,
   TrendingUp,
   Calendar,
-  MapPin,
-  Building2,
   Search
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 
 const RecruiterDashboard = () => {
@@ -167,24 +165,10 @@ const RecruiterDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-subtle">
-      <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="p-2 bg-gradient-hero rounded-lg">
-              <Building2 className="h-6 w-6 text-primary-foreground" />
-            </div>
-            <span className="font-bold text-xl">PragatiPath</span>
-          </Link>
-          
-          <Button variant="outline" onClick={signOut}>
-            <LogOut className="mr-2 h-4 w-4" />
-            Sign Out
-          </Button>
-        </div>
-      </nav>
-
-      <main className="container mx-auto px-4 py-8">
+    <SidebarProvider>
+      <div className="flex min-h-screen w-full">
+        <RecruiterSidebar />
+        <main className="flex-1 p-6">
         {/* Header Section */}
         <div className="flex items-start justify-between mb-8">
           <div>
@@ -529,7 +513,8 @@ const RecruiterDashboard = () => {
           </TabsContent>
         </Tabs>
       </main>
-    </div>
+      </div>
+    </SidebarProvider>
   );
 };
 
