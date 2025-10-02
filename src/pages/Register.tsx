@@ -5,120 +5,104 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { GraduationCap, Mail, Lock, User, IdCard, Building2 } from "lucide-react";
+import { GraduationCap, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 import { toast } from "sonner";
+import { indianStates, stateDistricts } from "@/data/indianStates";
 
-const registerSchema = z.object({
-  fullName: z.string().min(2, "Name must be at least 2 characters"),
+const baseSchema = z.object({
+  fullName: z.string().min(2, "Full name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
-  abcId: z.string().optional(),
-  collegeId: z.string().optional(),
-  role: z.string().min(1, "Please select a role"),
   password: z.string().min(6, "Password must be at least 6 characters"),
-  confirmPassword: z.string(),
+  confirmPassword: z.string().min(6, "Confirm password is required"),
+  mobileNumber: z.string().min(10, "Mobile number must be at least 10 digits"),
+  role: z.enum(["student", "recruiter", "nto", "sto", "dto", "college_placement", "dept_coordinator"]),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ["confirmPassword"],
-}).refine((data) => {
-  // ABC ID is required only for students
-  if (data.role === 'student' && !data.abcId) {
-    return false;
-  }
-  return true;
-}, {
-  message: "ABC ID is required for students",
-  path: ["abcId"],
-}).refine((data) => {
-  // College selection is required only for students
-  if (data.role === 'student' && !data.collegeId) {
-    return false;
-  }
-  return true;
-}, {
-  message: "Please select your college",
-  path: ["collegeId"],
 });
 
+const registerSchema = z.discriminatedUnion("role", [
+  z.object({ ...baseSchema.shape, role: z.literal("student"), abcId: z.string().min(1), enrollmentNumber: z.string().min(1), collegeId: z.string().min(1), departmentId: z.string().optional(), yearSemester: z.string().min(1) }),
+  z.object({ ...baseSchema.shape, role: z.literal("recruiter"), companyName: z.string().min(1), companyWebsite: z.string().optional(), industry: z.string().optional() }),
+  z.object({ ...baseSchema.shape, role: z.literal("nto"), nationalOfficerId: z.string().min(1) }),
+  z.object({ ...baseSchema.shape, role: z.literal("sto"), state: z.string().min(1), stateOfficerId: z.string().min(1) }),
+  z.object({ ...baseSchema.shape, role: z.literal("dto"), state: z.string().min(1), district: z.string().min(1), districtOfficerId: z.string().min(1) }),
+  z.object({ ...baseSchema.shape, role: z.literal("college_placement"), collegeRegistrationNumber: z.string().min(1), collegeName: z.string().min(1), state: z.string().min(1), district: z.string().min(1) }),
+  z.object({ ...baseSchema.shape, role: z.literal("dept_coordinator"), collegeId: z.string().min(1), departmentName: z.string().min(1) }),
+]);
+
 const Register = () => {
-  const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    abcId: "",
-    collegeId: "",
-    role: "",
-    password: "",
-    confirmPassword: "",
-  });
-  const [colleges, setColleges] = useState<any[]>([]);
+  const [formData, setFormData] = useState<Record<string, string>>({ fullName: "", email: "", password: "", confirmPassword: "", mobileNumber: "", role: "" });
   const [loading, setLoading] = useState(false);
-  const [loadingColleges, setLoadingColleges] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [colleges, setColleges] = useState<any[]>([]);
+  const [departments, setDepartments] = useState<any[]>([]);
+  const [selectedState, setSelectedState] = useState("");
+  const [districts, setDistricts] = useState<string[]>([]);
   const { signUp, user } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (user) {
-      navigate('/dashboard');
-    }
-  }, [user, navigate]);
+  useEffect(() => { if (user) navigate('/dashboard'); }, [user, navigate]);
+  useEffect(() => { fetchColleges(); }, []);
+  useEffect(() => { setDistricts(selectedState && stateDistricts[selectedState] ? stateDistricts[selectedState] : []); }, [selectedState]);
+  useEffect(() => { if (formData.collegeId) fetchDepartments(formData.collegeId); }, [formData.collegeId]);
 
-  // Load colleges when student role is selected
-  useEffect(() => {
-    if (formData.role === 'student') {
-      loadColleges();
-    }
-  }, [formData.role]);
+  const fetchColleges = async () => {
+    const { data } = await supabase.from('colleges').select('*').eq('approved', true).order('name');
+    setColleges(data || []);
+  };
 
-  const loadColleges = async () => {
-    try {
-      setLoadingColleges(true);
-      const { data, error } = await supabase
-        .from('colleges')
-        .select('id, name, district, state')
-        .eq('approved', true)
-        .order('name');
-
-      if (error) throw error;
-      setColleges(data || []);
-    } catch (error: any) {
-      toast.error('Failed to load colleges');
-      console.error(error);
-    } finally {
-      setLoadingColleges(false);
-    }
+  const fetchDepartments = async (collegeId: string) => {
+    const { data } = await supabase.from('departments').select('*').eq('college_id', collegeId).eq('approved', true).order('name');
+    setDepartments(data || []);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     try {
       const validated = registerSchema.parse(formData);
       setLoading(true);
       
-      const metadata: any = {
-        role: validated.role,
-      };
-
-      // Only add ABC ID and college for students
-      if (validated.role === 'student') {
-        metadata.abc_id = validated.abcId;
-        metadata.college_id = validated.collegeId;
-      }
-
-      await signUp(
-        validated.email,
-        validated.password,
-        validated.fullName,
-        metadata
-      );
+      const metadata: Record<string, any> = { full_name: validated.fullName, role: validated.role, mobile_number: validated.mobileNumber };
       
-      toast.success('Registration successful! Please wait for approval from your administrator.');
-    } catch (error: any) {
-      if (error instanceof z.ZodError) {
-        toast.error(error.errors[0].message);
+      if (validated.role === 'student') {
+        Object.assign(metadata, { abc_id: validated.abcId, enrollment_number: validated.enrollmentNumber, year_semester: validated.yearSemester });
+      } else if (validated.role === 'recruiter') {
+        Object.assign(metadata, { company_name: validated.companyName, company_website: validated.companyWebsite, industry: validated.industry });
+      } else if (validated.role === 'nto') {
+        metadata.national_officer_id = validated.nationalOfficerId;
+      } else if (validated.role === 'sto') {
+        Object.assign(metadata, { state: validated.state, state_officer_id: validated.stateOfficerId });
+      } else if (validated.role === 'dto') {
+        Object.assign(metadata, { state: validated.state, district: validated.district, district_officer_id: validated.districtOfficerId });
+      } else if (validated.role === 'college_placement') {
+        Object.assign(metadata, { college_registration_number: validated.collegeRegistrationNumber, college_name: validated.collegeName, state: validated.state, district: validated.district });
+      } else if (validated.role === 'dept_coordinator') {
+        Object.assign(metadata, { college_id: validated.collegeId, department_name: validated.departmentName });
       }
+      
+      const { error } = await signUp(validated.email, validated.password, metadata);
+      if (error) {
+        toast.error(error.message);
+      } else {
+        const messages: Record<string, string> = {
+          student: "Your registration is pending approval from your Department Coordinator",
+          dept_coordinator: "Your registration is pending approval from your College TPO",
+          college_placement: "Your registration is pending approval from your DTO",
+          dto: "Your registration is pending approval from your STO",
+          sto: "Your registration is pending approval from your NTO",
+          nto: "Your registration is pending approval from the Admin",
+          recruiter: "Your registration is pending verification"
+        };
+        toast.success(`Registration successful! ${messages[validated.role]}`);
+        navigate('/login');
+      }
+    } catch (error: any) {
+      toast.error(error instanceof z.ZodError ? error.errors[0].message : error.message || "Registration failed");
     } finally {
       setLoading(false);
     }
@@ -126,170 +110,104 @@ const Register = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-subtle p-4 py-12">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-2xl">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2 mb-4">
-            <div className="p-2 bg-gradient-hero rounded-lg">
-              <GraduationCap className="h-8 w-8 text-primary-foreground" />
-            </div>
+            <div className="p-2 bg-gradient-hero rounded-lg"><GraduationCap className="h-8 w-8 text-primary-foreground" /></div>
             <span className="font-bold text-2xl">PragatiPath</span>
           </Link>
-          <p className="text-muted-foreground">Start your journey to success</p>
+          <p className="text-muted-foreground">Join the National Training Platform</p>
         </div>
 
         <Card className="shadow-soft">
           <CardHeader>
             <CardTitle>Create Your Account</CardTitle>
-            <CardDescription>Join the national placement platform</CardDescription>
+            <CardDescription>Register with your role-specific details</CardDescription>
           </CardHeader>
           <form onSubmit={handleSubmit}>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 max-h-[60vh] overflow-y-auto">
               <div className="space-y-2">
-                <Label htmlFor="fullName">Full Name</Label>
-                <div className="relative">
-                  <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="fullName"
-                    placeholder="Your full name"
-                    value={formData.fullName}
-                    onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                    className="pl-10"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="your.email@example.com"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="pl-10"
-                    required
-                  />
-                </div>
-              </div>
-
-              {/* ABC ID - Only for Students */}
-              {formData.role === 'student' && (
-                <div className="space-y-2">
-                  <Label htmlFor="abcId">ABC ID</Label>
-                  <div className="relative">
-                    <IdCard className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="abcId"
-                      placeholder="Your unique ABC ID"
-                      value={formData.abcId}
-                      onChange={(e) => setFormData({ ...formData, abcId: e.target.value })}
-                      className="pl-10"
-                      required
-                    />
-                  </div>
-                </div>
-              )}
-
-              <div className="space-y-2">
-                <Label htmlFor="role">I am a...</Label>
-                <Select value={formData.role} onValueChange={(value) => setFormData({ ...formData, role: value, collegeId: "", abcId: "" })}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select your role" />
-                  </SelectTrigger>
+                <Label>Select Role</Label>
+                <Select value={formData.role} onValueChange={(value) => setFormData({ fullName: formData.fullName, email: formData.email, password: formData.password, confirmPassword: formData.confirmPassword, mobileNumber: formData.mobileNumber, role: value })}>
+                  <SelectTrigger><SelectValue placeholder="Choose your role" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="student">Student</SelectItem>
-                    <SelectItem value="dept_coordinator">Department Coordinator (HOD/TPC)</SelectItem>
-                    <SelectItem value="college_placement">College Placement Cell</SelectItem>
-                    <SelectItem value="recruiter">Recruiter / Company</SelectItem>
-                    <SelectItem value="dto">District Training Officer (DTO)</SelectItem>
-                    <SelectItem value="sto">State Training Officer (STO)</SelectItem>
+                    <SelectItem value="recruiter">Recruiter</SelectItem>
                     <SelectItem value="nto">National Training Officer (NTO)</SelectItem>
+                    <SelectItem value="sto">State Training Officer (STO)</SelectItem>
+                    <SelectItem value="dto">District Training Officer (DTO)</SelectItem>
+                    <SelectItem value="college_placement">College TPO</SelectItem>
+                    <SelectItem value="dept_coordinator">Department TPO / HOD</SelectItem>
                   </SelectContent>
                 </Select>
-                <p className="text-xs text-muted-foreground">
-                  {formData.role === '' && 'Choose your role in the PragatiPath ecosystem'}
-                  {formData.role === 'student' && 'Your registration will be approved by your department coordinator'}
-                  {formData.role === 'dept_coordinator' && 'Your registration will be approved by college placement cell'}
-                  {formData.role === 'college_placement' && 'Your registration will be approved by DTO'}
-                  {formData.role === 'recruiter' && 'Your registration will be verified by admin'}
-                  {formData.role === 'dto' && 'Your registration will be approved by STO'}
-                  {formData.role === 'sto' && 'Your registration will be approved by NTO'}
-                  {formData.role === 'nto' && 'Your registration will be approved by Admin'}
-                </p>
               </div>
 
-              {/* College Selection - Only for Students */}
-              {formData.role === 'student' && (
-                <div className="space-y-2">
-                  <Label htmlFor="collegeId">College</Label>
-                  <Select 
-                    value={formData.collegeId} 
-                    onValueChange={(value) => setFormData({ ...formData, collegeId: value })}
-                    disabled={loadingColleges}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder={loadingColleges ? "Loading colleges..." : "Select your college"} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {colleges.map((college) => (
-                        <SelectItem key={college.id} value={college.id}>
-                          {college.name} - {college.district}, {college.state}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <p className="text-xs text-muted-foreground">
-                    Select the college you are enrolled in
-                  </p>
+              {formData.role && (<>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2"><Label>Full Name</Label><Input value={formData.fullName} onChange={(e) => setFormData({ ...formData, fullName: e.target.value })} required /></div>
+                  <div className="space-y-2"><Label>Email</Label><Input type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} required /></div>
                 </div>
-              )}
+                <div className="space-y-2"><Label>Mobile Number</Label><Input type="tel" value={formData.mobileNumber} onChange={(e) => setFormData({ ...formData, mobileNumber: e.target.value })} required /></div>
 
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="Create a strong password"
-                    value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    className="pl-10"
-                    required
-                  />
-                </div>
-              </div>
+                {formData.role === 'nto' && <div className="space-y-2"><Label>National Officer ID</Label><Input value={formData.nationalOfficerId || ''} onChange={(e) => setFormData({ ...formData, nationalOfficerId: e.target.value })} required /></div>}
 
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="confirmPassword"
-                    type="password"
-                    placeholder="Confirm your password"
-                    value={formData.confirmPassword}
-                    onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                    className="pl-10"
-                    required
-                  />
+                {formData.role === 'sto' && (<>
+                  <div className="space-y-2"><Label>State</Label><Select value={formData.state} onValueChange={(v) => { setFormData({ ...formData, state: v }); setSelectedState(v); }}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{indianStates.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent></Select></div>
+                  <div className="space-y-2"><Label>State Officer ID</Label><Input value={formData.stateOfficerId || ''} onChange={(e) => setFormData({ ...formData, stateOfficerId: e.target.value })} required /></div>
+                </>)}
+
+                {formData.role === 'dto' && (<>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2"><Label>State</Label><Select value={formData.state} onValueChange={(v) => { setFormData({ ...formData, state: v, district: '' }); setSelectedState(v); }}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{indianStates.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent></Select></div>
+                    <div className="space-y-2"><Label>District</Label><Select value={formData.district} onValueChange={(v) => setFormData({ ...formData, district: v })} disabled={!formData.state}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{districts.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent></Select></div>
+                  </div>
+                  <div className="space-y-2"><Label>District Officer ID</Label><Input value={formData.districtOfficerId || ''} onChange={(e) => setFormData({ ...formData, districtOfficerId: e.target.value })} required /></div>
+                </>)}
+
+                {formData.role === 'college_placement' && (<>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2"><Label>College Reg. Number</Label><Input value={formData.collegeRegistrationNumber || ''} onChange={(e) => setFormData({ ...formData, collegeRegistrationNumber: e.target.value })} required /></div>
+                    <div className="space-y-2"><Label>College Name</Label><Input value={formData.collegeName || ''} onChange={(e) => setFormData({ ...formData, collegeName: e.target.value })} required /></div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2"><Label>State</Label><Select value={formData.state} onValueChange={(v) => { setFormData({ ...formData, state: v, district: '' }); setSelectedState(v); }}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{indianStates.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent></Select></div>
+                    <div className="space-y-2"><Label>District</Label><Select value={formData.district} onValueChange={(v) => setFormData({ ...formData, district: v })} disabled={!formData.state}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{districts.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent></Select></div>
+                  </div>
+                </>)}
+
+                {formData.role === 'dept_coordinator' && (<>
+                  <div className="space-y-2"><Label>College</Label><Select value={formData.collegeId} onValueChange={(v) => setFormData({ ...formData, collegeId: v })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{colleges.map(c => <SelectItem key={c.id} value={c.id}>{c.name} ({c.code})</SelectItem>)}</SelectContent></Select></div>
+                  <div className="space-y-2"><Label>Department Name</Label><Input value={formData.departmentName || ''} onChange={(e) => setFormData({ ...formData, departmentName: e.target.value })} required /></div>
+                </>)}
+
+                {formData.role === 'student' && (<>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2"><Label>ABC ID</Label><Input value={formData.abcId || ''} onChange={(e) => setFormData({ ...formData, abcId: e.target.value })} required /></div>
+                    <div className="space-y-2"><Label>Enrollment Number</Label><Input value={formData.enrollmentNumber || ''} onChange={(e) => setFormData({ ...formData, enrollmentNumber: e.target.value })} required /></div>
+                  </div>
+                  <div className="space-y-2"><Label>College</Label><Select value={formData.collegeId} onValueChange={(v) => setFormData({ ...formData, collegeId: v })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{colleges.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent></Select></div>
+                  {formData.collegeId && <div className="space-y-2"><Label>Department</Label><Select value={formData.departmentId} onValueChange={(v) => setFormData({ ...formData, departmentId: v })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{departments.map(d => <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>)}</SelectContent></Select></div>}
+                  <div className="space-y-2"><Label>Year / Semester</Label><Select value={formData.yearSemester} onValueChange={(v) => setFormData({ ...formData, yearSemester: v })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{['1st Year / Sem 1', '1st Year / Sem 2', '2nd Year / Sem 3', '2nd Year / Sem 4', '3rd Year / Sem 5', '3rd Year / Sem 6', '4th Year / Sem 7', '4th Year / Sem 8'].map(y => <SelectItem key={y} value={y}>{y}</SelectItem>)}</SelectContent></Select></div>
+                </>)}
+
+                {formData.role === 'recruiter' && (<>
+                  <div className="space-y-2"><Label>Company Name</Label><Input value={formData.companyName || ''} onChange={(e) => setFormData({ ...formData, companyName: e.target.value })} required /></div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2"><Label>Company Website</Label><Input type="url" value={formData.companyWebsite || ''} onChange={(e) => setFormData({ ...formData, companyWebsite: e.target.value })} /></div>
+                    <div className="space-y-2"><Label>Industry</Label><Input value={formData.industry || ''} onChange={(e) => setFormData({ ...formData, industry: e.target.value })} /></div>
+                  </div>
+                </>)}
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2"><Label>Password</Label><div className="relative"><Input type={showPassword ? "text" : "password"} value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} required /><button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-3">{showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}</button></div></div>
+                  <div className="space-y-2"><Label>Confirm Password</Label><div className="relative"><Input type={showConfirmPassword ? "text" : "password"} value={formData.confirmPassword} onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })} required /><button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-3">{showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}</button></div></div>
                 </div>
-              </div>
+              </>)}
             </CardContent>
 
             <CardFooter className="flex flex-col space-y-4">
-              <Button type="submit" className="w-full bg-gradient-hero" size="lg" disabled={loading}>
-                {loading ? "Creating Account..." : "Create Account"}
-              </Button>
-              <p className="text-sm text-center text-muted-foreground">
-                Already have an account?{" "}
-                <Link to="/login" className="text-primary hover:underline font-medium">
-                  Sign in
-                </Link>
-              </p>
+              <Button type="submit" className="w-full bg-gradient-hero" size="lg" disabled={loading || !formData.role}>{loading ? "Creating Account..." : "Create Account"}</Button>
+              <p className="text-sm text-center text-muted-foreground">Already have an account? <Link to="/login" className="text-primary hover:underline font-medium">Sign in</Link></p>
             </CardFooter>
           </form>
         </Card>

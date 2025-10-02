@@ -219,6 +219,56 @@ export type Database = {
           },
         ]
       }
+      college_tpo: {
+        Row: {
+          approved: boolean | null
+          approved_by: string | null
+          college_id: string | null
+          college_registration_number: string
+          created_at: string
+          email: string
+          id: string
+          mobile_number: string
+          tpo_full_name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          approved?: boolean | null
+          approved_by?: string | null
+          college_id?: string | null
+          college_registration_number: string
+          created_at?: string
+          email: string
+          id?: string
+          mobile_number: string
+          tpo_full_name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          approved?: boolean | null
+          approved_by?: string | null
+          college_id?: string | null
+          college_registration_number?: string
+          created_at?: string
+          email?: string
+          id?: string
+          mobile_number?: string
+          tpo_full_name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "college_tpo_college_id_fkey"
+            columns: ["college_id"]
+            isOneToOne: false
+            referencedRelation: "colleges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       colleges: {
         Row: {
           address: string | null
@@ -273,6 +323,66 @@ export type Database = {
         }
         Relationships: []
       }
+      department_coordinators: {
+        Row: {
+          approved: boolean | null
+          approved_by: string | null
+          college_id: string
+          coordinator_name: string
+          created_at: string
+          department_id: string | null
+          department_name: string
+          email: string
+          id: string
+          mobile_number: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          approved?: boolean | null
+          approved_by?: string | null
+          college_id: string
+          coordinator_name: string
+          created_at?: string
+          department_id?: string | null
+          department_name: string
+          email: string
+          id?: string
+          mobile_number: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          approved?: boolean | null
+          approved_by?: string | null
+          college_id?: string
+          coordinator_name?: string
+          created_at?: string
+          department_id?: string | null
+          department_name?: string
+          email?: string
+          id?: string
+          mobile_number?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "department_coordinators_college_id_fkey"
+            columns: ["college_id"]
+            isOneToOne: false
+            referencedRelation: "colleges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "department_coordinators_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       departments: {
         Row: {
           approved: boolean | null
@@ -316,6 +426,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      dto_officers: {
+        Row: {
+          approved: boolean | null
+          approved_by: string | null
+          created_at: string
+          district: string
+          district_officer_id: string
+          email: string
+          full_name: string
+          id: string
+          mobile_number: string
+          state: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          approved?: boolean | null
+          approved_by?: string | null
+          created_at?: string
+          district: string
+          district_officer_id: string
+          email: string
+          full_name: string
+          id?: string
+          mobile_number: string
+          state: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          approved?: boolean | null
+          approved_by?: string | null
+          created_at?: string
+          district?: string
+          district_officer_id?: string
+          email?: string
+          full_name?: string
+          id?: string
+          mobile_number?: string
+          state?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       interviews: {
         Row: {
@@ -399,6 +554,45 @@ export type Database = {
           read?: boolean | null
           title?: string
           type?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      nto_officers: {
+        Row: {
+          approved: boolean | null
+          approved_by: string | null
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          mobile_number: string
+          national_officer_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          approved?: boolean | null
+          approved_by?: string | null
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          mobile_number: string
+          national_officer_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          approved?: boolean | null
+          approved_by?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          mobile_number?: string
+          national_officer_id?: string
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
@@ -575,6 +769,7 @@ export type Database = {
           id: string
           industry: string | null
           kyc_documents: Json | null
+          mobile_number: string | null
           phone: string | null
           updated_at: string
           user_id: string
@@ -590,6 +785,7 @@ export type Database = {
           id?: string
           industry?: string | null
           kyc_documents?: Json | null
+          mobile_number?: string | null
           phone?: string | null
           updated_at?: string
           user_id: string
@@ -605,10 +801,53 @@ export type Database = {
           id?: string
           industry?: string | null
           kyc_documents?: Json | null
+          mobile_number?: string | null
           phone?: string | null
           updated_at?: string
           user_id?: string
           verified?: boolean | null
+        }
+        Relationships: []
+      }
+      sto_officers: {
+        Row: {
+          approved: boolean | null
+          approved_by: string | null
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          mobile_number: string
+          state: string
+          state_officer_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          approved?: boolean | null
+          approved_by?: string | null
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          mobile_number: string
+          state: string
+          state_officer_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          approved?: boolean | null
+          approved_by?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          mobile_number?: string
+          state?: string
+          state_officer_id?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -627,10 +866,12 @@ export type Database = {
           education: Json | null
           email: string
           employability_score: number | null
+          enrollment_number: string | null
           experience: Json | null
           full_name: string
           gender: string | null
           id: string
+          mobile_number: string | null
           phone: string | null
           placed: boolean | null
           profile_completed: boolean | null
@@ -639,6 +880,7 @@ export type Database = {
           state: string | null
           updated_at: string
           user_id: string
+          year_semester: string | null
         }
         Insert: {
           abc_id: string
@@ -654,10 +896,12 @@ export type Database = {
           education?: Json | null
           email: string
           employability_score?: number | null
+          enrollment_number?: string | null
           experience?: Json | null
           full_name: string
           gender?: string | null
           id?: string
+          mobile_number?: string | null
           phone?: string | null
           placed?: boolean | null
           profile_completed?: boolean | null
@@ -666,6 +910,7 @@ export type Database = {
           state?: string | null
           updated_at?: string
           user_id: string
+          year_semester?: string | null
         }
         Update: {
           abc_id?: string
@@ -681,10 +926,12 @@ export type Database = {
           education?: Json | null
           email?: string
           employability_score?: number | null
+          enrollment_number?: string | null
           experience?: Json | null
           full_name?: string
           gender?: string | null
           id?: string
+          mobile_number?: string | null
           phone?: string | null
           placed?: boolean | null
           profile_completed?: boolean | null
@@ -693,6 +940,7 @@ export type Database = {
           state?: string | null
           updated_at?: string
           user_id?: string
+          year_semester?: string | null
         }
         Relationships: [
           {
