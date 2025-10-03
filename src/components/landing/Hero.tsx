@@ -4,33 +4,34 @@ import { Link } from "react-router-dom";
 
 export const Hero = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-subtle">
-      {/* Background decorative blur */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-hero opacity-20 blur-[120px] rounded-full"></div>
-        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-accent opacity-15 blur-[100px] rounded-full"></div>
-      </div>
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-hero">
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-primary/95"></div>
 
       <div className="container mx-auto px-4 py-32 relative z-10">
         <div className="max-w-5xl mx-auto text-center space-y-8 animate-fade-in">
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-tight">
-            <span className="text-white drop-shadow-lg">Your Path to</span>
-            <br />
-            <span className="bg-gradient-accent bg-clip-text text-transparent drop-shadow-lg">Career Success</span>
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 bg-accent/10 border border-accent/30 rounded-full px-6 py-2 text-accent font-semibold">
+            <Sparkles className="h-4 w-4" />
+            NAAC B++ Accredited
+          </div>
+
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-tight text-white">
+            Excellence in Engineering Education
           </h1>
 
-          <p className="text-lg md:text-xl text-white/90 max-w-3xl mx-auto leading-relaxed drop-shadow">
-            Connect students, recruiters, and institutions on India's most comprehensive career placement platform. Build your future with PragatiPath.
+          <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
+            Shaping Future Engineers with Innovation and Technology
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
-            <Button size="lg" className="bg-white text-foreground hover:bg-white/90 text-lg px-10 h-14 shadow-lg font-semibold" asChild>
+            <Button size="lg" className="bg-accent hover:bg-accent/90 text-white text-lg px-10 h-14 shadow-lg font-semibold" asChild>
               <Link to="/register">
-                Start Your Journey
+                Explore Programs
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
-            <Button size="lg" variant="ghost" className="text-lg px-10 h-14 text-white border-2 border-white/30 hover:bg-white/10 hover:text-white font-semibold backdrop-blur" asChild>
+            <Button size="lg" variant="outline" className="text-lg px-10 h-14 text-white border-2 border-white/30 hover:bg-white/10 hover:text-white font-semibold backdrop-blur" asChild>
               <Link to="/login">Login</Link>
             </Button>
           </div>
@@ -41,12 +42,12 @@ export const Hero = () => {
               { value: "500+", label: "Partner Companies", icon: "🏢" },
               { value: "85%", label: "Placement Rate", icon: "📈" },
             ].map((stat) => (
-              <div key={stat.label} className="bg-white/95 backdrop-blur rounded-2xl p-6 shadow-card hover:shadow-lg transition-shadow">
+              <div key={stat.label} className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 hover:bg-white/20 transition-all">
                 <div className="text-4xl mb-2">{stat.icon}</div>
-                <div className="text-3xl md:text-4xl font-bold bg-gradient-hero bg-clip-text text-transparent mb-1">
+                <div className="text-3xl md:text-4xl font-bold text-white mb-1">
                   {stat.value}
                 </div>
-                <div className="text-sm text-muted-foreground font-medium">{stat.label}</div>
+                <div className="text-sm text-white/70 font-medium">{stat.label}</div>
               </div>
             ))}
           </div>

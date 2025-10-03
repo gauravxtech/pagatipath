@@ -16,14 +16,14 @@ export const Navbar = () => {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b shadow-sm">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-primary/95 backdrop-blur-md border-b border-white/10 shadow-sm">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="p-2 bg-gradient-icon rounded-xl transition-transform group-hover:scale-105 shadow-sm">
+            <div className="p-2 bg-accent rounded-xl transition-transform group-hover:scale-105 shadow-sm">
               <GraduationCap className="h-6 w-6 text-white" />
             </div>
-            <span className="font-bold text-xl text-foreground">PragatiPath</span>
+            <span className="font-bold text-xl text-white">PragatiPath</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -32,7 +32,7 @@ export const Navbar = () => {
               <a
                 key={link.name}
                 href={link.href}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                className="text-sm font-medium text-white/80 hover:text-white transition-colors"
               >
                 {link.name}
               </a>
@@ -42,23 +42,23 @@ export const Navbar = () => {
           <div className="hidden md:flex items-center gap-3">
             {user ? (
               <>
-                <Button variant="ghost" asChild>
+                <Button variant="ghost" className="text-white hover:bg-white/10" asChild>
                   <Link to="/dashboard">
                     <LayoutDashboard className="mr-2 h-4 w-4" />
                     Dashboard
                   </Link>
                 </Button>
-                <Button variant="outline" onClick={signOut}>
+                <Button variant="outline" className="border-white/30 text-white hover:bg-white/10" onClick={signOut}>
                   <LogOut className="mr-2 h-4 w-4" />
                   Sign Out
                 </Button>
               </>
             ) : (
               <>
-                <Button variant="ghost" asChild className="font-semibold">
+                <Button variant="ghost" className="text-white hover:bg-white/10 font-semibold" asChild>
                   <Link to="/login">Login</Link>
                 </Button>
-                <Button asChild className="bg-gradient-hero text-white shadow-md hover:shadow-lg transition-shadow font-semibold">
+                <Button asChild className="bg-accent hover:bg-accent/90 text-white shadow-md hover:shadow-lg transition-shadow font-semibold">
                   <Link to="/register">Get Started</Link>
                 </Button>
               </>
