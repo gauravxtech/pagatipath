@@ -663,6 +663,13 @@ export type Database = {
             foreignKeyName: "opportunities_recruiter_id_fkey"
             columns: ["recruiter_id"]
             isOneToOne: false
+            referencedRelation: "public_recruiters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "opportunities_recruiter_id_fkey"
+            columns: ["recruiter_id"]
+            isOneToOne: false
             referencedRelation: "recruiters"
             referencedColumns: ["id"]
           },
@@ -1035,7 +1042,30 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      public_recruiters: {
+        Row: {
+          company_name: string | null
+          company_website: string | null
+          id: string | null
+          industry: string | null
+          verified: boolean | null
+        }
+        Insert: {
+          company_name?: string | null
+          company_website?: string | null
+          id?: string | null
+          industry?: string | null
+          verified?: boolean | null
+        }
+        Update: {
+          company_name?: string | null
+          company_website?: string | null
+          id?: string | null
+          industry?: string | null
+          verified?: boolean | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       calculate_employability_score: {
