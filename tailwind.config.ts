@@ -109,10 +109,12 @@ export default {
         "gradient-hero": "var(--gradient-hero)",
         "gradient-accent": "var(--gradient-accent)",
         "gradient-subtle": "var(--gradient-subtle)",
+        "gradient-icon": "var(--gradient-icon)",
       },
       boxShadow: {
         soft: "var(--shadow-soft)",
         glow: "var(--shadow-glow)",
+        card: "var(--shadow-card)",
       },
     },
   },
