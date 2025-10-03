@@ -64,20 +64,26 @@ export default function AdminUsers() {
         .update(updateField)
         .eq('user_id', userId);
       
-      if (officerError) throw officerError;
+      if (officerError) {
+        console.error("Officer update error:", officerError);
+        throw officerError;
+      }
       
       const { error: roleError } = await supabase
         .from('user_roles')
         .update({ approved: true })
         .eq('user_id', userId);
       
-      if (roleError) throw roleError;
+      if (roleError) {
+        console.error("Role update error:", roleError);
+        throw roleError;
+      }
       
       toast.success("User approved successfully");
-      fetchAllUsers();
+      await fetchAllUsers();
     } catch (error) {
       toast.error("Failed to approve user");
-      console.error(error);
+      console.error("Approve error:", error);
     }
   };
 
@@ -91,20 +97,26 @@ export default function AdminUsers() {
         .update(updateField)
         .eq('user_id', userId);
       
-      if (officerError) throw officerError;
+      if (officerError) {
+        console.error("Officer deactivate error:", officerError);
+        throw officerError;
+      }
       
       const { error: roleError } = await supabase
         .from('user_roles')
         .update({ approved: false })
         .eq('user_id', userId);
       
-      if (roleError) throw roleError;
+      if (roleError) {
+        console.error("Role deactivate error:", roleError);
+        throw roleError;
+      }
       
       toast.success("User deactivated successfully");
-      fetchAllUsers();
+      await fetchAllUsers();
     } catch (error) {
       toast.error("Failed to deactivate user");
-      console.error(error);
+      console.error("Deactivate error:", error);
     }
   };
 

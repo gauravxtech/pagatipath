@@ -53,14 +53,23 @@ export default function AdminRecruiters() {
     },
   });
 
-  const handleToggleVerification = async (recruiterId: string, currentStatus: boolean) => {
+  const handleToggleVerification = async (recruiterId: string, userId: string, currentStatus: boolean) => {
     try {
-      const { error } = await supabase
+      // Update recruiter verified status
+      const { error: recruiterError } = await supabase
         .from("recruiters")
         .update({ verified: !currentStatus })
         .eq("id", recruiterId);
 
-      if (error) throw error;
+      if (recruiterError) throw recruiterError;
+
+      // Update user_roles approved status
+      const { error: roleError } = await supabase
+        .from("user_roles")
+        .update({ approved: !currentStatus })
+        .eq("user_id", userId);
+
+      if (roleError) throw roleError;
 
       toast({
         title: "Success",
@@ -68,6 +77,7 @@ export default function AdminRecruiters() {
       });
       refetch();
     } catch (error) {
+      console.error("Toggle verification error:", error);
       toast({
         title: "Error",
         description: "Failed to update recruiter status",
@@ -102,7 +112,7 @@ export default function AdminRecruiters() {
         <Button
           size="sm"
           variant={item.verified ? "destructive" : "default"}
-          onClick={() => handleToggleVerification(item.id, item.verified)}
+          onClick={() => handleToggleVerification(item.id, item.user_id, item.verified)}
         >
           {item.verified ? "Disable" : "Approve"}
         </Button>
