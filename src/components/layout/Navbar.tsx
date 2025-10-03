@@ -1,18 +1,16 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { GraduationCap, Menu, LogOut, LayoutDashboard, ChevronDown } from "lucide-react";
+import { Menu, LogOut, LayoutDashboard } from "lucide-react";
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
+import { LoginDialog } from "@/components/auth/LoginDialog";
+import { RegisterDialog } from "@/components/auth/RegisterDialog";
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
+  const [registerOpen, setRegisterOpen] = useState(false);
   const { user, signOut } = useAuth();
 
   const navLinks = [
@@ -25,33 +23,15 @@ export const Navbar = () => {
     { name: "Contact", href: "#contact" },
   ];
 
-  const loginRoles = [
-    { name: "Admin", value: "admin" },
-    { name: "National Training Officer", value: "nto" },
-    { name: "State Training Officer", value: "sto" },
-    { name: "District Training Officer", value: "dto" },
-    { name: "College TPO", value: "college_tpo" },
-    { name: "Recruiter", value: "recruiter" },
-    { name: "Student", value: "student" },
-  ];
-
-  const registerRoles = [
-    { name: "Register as College", value: "college" },
-    { name: "Register as Recruiter", value: "recruiter" },
-    { name: "Register as Student", value: "student" },
-  ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-primary/95 backdrop-blur-md border-b border-white/10 shadow-sm">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="p-2 bg-accent rounded-xl transition-transform group-hover:scale-105 shadow-sm">
-              <GraduationCap className="h-6 w-6 text-white" />
-            </div>
-            <span className="font-bold text-lg text-white hidden lg:block">National Training & Placement Portal</span>
-            <span className="font-bold text-lg text-white lg:hidden">PragatiPath</span>
-          </Link>
+    <>
+      <LoginDialog open={loginOpen} onOpenChange={setLoginOpen} />
+      <RegisterDialog open={registerOpen} onOpenChange={setRegisterOpen} />
+      
+      <nav className="bg-primary/95 backdrop-blur-md border-b border-white/10 shadow-sm sticky top-0 z-40">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-14">
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-6">
@@ -82,39 +62,19 @@ export const Navbar = () => {
               </>
             ) : (
               <>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="text-white hover:bg-white/10 font-semibold">
-                      Login <ChevronDown className="ml-1 h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56 bg-card z-[100]">
-                    {loginRoles.map((role) => (
-                      <DropdownMenuItem key={role.value} asChild>
-                        <Link to="/login" className="cursor-pointer">
-                          {role.name}
-                        </Link>
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button className="bg-accent hover:bg-accent/90 text-white shadow-md hover:shadow-lg transition-shadow font-semibold">
-                      Register <ChevronDown className="ml-1 h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56 bg-card z-[100]">
-                    {registerRoles.map((role) => (
-                      <DropdownMenuItem key={role.value} asChild>
-                        <Link to="/register" className="cursor-pointer">
-                          {role.name}
-                        </Link>
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <Button 
+                  variant="ghost" 
+                  className="text-white hover:bg-white/10 font-semibold"
+                  onClick={() => setLoginOpen(true)}
+                >
+                  Login
+                </Button>
+                <Button 
+                  className="bg-accent hover:bg-accent/90 text-white shadow-md hover:shadow-lg transition-shadow font-semibold"
+                  onClick={() => setRegisterOpen(true)}
+                >
+                  Register
+                </Button>
               </>
             )}
           </div>
@@ -154,42 +114,35 @@ export const Navbar = () => {
                     </>
                   ) : (
                     <>
-                      <div className="mb-3">
-                        <p className="text-sm font-semibold mb-2">Login As:</p>
-                        {loginRoles.map((role) => (
-                          <Button
-                            key={role.value}
-                            variant="ghost"
-                            className="w-full justify-start mb-1"
-                            asChild
-                            onClick={() => setIsOpen(false)}
-                          >
-                            <Link to="/login">{role.name}</Link>
-                          </Button>
-                        ))}
-                      </div>
-                      <div className="border-t pt-3">
-                        <p className="text-sm font-semibold mb-2">Register:</p>
-                        {registerRoles.map((role) => (
-                          <Button
-                            key={role.value}
-                            variant="outline"
-                            className="w-full mb-2"
-                            asChild
-                            onClick={() => setIsOpen(false)}
-                          >
-                            <Link to="/register">{role.name}</Link>
-                          </Button>
-                        ))}
-                      </div>
+                      <Button 
+                        variant="outline" 
+                        className="w-full mb-2"
+                        onClick={() => {
+                          setIsOpen(false);
+                          setLoginOpen(true);
+                        }}
+                      >
+                        Login
+                      </Button>
+                      <Button 
+                        variant="default" 
+                        className="w-full"
+                        onClick={() => {
+                          setIsOpen(false);
+                          setRegisterOpen(true);
+                        }}
+                      >
+                        Register
+                      </Button>
                     </>
                   )}
                 </div>
               </div>
             </SheetContent>
           </Sheet>
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </>
   );
 };

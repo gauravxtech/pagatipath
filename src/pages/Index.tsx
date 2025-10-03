@@ -1,5 +1,6 @@
-import { Navbar } from "@/components/layout/Navbar";
+import { TopBar } from "@/components/layout/TopBar";
 import { Marquee } from "@/components/landing/Marquee";
+import { Navbar } from "@/components/layout/Navbar";
 import { Hero } from "@/components/landing/Hero";
 import { About } from "@/components/landing/About";
 import { Features } from "@/components/landing/Features";
@@ -12,8 +13,9 @@ import { Footer } from "@/components/landing/Footer";
 const Index = () => {
   return (
     <div className="min-h-screen">
-      <Navbar />
+      <TopBar />
       <Marquee />
+      <Navbar />
       <Hero />
       <About />
       <Features />
