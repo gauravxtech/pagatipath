@@ -20,7 +20,7 @@ export default function AdminRecruiters() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("recruiters")
-        .select("*")
+        .select("*, user_id")
         .order("created_at", { ascending: false });
       
       if (error) throw error;
