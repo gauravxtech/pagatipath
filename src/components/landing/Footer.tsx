@@ -22,6 +22,11 @@ export const Footer = () => {
             <h3 className="font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2 text-sm">
               <li>
+                <a href="#about" className="text-muted-foreground hover:text-foreground transition-colors">
+                  About
+                </a>
+              </li>
+              <li>
                 <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">
                   Features
                 </a>
@@ -32,8 +37,8 @@ export const Footer = () => {
                 </a>
               </li>
               <li>
-                <a href="#about" className="text-muted-foreground hover:text-foreground transition-colors">
-                  About Us
+                <a href="#contact" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Contact
                 </a>
               </li>
             </ul>
@@ -79,8 +84,23 @@ export const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
-          <p>© 2025 PragatiPath. All rights reserved. A National Initiative for Student Success.</p>
+        <div className="border-t mt-8 pt-8 text-center space-y-2">
+          <div className="flex justify-center gap-4 text-sm mb-3">
+            <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+              Privacy Policy
+            </a>
+            <span className="text-muted-foreground">|</span>
+            <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+              Terms of Service
+            </a>
+            <span className="text-muted-foreground">|</span>
+            <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+              Feedback
+            </a>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            © 2025 National Training & Placement Portal. All rights reserved. A Government of India Initiative.
+          </p>
         </div>
       </div>
     </footer>
