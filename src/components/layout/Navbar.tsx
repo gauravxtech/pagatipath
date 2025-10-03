@@ -16,14 +16,14 @@ export const Navbar = () => {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b shadow-sm">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="p-2 bg-gradient-icon rounded-xl transition-transform group-hover:scale-105 shadow-sm">
-              <GraduationCap className="h-6 w-6 text-white" />
+            <div className="p-2 bg-gradient-hero rounded-lg transition-transform group-hover:scale-105">
+              <GraduationCap className="h-6 w-6 text-primary-foreground" />
             </div>
-            <span className="font-bold text-xl text-foreground">PragatiPath</span>
+            <span className="font-bold text-xl">PragatiPath</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -55,10 +55,10 @@ export const Navbar = () => {
               </>
             ) : (
               <>
-                <Button variant="ghost" asChild className="font-semibold">
+                <Button variant="ghost" asChild>
                   <Link to="/login">Login</Link>
                 </Button>
-                <Button asChild className="bg-gradient-hero text-white shadow-md hover:shadow-lg transition-shadow font-semibold">
+                <Button asChild className="bg-gradient-hero">
                   <Link to="/register">Get Started</Link>
                 </Button>
               </>
