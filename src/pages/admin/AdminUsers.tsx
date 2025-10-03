@@ -20,6 +20,7 @@ export default function AdminUsers() {
   const [collegeTpos, setCollegeTpos] = useState([]);
   const [deptCoordinators, setDeptCoordinators] = useState([]);
   const [students, setStudents] = useState([]);
+  const [recruiters, setRecruiters] = useState([]);
 
   useEffect(() => {
     fetchAllUsers();
@@ -28,13 +29,14 @@ export default function AdminUsers() {
   const fetchAllUsers = async () => {
     setLoading(true);
     try {
-      const [nto, sto, dto, tpo, dept, studs] = await Promise.all([
+      const [nto, sto, dto, tpo, dept, studs, recs] = await Promise.all([
         supabase.from('nto_officers').select('*'),
         supabase.from('sto_officers').select('*'),
         supabase.from('dto_officers').select('*'),
         supabase.from('college_tpo').select('*'),
         supabase.from('department_coordinators').select('*'),
-        supabase.from('students').select('*')
+        supabase.from('students').select('*'),
+        supabase.from('recruiters').select('*')
       ]);
 
       setNtoOfficers(nto.data || []);
@@ -43,6 +45,7 @@ export default function AdminUsers() {
       setCollegeTpos(tpo.data || []);
       setDeptCoordinators(dept.data || []);
       setStudents(studs.data || []);
+      setRecruiters(recs.data || []);
     } catch (error) {
       toast.error("Failed to fetch users");
       console.error(error);
@@ -53,10 +56,12 @@ export default function AdminUsers() {
 
   const handleApprove = async (userId: string, table: string) => {
     try {
-      // Update both the officer table and user_roles table
+      // Recruiters use 'verified' field, others use 'approved'
+      const updateField = table === 'recruiters' ? { verified: true } : { approved: true };
+      
       const { error: officerError } = await (supabase as any)
         .from(table)
-        .update({ approved: true })
+        .update(updateField)
         .eq('user_id', userId);
       
       if (officerError) throw officerError;
@@ -78,10 +83,12 @@ export default function AdminUsers() {
 
   const handleDeactivate = async (userId: string, table: string) => {
     try {
-      // Update both the officer table and user_roles table
+      // Recruiters use 'verified' field, others use 'approved'
+      const updateField = table === 'recruiters' ? { verified: false } : { approved: false };
+      
       const { error: officerError } = await (supabase as any)
         .from(table)
-        .update({ approved: false })
+        .update(updateField)
         .eq('user_id', userId);
       
       if (officerError) throw officerError;
@@ -108,7 +115,8 @@ export default function AdminUsers() {
       dto: dtoOfficers,
       tpo: collegeTpos,
       dept: deptCoordinators,
-      students: students
+      students: students,
+      recruiters: recruiters
     };
     
     const dataStr = JSON.stringify(allData, null, 2);
@@ -128,7 +136,8 @@ export default function AdminUsers() {
       render: (item: any) => {
         const value = item[key.toLowerCase().replace(/\s+/g, '_')];
         if (key.toLowerCase() === 'status') {
-          return item.approved ? <Badge>Active</Badge> : <Badge variant="secondary">Pending</Badge>;
+          const isActive = tableName === 'recruiters' ? item.verified : item.approved;
+          return isActive ? <Badge>Active</Badge> : <Badge variant="secondary">Pending</Badge>;
         }
         return value || 'N/A';
       }
@@ -137,20 +146,23 @@ export default function AdminUsers() {
     columns.push({
       key: 'actions',
       label: 'Actions',
-      render: (item: any) => (
-        <div className="flex gap-2">
-          {!item.approved && (
-            <Button size="sm" onClick={() => handleApprove(item.user_id, tableName)}>
-              Approve
-            </Button>
-          )}
-          {item.approved && (
-            <Button size="sm" variant="outline" onClick={() => handleDeactivate(item.user_id, tableName)}>
-              Deactivate
-            </Button>
-          )}
-        </div>
-      )
+      render: (item: any) => {
+        const isActive = tableName === 'recruiters' ? item.verified : item.approved;
+        return (
+          <div className="flex gap-2">
+            {!isActive && (
+              <Button size="sm" onClick={() => handleApprove(item.user_id, tableName)}>
+                Approve
+              </Button>
+            )}
+            {isActive && (
+              <Button size="sm" variant="outline" onClick={() => handleDeactivate(item.user_id, tableName)}>
+                Deactivate
+              </Button>
+            )}
+          </div>
+        );
+      }
     });
     
     return <DataTable data={data} columns={columns} searchable searchPlaceholder="Search..." />;
@@ -195,6 +207,7 @@ export default function AdminUsers() {
             <TabsTrigger value="dto">DTO ({dtoOfficers.length})</TabsTrigger>
             <TabsTrigger value="tpo">College TPO ({collegeTpos.length})</TabsTrigger>
             <TabsTrigger value="dept">Dept Coordinators ({deptCoordinators.length})</TabsTrigger>
+            <TabsTrigger value="recruiters">Recruiters ({recruiters.length})</TabsTrigger>
             <TabsTrigger value="students">Students ({students.length})</TabsTrigger>
           </TabsList>
 
@@ -254,6 +267,18 @@ export default function AdminUsers() {
               </CardHeader>
               <CardContent>
                 {renderUserTable(deptCoordinators, ['Coordinator Name', 'Email', 'Department Name', 'Status'], 'department_coordinators')}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="recruiters">
+            <Card>
+              <CardHeader>
+                <CardTitle>Recruiters</CardTitle>
+                <CardDescription>Manage recruiter accounts</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {renderUserTable(recruiters, ['Company Name', 'Contact Person', 'Email', 'Industry', 'Status'], 'recruiters')}
               </CardContent>
             </Card>
           </TabsContent>
