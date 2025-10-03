@@ -25,7 +25,7 @@ export default function AdminDashboard() {
 
   const fetchDashboardStats = async () => {
     try {
-      const [students, colleges, nto, sto, dto, tpo, dept, recruiters, pendingRoles] = await Promise.all([
+      const [students, colleges, nto, sto, dto, tpo, dept, pendingRoles] = await Promise.all([
         supabase.from('students').select('id', { count: 'exact', head: true }),
         supabase.from('colleges').select('id', { count: 'exact', head: true }),
         supabase.from('nto_officers').select('id', { count: 'exact', head: true }),
@@ -33,7 +33,6 @@ export default function AdminDashboard() {
         supabase.from('dto_officers').select('id', { count: 'exact', head: true }),
         supabase.from('college_tpo').select('id', { count: 'exact', head: true }),
         supabase.from('department_coordinators').select('id', { count: 'exact', head: true }),
-        supabase.from('recruiters').select('id', { count: 'exact', head: true }),
         supabase.from('user_roles').select('id', { count: 'exact', head: true }).eq('approved', false),
       ]);
 
@@ -47,13 +46,12 @@ export default function AdminDashboard() {
           sto: sto.count,
           dto: dto.count,
           tpo: tpo.count,
-          dept: dept.count,
-          recruiters: recruiters.count
+          dept: dept.count
         }
       });
 
       const totalOfficers = (nto.count || 0) + (sto.count || 0) + (dto.count || 0);
-      const totalUsers = (students.count || 0) + totalOfficers + (tpo.count || 0) + (dept.count || 0) + (recruiters.count || 0);
+      const totalUsers = (students.count || 0) + totalOfficers + (tpo.count || 0) + (dept.count || 0);
 
       setStats({
         totalUsers,
