@@ -17,6 +17,9 @@ const Dashboard = () => {
       }
 
       try {
+        // Force refresh the session to get latest data
+        await supabase.auth.refreshSession();
+        
         // Get user role from user_roles table with approval status
         // Use maybeSingle to avoid errors and bypass any caching
         const { data: userRole, error } = await supabase
@@ -24,6 +27,26 @@ const Dashboard = () => {
           .select('role, approved')
           .eq('user_id', user.id)
           .maybeSingle();
+
+        // Also check recruiter table for additional verification
+        if (userRole?.role === 'recruiter') {
+          const { data: recruiterData } = await supabase
+            .from('recruiters')
+            .select('verified')
+            .eq('user_id', user.id)
+            .maybeSingle();
+          
+          console.log('Dashboard - Recruiter verification check:', { 
+            userRoleApproved: userRole.approved, 
+            recruiterVerified: recruiterData?.verified 
+          });
+          
+          // Use recruiter verification status if it's more recent
+          if (recruiterData && recruiterData.verified !== userRole.approved) {
+            console.log('Dashboard - Using recruiter verification status as it differs from user_roles');
+            userRole.approved = recruiterData.verified;
+          }
+        }
 
         console.log('Dashboard - User role check:', { userRole, error });
 

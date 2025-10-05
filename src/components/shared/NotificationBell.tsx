@@ -64,10 +64,10 @@ export function NotificationBell() {
       .order('created_at', { ascending: false })
       .limit(10);
 
-      if (data) {
-        setNotifications(data as Notification[]);
-        setUnreadCount(data.filter((n) => !n.read).length);
-      }
+    if (data) {
+      setNotifications(data as Notification[]);
+      setUnreadCount(data.filter((n) => !n.read).length);
+    }
   };
 
   const markAsRead = async (id: string) => {
@@ -88,43 +88,43 @@ export function NotificationBell() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="relative">
+        <Button variant="ghost" size="icon" className="relative text-white hover:bg-white/10 dark:text-white dark:hover:bg-white/10">
           <Bell className="h-5 w-5" />
           {unreadCount > 0 && (
             <Badge
-              variant="destructive"
-              className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+              className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-accent hover:bg-accent/90 text-white border-0"
             >
               {unreadCount}
             </Badge>
           )}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-80">
-        <div className="p-2">
-          <h3 className="font-semibold mb-2">Notifications</h3>
+      <DropdownMenuContent align="end" className="w-80 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-soft">
+        <div className="p-4">
+          <h3 className="font-semibold mb-3 text-gray-800 dark:text-gray-200">Notifications</h3>
           {notifications.length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-4">
+            <p className="text-sm text-gray-600 dark:text-gray-400 text-center py-6">
               No notifications
             </p>
           ) : (
-            <div className="space-y-1">
+            <div className="space-y-2">
               {notifications.map((notification) => (
                 <DropdownMenuItem
                   key={notification.id}
                   onClick={() => handleNotificationClick(notification)}
-                  className={`flex flex-col items-start p-3 cursor-pointer ${
-                    !notification.read ? 'bg-muted' : ''
-                  }`}
+                  className={`flex flex-col items-start p-3 cursor-pointer rounded-lg transition-colors ${!notification.read
+                    ? 'bg-accent/10 dark:bg-accent/20 border border-accent/20'
+                    : 'hover:bg-gray-50 dark:hover:bg-gray-700'
+                    }`}
                 >
                   <div className="flex justify-between w-full mb-1">
-                    <span className="font-semibold text-sm">{notification.title}</span>
+                    <span className="font-semibold text-sm text-gray-800 dark:text-gray-200">{notification.title}</span>
                     {!notification.read && (
-                      <Badge variant="default" className="ml-2 h-2 w-2 p-0 rounded-full" />
+                      <div className="ml-2 h-2 w-2 bg-accent rounded-full" />
                     )}
                   </div>
-                  <p className="text-xs text-muted-foreground">{notification.message}</p>
-                  <span className="text-xs text-muted-foreground mt-1">
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{notification.message}</p>
+                  <span className="text-xs text-gray-500 dark:text-gray-500 mt-1">
                     {new Date(notification.created_at).toLocaleDateString()}
                   </span>
                 </DropdownMenuItem>

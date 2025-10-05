@@ -64,51 +64,52 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 220 45% 15%;
+    --background: 220 45% 8%;
     --foreground: 210 40% 98%;
 
-    --card: 220 40% 18%;
+    --card: 220 40% 12%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 220 45% 15%;
+    --popover: 220 40% 12%;
     --popover-foreground: 210 40% 98%;
 
     --primary: 220 45% 15%;
     --primary-foreground: 0 0% 100%;
     --primary-glow: 220 50% 25%;
 
-    --secondary: 220 40% 20%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 220 40% 15%;
+    --secondary-foreground: 210 40% 98%;
 
     --accent: 20 95% 55%;
     --accent-foreground: 0 0% 100%;
 
-    --muted: 220 40% 18%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 220 40% 15%;
+    --muted-foreground: 215 20% 70%;
 
-    --destructive: 0 63% 31%;
+    --destructive: 0 63% 50%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 220 40% 25%;
-    --input: 220 40% 25%;
+    --border: 220 40% 20%;
+    --input: 220 40% 20%;
     --ring: 20 95% 55%;
 
     --gradient-hero: linear-gradient(135deg, hsl(220 45% 15%) 0%, hsl(220 50% 20%) 100%);
     --gradient-accent: linear-gradient(135deg, hsl(20 95% 55%) 0%, hsl(30 95% 60%) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(220 45% 15%) 0%, hsl(220 50% 18%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(220 45% 8%) 0%, hsl(220 50% 12%) 100%);
     --gradient-icon: linear-gradient(135deg, hsl(20 95% 55%) 0%, hsl(25 95% 60%) 100%);
 
-    --shadow-soft: 0 4px 20px -2px hsl(0 0% 0% / 0.5);
-    --shadow-glow: 0 0 40px hsl(20 95% 55% / 0.3);
+    --shadow-soft: 0 4px 20px -2px hsl(0 0% 0% / 0.7);
+    --shadow-glow: 0 0 40px hsl(20 95% 55% / 0.4);
+    --shadow-card: 0 2px 8px hsl(0 0% 0% / 0.3);
 
-    --sidebar-background: 240 6% 10%;
+    --sidebar-background: 220 40% 10%;
     --sidebar-foreground: 240 5% 96%;
-    --sidebar-primary: 220 80% 60%;
+    --sidebar-primary: 20 95% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 4% 16%;
+    --sidebar-accent: 220 40% 15%;
     --sidebar-accent-foreground: 240 5% 96%;
-    --sidebar-border: 240 4% 16%;
-    --sidebar-ring: 220 80% 60%;
+    --sidebar-border: 220 40% 20%;
+    --sidebar-ring: 20 95% 55%;
   }
 }
 
@@ -119,5 +120,14 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
   }
 }

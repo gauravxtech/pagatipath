@@ -6,8 +6,10 @@ import { StatsCard } from "@/components/analytics/StatsCard";
 import { Users, GraduationCap, Building2, UserCheck, AlertCircle, TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
+import { useTranslation } from "react-i18next";
 
 export default function AdminDashboard() {
+  const { t } = useTranslation();
   const [stats, setStats] = useState({
     totalUsers: 0,
     totalColleges: 0,
@@ -71,9 +73,9 @@ export default function AdminDashboard() {
   };
 
   const roleDistribution = [
-    { name: 'Students', value: stats.totalStudents, color: '#3b82f6' },
-    { name: 'Officers', value: stats.totalOfficers, color: '#10b981' },
-    { name: 'Colleges', value: stats.totalColleges, color: '#f59e0b' },
+    { name: 'Students', value: stats.totalStudents, color: 'hsl(220 45% 15%)' },
+    { name: 'Officers', value: stats.totalOfficers, color: 'hsl(20 95% 55%)' },
+    { name: 'Colleges', value: stats.totalColleges, color: 'hsl(25 95% 60%)' },
   ];
 
   const monthlyTrend = [
@@ -88,79 +90,92 @@ export default function AdminDashboard() {
   return (
     <DashboardLayout sidebar={<AdminSidebar />}>
       <div className="space-y-8">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Admin Dashboard</h1>
-          <p className="text-muted-foreground">System overview and key performance indicators</p>
+        <div className="bg-white dark:bg-card rounded-xl p-6 shadow-soft border border-gray-100 dark:border-border">
+          <h1 className="text-3xl font-bold tracking-tight text-gray-800 dark:text-foreground">{t('admin.adminDashboard')}</h1>
+          <p className="text-gray-600 dark:text-muted-foreground mt-2">{t('admin.systemOverview')}</p>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <StatsCard
-            title="Total Registered Users"
+            title={t('admin.totalRegisteredUsers')}
             value={stats.totalUsers}
-            description="All roles combined"
+            description={t('admin.allRolesCombined')}
             icon={Users}
-            trend={{ value: 12, label: 'from last month' }}
+            trend={{ value: 12, label: t('admin.fromLastMonth') }}
           />
           <StatsCard
-            title="Total Colleges"
+            title={t('admin.totalColleges')}
             value={stats.totalColleges}
-            description="Registered institutions"
+            description={t('admin.registeredInstitutions')}
             icon={Building2}
-            trend={{ value: 5, label: 'from last month' }}
+            trend={{ value: 5, label: t('admin.fromLastMonth') }}
           />
           <StatsCard
-            title="Total Students"
+            title={t('admin.totalStudents')}
             value={stats.totalStudents}
-            description="Active learners"
+            description={t('admin.activeLearners')}
             icon={GraduationCap}
-            trend={{ value: 18, label: 'from last month' }}
+            trend={{ value: 18, label: t('admin.fromLastMonth') }}
           />
           <StatsCard
-            title="Training Officers"
+            title={t('admin.trainingOfficers')}
             value={stats.totalOfficers}
-            description="NTO, STO, DTO combined"
+            description={t('admin.ntoStoDtoCombined')}
             icon={UserCheck}
-            trend={{ value: 3, label: 'from last month' }}
+            trend={{ value: 3, label: t('admin.fromLastMonth') }}
           />
           <StatsCard
-            title="Pending Approvals"
+            title={t('admin.pendingApprovals')}
             value={stats.pendingApprovals}
-            description="Awaiting review"
+            description={t('admin.awaitingReview')}
             icon={AlertCircle}
           />
           <StatsCard
-            title="Active Users"
+            title={t('admin.activeUsers')}
             value={stats.activeUsers}
-            description="Currently online"
+            description={t('admin.currentlyOnline')}
             icon={TrendingUp}
-            trend={{ value: 8, label: 'from last hour' }}
+            trend={{ value: 8, label: t('admin.fromLastHour') }}
           />
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>User Registration Trend</CardTitle>
-              <CardDescription>Monthly user growth over time</CardDescription>
+        <div className="grid gap-6 md:grid-cols-2">
+          <Card className="bg-white dark:bg-card shadow-soft border border-gray-100 dark:border-border">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg font-semibold text-gray-800 dark:text-foreground">User Registration Trend</CardTitle>
+              <CardDescription className="text-gray-600 dark:text-muted-foreground">Monthly user growth over time</CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={monthlyTrend}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <Tooltip />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                  <XAxis dataKey="month" stroke="#64748b" fontSize={12} />
+                  <YAxis stroke="#64748b" fontSize={12} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'white',
+                      border: '1px solid #e2e8f0',
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
+                    }}
+                  />
                   <Legend />
-                  <Line type="monotone" dataKey="users" stroke="#3b82f6" strokeWidth={2} />
+                  <Line
+                    type="monotone"
+                    dataKey="users"
+                    stroke="hsl(20 95% 55%)"
+                    strokeWidth={3}
+                    dot={{ fill: 'hsl(20 95% 55%)', strokeWidth: 2, r: 4 }}
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Role-wise Distribution</CardTitle>
-              <CardDescription>User breakdown by role</CardDescription>
+          <Card className="bg-white dark:bg-card shadow-soft border border-gray-100 dark:border-border">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg font-semibold text-gray-800 dark:text-foreground">Role-wise Distribution</CardTitle>
+              <CardDescription className="text-gray-600 dark:text-muted-foreground">User breakdown by role</CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
@@ -179,40 +194,53 @@ export default function AdminDashboard() {
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'white',
+                      border: '1px solid #e2e8f0',
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
+                    }}
+                  />
                 </PieChart>
               </ResponsiveContainer>
             </CardContent>
           </Card>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>Latest system events and user actions</CardDescription>
+        <Card className="bg-white dark:bg-card shadow-soft border border-gray-100 dark:border-border">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-lg font-semibold text-gray-800 dark:text-foreground">Recent Activity</CardTitle>
+            <CardDescription className="text-gray-600 dark:text-muted-foreground">Latest system events and user actions</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="flex items-center justify-between border-b pb-2">
-                <div className="flex items-center gap-2">
-                  <UserCheck className="h-4 w-4 text-green-500" />
-                  <span className="text-sm">New student registered</span>
+              <div className="flex items-center justify-between border-b border-gray-100 dark:border-border pb-3">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                    <UserCheck className="h-4 w-4 text-green-600 dark:text-green-400" />
+                  </div>
+                  <span className="text-sm font-medium text-gray-700 dark:text-foreground">New student registered</span>
                 </div>
-                <span className="text-xs text-muted-foreground">2 minutes ago</span>
+                <span className="text-xs text-gray-500 dark:text-muted-foreground font-medium">2 minutes ago</span>
               </div>
-              <div className="flex items-center justify-between border-b pb-2">
-                <div className="flex items-center gap-2">
-                  <Building2 className="h-4 w-4 text-blue-500" />
-                  <span className="text-sm">College approved</span>
+              <div className="flex items-center justify-between border-b border-gray-100 dark:border-border pb-3">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                    <Building2 className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <span className="text-sm font-medium text-gray-700 dark:text-foreground">College approved</span>
                 </div>
-                <span className="text-xs text-muted-foreground">1 hour ago</span>
+                <span className="text-xs text-gray-500 dark:text-muted-foreground font-medium">1 hour ago</span>
               </div>
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <AlertCircle className="h-4 w-4 text-orange-500" />
-                  <span className="text-sm">Pending approval for TPO</span>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+                    <AlertCircle className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+                  </div>
+                  <span className="text-sm font-medium text-gray-700 dark:text-foreground">Pending approval for TPO</span>
                 </div>
-                <span className="text-xs text-muted-foreground">3 hours ago</span>
+                <span className="text-xs text-gray-500 dark:text-muted-foreground font-medium">3 hours ago</span>
               </div>
             </div>
           </CardContent>

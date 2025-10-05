@@ -92,7 +92,7 @@ const App = () => (
             <Route path="/register" element={<Register />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/pending-approval" element={<PendingApproval />} />
-            
+
             {/* Student Routes */}
             <Route path="/student/dashboard" element={<StudentDashboard />} />
             <Route path="/student/profile" element={<StudentProfile />} />
@@ -101,7 +101,7 @@ const App = () => (
             <Route path="/student/applications" element={<StudentApplications />} />
             <Route path="/student/certificates" element={<StudentCertificates />} />
             <Route path="/student/support" element={<StudentSupport />} />
-            
+
             {/* Recruiter Routes */}
             <Route path="/recruiter/dashboard" element={<RecruiterDashboard />} />
             <Route path="/recruiter/jobs" element={<RecruiterJobs />} />
@@ -113,10 +113,10 @@ const App = () => (
             <Route path="/recruiter/notifications" element={<RecruiterNotifications />} />
             <Route path="/recruiter/audit" element={<RecruiterAudit />} />
             <Route path="/recruiter/settings" element={<RecruiterSettings />} />
-            
+
             {/* College Routes */}
             <Route path="/college/dashboard" element={<CollegeDashboard />} />
-            
+
             {/* College TPO Routes */}
             <Route path="/clg-tpo/dashboard" element={<CollegeTPODashboard />} />
             <Route path="/clg-tpo/departments" element={<CollegeTPODepartments />} />
@@ -128,10 +128,10 @@ const App = () => (
             <Route path="/clg-tpo/notifications" element={<CollegeTPONotifications />} />
             <Route path="/clg-tpo/audit" element={<CollegeTPOAudit />} />
             <Route path="/clg-tpo/settings" element={<CollegeTPOSettings />} />
-            
+
             {/* Department Routes */}
             <Route path="/department/dashboard" element={<DepartmentDashboard />} />
-            
+
             {/* DTO Routes */}
             <Route path="/dto/dashboard" element={<DTODashboard />} />
             <Route path="/dto/colleges" element={<DTOColleges />} />
@@ -142,7 +142,7 @@ const App = () => (
             <Route path="/dto/notifications" element={<DTONotifications />} />
             <Route path="/dto/audit" element={<DTOAudit />} />
             <Route path="/dto/settings" element={<DTOSettings />} />
-            
+
             {/* STO Routes */}
             <Route path="/sto/dashboard" element={<STODashboard />} />
             <Route path="/sto/districts" element={<STODistricts />} />
@@ -152,7 +152,7 @@ const App = () => (
             <Route path="/sto/reports" element={<STOReports />} />
             <Route path="/sto/analytics" element={<STOAnalytics />} />
             <Route path="/sto/settings" element={<STOSettings />} />
-            
+
             {/* NTO Routes */}
             <Route path="/nto/dashboard" element={<NTODashboard />} />
             <Route path="/nto/states" element={<NTOStates />} />
@@ -163,7 +163,7 @@ const App = () => (
             <Route path="/nto/notifications" element={<NTONotifications />} />
             <Route path="/nto/audit" element={<NTOAudit />} />
             <Route path="/nto/settings" element={<NTOSettings />} />
-            
+
             {/* Admin Routes */}
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/users" element={<AdminUsers />} />
@@ -175,14 +175,14 @@ const App = () => (
             <Route path="/admin/access" element={<AdminAccess />} />
             <Route path="/admin/settings" element={<AdminSettings />} />
             <Route path="/admin/help" element={<AdminHelp />} />
-            
+
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
-  </QueryClientProvider>
+  </QueryClientProvider >
 );
 
 export default App;

@@ -7,11 +7,11 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  GraduationCap, 
-  LogOut, 
-  FileText, 
-  Briefcase, 
+import {
+  GraduationCap,
+  LogOut,
+  FileText,
+  Briefcase,
   Award,
   TrendingUp,
   Calendar,
@@ -37,7 +37,7 @@ const StudentDashboard = () => {
   const fetchStudentData = async () => {
     try {
       setLoading(true);
-      
+
       // Fetch student profile
       const { data: student, error: studentError } = await supabase
         .from('students')
@@ -134,16 +134,19 @@ const StudentDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
-      <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+      <nav className="border-b bg-primary/95 backdrop-blur supports-[backdrop-filter]:bg-primary/90 sticky top-0 z-50 shadow-soft">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="p-2 bg-gradient-hero rounded-lg">
-              <GraduationCap className="h-6 w-6 text-primary-foreground" />
+          <Link to="/" className="flex items-center gap-3">
+            <div className="p-2 bg-gradient-to-r from-accent to-orange-500 rounded-xl shadow-lg">
+              <GraduationCap className="h-6 w-6 text-white" />
             </div>
-            <span className="font-bold text-xl">PragatiPath</span>
+            <div>
+              <span className="font-bold text-xl text-white">PragatiPath</span>
+              <p className="text-xs text-white/80 hidden sm:block">National Training & Placement Portal</p>
+            </div>
           </Link>
-          
-          <Button variant="outline" onClick={signOut}>
+
+          <Button variant="outline" onClick={signOut} className="border-white/30 text-white hover:bg-white/10">
             <LogOut className="mr-2 h-4 w-4" />
             Sign Out
           </Button>
@@ -152,80 +155,90 @@ const StudentDashboard = () => {
 
       <main className="container mx-auto px-4 py-8">
         {/* Header Section */}
-        <div className="flex items-start gap-6 mb-8">
-          <Avatar className="h-24 w-24">
-            <AvatarFallback className="bg-gradient-hero text-primary-foreground text-2xl">
-              {getInitials(studentData?.full_name)}
-            </AvatarFallback>
-          </Avatar>
-          <div className="flex-1">
-            <h1 className="text-3xl font-bold mb-1">{studentData?.full_name}</h1>
-            <p className="text-muted-foreground mb-2">{studentData?.email}</p>
-            <div className="flex flex-wrap gap-2">
-              <Badge variant="secondary">{studentData?.abc_id}</Badge>
-              {studentData?.colleges && (
-                <Badge variant="outline">{studentData.colleges.name}</Badge>
-              )}
-              {studentData?.departments && (
-                <Badge variant="outline">{studentData.departments.name}</Badge>
-              )}
-              {studentData?.placed && <Badge className="bg-green-500">Placed</Badge>}
+        <div className="bg-white rounded-xl p-6 shadow-soft border border-gray-100 mb-8">
+          <div className="flex items-start gap-6">
+            <Avatar className="h-24 w-24">
+              <AvatarFallback className="bg-gradient-to-r from-accent to-orange-500 text-white text-2xl font-semibold">
+                {getInitials(studentData?.full_name)}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex-1">
+              <h1 className="text-3xl font-bold mb-1 text-gray-800">{studentData?.full_name}</h1>
+              <p className="text-gray-600 mb-3">{studentData?.email}</p>
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="secondary" className="bg-primary/10 text-primary">{studentData?.abc_id}</Badge>
+                {studentData?.colleges && (
+                  <Badge variant="outline" className="border-gray-200">{studentData.colleges.name}</Badge>
+                )}
+                {studentData?.departments && (
+                  <Badge variant="outline" className="border-gray-200">{studentData.departments.name}</Badge>
+                )}
+                {studentData?.placed && <Badge className="bg-green-500 hover:bg-green-600">Placed</Badge>}
+              </div>
             </div>
-          </div>
-          <div className="text-right">
-            <div className="text-sm text-muted-foreground mb-1">Employability Score</div>
-            <div className="text-4xl font-bold text-primary">{studentData?.employability_score}/100</div>
-            <Progress value={studentData?.employability_score || 0} className="w-32 mt-2" />
+            <div className="text-right bg-gradient-subtle p-4 rounded-lg">
+              <div className="text-sm text-gray-600 mb-1 font-medium">Employability Score</div>
+              <div className="text-4xl font-bold text-primary">{studentData?.employability_score}/100</div>
+              <Progress value={studentData?.employability_score || 0} className="w-32 mt-2" />
+            </div>
           </div>
         </div>
 
         {/* Stats Cards */}
         <div className="grid gap-6 md:grid-cols-4 mb-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Applications</CardTitle>
-              <Briefcase className="h-4 w-4 text-muted-foreground" />
+          <Card className="bg-white shadow-soft border border-gray-100 hover:shadow-card transition-shadow duration-200">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardTitle className="text-sm font-semibold text-gray-700">Applications</CardTitle>
+              <div className="p-2 bg-gradient-to-r from-accent/10 to-orange-500/10 rounded-lg">
+                <Briefcase className="h-5 w-5 text-accent" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{applications.length}</div>
-              <p className="text-xs text-muted-foreground">Total submitted</p>
+              <div className="text-2xl md:text-3xl font-bold text-gray-800 mb-1">{applications.length}</div>
+              <p className="text-sm text-gray-600 font-medium">Total submitted</p>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">In Review</CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          <Card className="bg-white shadow-soft border border-gray-100 hover:shadow-card transition-shadow duration-200">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardTitle className="text-sm font-semibold text-gray-700">In Review</CardTitle>
+              <div className="p-2 bg-gradient-to-r from-accent/10 to-orange-500/10 rounded-lg">
+                <TrendingUp className="h-5 w-5 text-accent" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
+              <div className="text-2xl md:text-3xl font-bold text-gray-800 mb-1">
                 {applications.filter(a => ['under_review', 'interview_scheduled', 'interviewed'].includes(a.status)).length}
               </div>
-              <p className="text-xs text-muted-foreground">Active applications</p>
+              <p className="text-sm text-gray-600 font-medium">Active applications</p>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Certificates</CardTitle>
-              <Award className="h-4 w-4 text-muted-foreground" />
+          <Card className="bg-white shadow-soft border border-gray-100 hover:shadow-card transition-shadow duration-200">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardTitle className="text-sm font-semibold text-gray-700">Certificates</CardTitle>
+              <div className="p-2 bg-gradient-to-r from-accent/10 to-orange-500/10 rounded-lg">
+                <Award className="h-5 w-5 text-accent" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{certificates.length}</div>
-              <p className="text-xs text-muted-foreground">Earned certificates</p>
+              <div className="text-2xl md:text-3xl font-bold text-gray-800 mb-1">{certificates.length}</div>
+              <p className="text-sm text-gray-600 font-medium">Earned certificates</p>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Profile</CardTitle>
-              <FileText className="h-4 w-4 text-muted-foreground" />
+          <Card className="bg-white shadow-soft border border-gray-100 hover:shadow-card transition-shadow duration-200">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardTitle className="text-sm font-semibold text-gray-700">Profile</CardTitle>
+              <div className="p-2 bg-gradient-to-r from-accent/10 to-orange-500/10 rounded-lg">
+                <FileText className="h-5 w-5 text-accent" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
+              <div className="text-2xl md:text-3xl font-bold text-gray-800 mb-1">
                 {studentData?.profile_completed ? 'Complete' : 'Incomplete'}
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-sm text-gray-600 font-medium">
                 {studentData?.profile_completed ? 'Ready to apply' : 'Complete your profile'}
               </p>
             </CardContent>
@@ -296,7 +309,7 @@ const StudentDashboard = () => {
           <TabsContent value="opportunities" className="space-y-4">
             {opportunities.map((opp) => {
               const alreadyApplied = applications.some(a => a.opportunity_id === opp.id);
-              
+
               return (
                 <Card key={opp.id}>
                   <CardHeader>
@@ -313,7 +326,7 @@ const StudentDashboard = () => {
                   <CardContent>
                     <div className="space-y-4">
                       <p className="text-sm">{opp.description}</p>
-                      
+
                       <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                         {opp.location && (
                           <div className="flex items-center gap-1">
@@ -344,7 +357,7 @@ const StudentDashboard = () => {
                       )}
 
                       <div className="flex gap-2">
-                        <Button 
+                        <Button
                           onClick={() => applyToOpportunity(opp.id)}
                           disabled={alreadyApplied || !studentData?.profile_completed}
                         >

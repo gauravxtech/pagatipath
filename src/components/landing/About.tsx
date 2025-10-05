@@ -6,7 +6,7 @@ export const About = () => {
     {
       icon: Target,
       title: "Our Mission",
-      description: "To create a unified national platform connecting students, colleges, and recruiters seamlessly.",
+      description: "One Nation. One Vision. To create a unified national platform for seamless training and placement.",
     },
     {
       icon: Users,
@@ -21,20 +21,20 @@ export const About = () => {
     {
       icon: TrendingUp,
       title: "Nationwide Reach",
-      description: "Connecting opportunities across India from tier-1 to tier-3 cities and beyond.",
+      description: "One Platform. One Network. Connecting opportunities across India from tier-1 to tier-3 cities and beyond.",
     },
   ];
 
   return (
-    <section id="about" className="py-24 bg-background">
+    <section id="about" className="py-16 md:py-24 bg-background">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16 space-y-4">
-          <h2 className="text-4xl md:text-5xl font-bold">
+        <div className="text-center mb-12 md:mb-16 space-y-4">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold">
             About the System
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            A revolutionary government initiative bridging the gap between education and employment. 
-            One platform connecting students, colleges, and recruiters across the nation.
+          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+            Connecting talent to opportunity. The national placement bridge.
+            A revolutionary government initiative unifying education and employment across India.
           </p>
         </div>
 
@@ -59,22 +59,22 @@ export const About = () => {
           ))}
         </div>
 
-        <div className="bg-gradient-subtle rounded-3xl p-8 md:p-12 max-w-5xl mx-auto shadow-glow">
-          <h3 className="text-2xl md:text-3xl font-bold mb-6 text-center">
+        <div className="bg-gradient-subtle rounded-3xl p-6 md:p-8 lg:p-12 max-w-5xl mx-auto shadow-glow">
+          <h3 className="text-xl md:text-2xl lg:text-3xl font-bold mb-6 text-center">
             How We Make a Difference
           </h3>
-          <div className="grid md:grid-cols-3 gap-8 text-center">
+          <div className="grid md:grid-cols-3 gap-6 md:gap-8 text-center">
             <div>
-              <div className="text-4xl font-bold text-accent mb-2">10,000+</div>
-              <p className="text-muted-foreground">Students Placed</p>
+              <div className="text-3xl md:text-4xl font-bold text-accent mb-2">10,000+</div>
+              <p className="text-sm md:text-base text-muted-foreground">Students Placed</p>
             </div>
             <div>
-              <div className="text-4xl font-bold text-accent mb-2">500+</div>
-              <p className="text-muted-foreground">Partner Colleges</p>
+              <div className="text-3xl md:text-4xl font-bold text-accent mb-2">500+</div>
+              <p className="text-sm md:text-base text-muted-foreground">Partner Colleges</p>
             </div>
             <div>
-              <div className="text-4xl font-bold text-accent mb-2">1,000+</div>
-              <p className="text-muted-foreground">Registered Recruiters</p>
+              <div className="text-3xl md:text-4xl font-bold text-accent mb-2">1,000+</div>
+              <p className="text-sm md:text-base text-muted-foreground">Registered Recruiters</p>
             </div>
           </div>
         </div>

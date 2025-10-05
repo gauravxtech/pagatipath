@@ -20,9 +20,9 @@ export default function AdminRecruiters() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("recruiters")
-        .select("*")
+        .select("*, user_id")
         .order("created_at", { ascending: false });
-      
+
       if (error) throw error;
       return data;
     },
@@ -34,11 +34,11 @@ export default function AdminRecruiters() {
       const { data: recruitersData } = await supabase
         .from("recruiters")
         .select("id, verified");
-      
+
       const { data: jobsData } = await supabase
         .from("opportunities")
         .select("recruiter_id");
-      
+
       const { data: hiresData } = await supabase
         .from("applications")
         .select("id")
@@ -55,25 +55,22 @@ export default function AdminRecruiters() {
 
   const handleToggleVerification = async (recruiterId: string, userId: string, currentStatus: boolean) => {
     try {
-      // Update recruiter verified status
+      const currentUser = await supabase.auth.getUser();
+
+      // Update recruiter verified status - the database trigger will sync user_roles automatically
       const { error: recruiterError } = await supabase
         .from("recruiters")
-        .update({ verified: !currentStatus })
+        .update({
+          verified: !currentStatus,
+          approved_by: !currentStatus ? currentUser.data.user?.id : null
+        })
         .eq("id", recruiterId);
 
       if (recruiterError) throw recruiterError;
 
-      // Update user_roles approved status
-      const { error: roleError } = await supabase
-        .from("user_roles")
-        .update({ approved: !currentStatus })
-        .eq("user_id", userId);
-
-      if (roleError) throw roleError;
-
       toast({
         title: "Success",
-        description: `Recruiter ${!currentStatus ? "verified" : "disabled"} successfully`,
+        description: `Recruiter ${!currentStatus ? "approved and verified" : "disabled"} successfully`,
       });
       refetch();
     } catch (error) {
