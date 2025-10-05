@@ -1,82 +1,54 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Target, Users, Shield, TrendingUp } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Shield, Target, Globe, TrendingUp } from "lucide-react";
 
 export const About = () => {
-  const highlights = [
+  const missions = [
     {
       icon: Target,
-      title: "Our Mission",
-      description: "One Nation. One Vision. To create a unified national platform for seamless training and placement.",
-    },
-    {
-      icon: Users,
-      title: "Government-Backed",
-      description: "A centralized initiative ensuring transparency and reliability in the placement ecosystem.",
+      title: "One Nation. One Vision.",
+      description: "Unified platform connecting students, institutions, and employers nationwide",
     },
     {
       icon: Shield,
-      title: "Verified & Secure",
-      description: "All stakeholders are thoroughly verified ensuring a safe and trustworthy environment.",
+      title: "Secure & Verified",
+      description: "Government-backed with KYC verification for all recruiters and institutions",
+    },
+    {
+      icon: Globe,
+      title: "Nationwide Reach",
+      description: "Bridging tier 2-3 cities with opportunities across India",
     },
     {
       icon: TrendingUp,
-      title: "Nationwide Reach",
-      description: "One Platform. One Network. Connecting opportunities across India from tier-1 to tier-3 cities and beyond.",
+      title: "Data-Driven Success",
+      description: "Real-time analytics and tracking for transparent placement processes",
     },
   ];
 
   return (
-    <section id="about" className="py-16 md:py-24 bg-background">
+    <section id="about" className="py-20 bg-muted/20">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12 md:mb-16 space-y-4">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold">
-            About the System
-          </h2>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-            Connecting talent to opportunity. The national placement bridge.
-            A revolutionary government initiative unifying education and employment across India.
+        <div className="text-center mb-12">
+          <Badge className="mb-4 bg-accent/10 text-accent border-accent/20">About PragatiPath</Badge>
+          <h2 className="text-4xl font-bold mb-4">About the Platform</h2>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            National-level digital training and placement platform bridging education and employment
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto mb-12">
-          {highlights.map((item) => (
-            <Card
-              key={item.title}
-              className="text-center border-0 shadow-card hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          {missions.map((mission, index) => (
+            <div
+              key={index}
+              className="text-center p-6 bg-card rounded-xl border border-border/50 hover:border-accent/50 hover:shadow-lg transition-all duration-300"
             >
-              <CardContent className="p-6 space-y-3">
-                <div className="w-14 h-14 bg-gradient-icon rounded-2xl flex items-center justify-center mx-auto shadow-md">
-                  <item.icon className="h-7 w-7 text-white" />
-                </div>
-                <h3 className="text-lg font-bold">
-                  {item.title}
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  {item.description}
-                </p>
-              </CardContent>
-            </Card>
+              <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-accent to-accent/80 flex items-center justify-center shadow-md">
+                <mission.icon className="h-7 w-7 text-white" />
+              </div>
+              <h3 className="font-bold text-lg mb-2">{mission.title}</h3>
+              <p className="text-sm text-muted-foreground">{mission.description}</p>
+            </div>
           ))}
-        </div>
-
-        <div className="bg-gradient-subtle rounded-3xl p-6 md:p-8 lg:p-12 max-w-5xl mx-auto shadow-glow">
-          <h3 className="text-xl md:text-2xl lg:text-3xl font-bold mb-6 text-center">
-            How We Make a Difference
-          </h3>
-          <div className="grid md:grid-cols-3 gap-6 md:gap-8 text-center">
-            <div>
-              <div className="text-3xl md:text-4xl font-bold text-accent mb-2">10,000+</div>
-              <p className="text-sm md:text-base text-muted-foreground">Students Placed</p>
-            </div>
-            <div>
-              <div className="text-3xl md:text-4xl font-bold text-accent mb-2">500+</div>
-              <p className="text-sm md:text-base text-muted-foreground">Partner Colleges</p>
-            </div>
-            <div>
-              <div className="text-3xl md:text-4xl font-bold text-accent mb-2">1,000+</div>
-              <p className="text-sm md:text-base text-muted-foreground">Registered Recruiters</p>
-            </div>
-          </div>
         </div>
       </div>
     </section>
