@@ -32,65 +32,77 @@ export const TopBar = () => {
   };
 
   return (
-    <header className="bg-primary/95 backdrop-blur-md text-white py-2 border-b border-white/10">
-      <div className="container mx-auto px-4">
+    <div className="bg-white dark:bg-card border-b border-gray-200 dark:border-border">
+      <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2">
-              <div className="p-1.5 bg-gradient-hero rounded-lg">
-                <GraduationCap className="h-4 w-4 text-primary-foreground" />
-              </div>
-              <span className="font-bold">PragatiPath</span>
+          {/* Logo and Name */}
+          <div className="flex items-center gap-4">
+            <div className="p-2 bg-gradient-to-r from-accent to-orange-500 rounded-xl shadow-lg">
+              <GraduationCap className="h-10 w-10 text-white" />
             </div>
-            <div className="hidden lg:flex items-center gap-4 text-xs">
-              <a href="tel:1800-XXX-XXXX" className="flex items-center gap-1.5 hover:text-accent transition-colors">
-                <Phone className="h-3.5 w-3.5" />
-                <span>1800-XXX-XXXX</span>
-              </a>
-              <a href="mailto:support@pragatipath.gov.in" className="flex items-center gap-1.5 hover:text-accent transition-colors">
-                <Mail className="h-3.5 w-3.5" />
-                <span>support@pragatipath.gov.in</span>
-              </a>
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-foreground">PragatiPath</h1>
+              <p className="text-sm text-gray-600 dark:text-muted-foreground hidden sm:block">{t('contact.nationalTrainingPortal')}</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          {/* Contact Info, Language Converter and Dark Mode Toggle */}
+          <div className="flex items-center gap-3">
+            <div className="hidden lg:flex flex-col items-end gap-1">
+              <div className="flex items-center gap-2 text-gray-700 dark:text-foreground text-sm">
+                <Phone className="h-4 w-4 text-accent" />
+                <span>{t('contact.phone')}</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-700 dark:text-foreground text-sm">
+                <Mail className="h-4 w-4 text-accent" />
+                <span>{t('contact.email')}</span>
+              </div>
+            </div>
+
+            {/* Language Converter */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="text-white hover:bg-white/10 h-8 text-xs">
-                  <Languages className="h-3.5 w-3.5 mr-1.5" />
-                  {languages.find(lang => lang.code === i18n.language)?.name || 'EN'}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-gray-700 dark:text-foreground hover:bg-gray-100 dark:hover:bg-muted"
+                >
+                  <Languages className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" className="bg-white dark:bg-card shadow-soft border border-gray-200 dark:border-border">
                 {languages.map((lang) => (
                   <DropdownMenuItem
                     key={lang.code}
                     onClick={() => handleLanguageChange(lang.code)}
-                    className={`cursor-pointer ${i18n.language === lang.code ? 'bg-accent/10' : ''}`}
+                    className={`flex items-center gap-2 cursor-pointer ${i18n.language === lang.code
+                      ? 'bg-accent/10 dark:bg-accent/20 text-accent'
+                      : 'text-gray-700 dark:text-foreground hover:bg-gray-50 dark:hover:bg-muted'
+                      }`}
                   >
-                    <span className="mr-2">{lang.flag}</span>
-                    {lang.name}
+                    <span className="text-lg">{lang.flag}</span>
+                    <span className="font-medium">{lang.name}</span>
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
 
+            {/* Dark Mode Toggle */}
             <Button
               variant="ghost"
-              size="sm"
+              size="icon"
               onClick={toggleTheme}
-              className="text-white hover:bg-white/10 h-8 px-2"
+              className="text-gray-700 dark:text-foreground hover:bg-gray-100 dark:hover:bg-muted"
             >
               {theme === 'light' ? (
-                <Moon className="h-3.5 w-3.5" />
+                <Moon className="h-5 w-5" />
               ) : (
-                <Sun className="h-3.5 w-3.5" />
+                <Sun className="h-5 w-5" />
               )}
             </Button>
           </div>
         </div>
       </div>
-    </header>
+    </div>
   );
 };
