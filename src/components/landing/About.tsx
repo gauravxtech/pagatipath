@@ -1,83 +1,127 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Target, Users, Shield, TrendingUp } from "lucide-react";
+import { Target, Shield, MapPin, Calendar } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { motion } from "framer-motion";
+
+const highlights = [
+  {
+    icon: Target,
+    title: "Our Mission",
+    description: "One Nation. One Vision. Creating a unified platform for seamless training and placement nationwide.",
+  },
+  {
+    icon: Shield,
+    title: "Government-Backed",
+    description: "Ministry of Education approved initiative ensuring transparency and reliability.",
+  },
+  {
+    icon: Shield,
+    title: "Verified & Secure",
+    description: "Comprehensive KYC verification for all students, colleges, and recruiters.",
+  },
+  {
+    icon: MapPin,
+    title: "Nationwide Reach",
+    description: "Connecting tier-1 to tier-3 cities across India with equal opportunities.",
+  },
+];
+
+const timeline = [
+  { year: "2023", event: "Platform Launch", desc: "Initial pilot with 50 colleges" },
+  { year: "2024", event: "National Expansion", desc: "500+ institutions onboarded" },
+  { year: "2025", event: "Full Integration", desc: "Pan-India coverage achieved" },
+];
 
 export const About = () => {
-  const highlights = [
-    {
-      icon: Target,
-      title: "Our Mission",
-      description: "One Nation. One Vision. To create a unified national platform for seamless training and placement.",
-    },
-    {
-      icon: Users,
-      title: "Government-Backed",
-      description: "A centralized initiative ensuring transparency and reliability in the placement ecosystem.",
-    },
-    {
-      icon: Shield,
-      title: "Verified & Secure",
-      description: "All stakeholders are thoroughly verified ensuring a safe and trustworthy environment.",
-    },
-    {
-      icon: TrendingUp,
-      title: "Nationwide Reach",
-      description: "One Platform. One Network. Connecting opportunities across India from tier-1 to tier-3 cities and beyond.",
-    },
-  ];
-
   return (
     <section id="about" className="py-16 md:py-24 bg-background">
       <div className="container mx-auto px-4">
+        {/* Header */}
         <div className="text-center mb-12 md:mb-16 space-y-4">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold">
-            About the System
-          </h2>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-            Connecting talent to opportunity. The national placement bridge.
-            A revolutionary government initiative unifying education and employment across India.
-          </p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+            className="inline-block"
+          >
+            <Badge className="mb-4 px-4 py-2 text-sm">About PragatiPath</Badge>
+          </motion.div>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            viewport={{ once: true }}
+            className="text-3xl md:text-4xl lg:text-5xl font-bold"
+          >
+            About the Platform
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto"
+          >
+            National-level digital training and placement platform bridging education and employment
+          </motion.p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto mb-12">
-          {highlights.map((item) => (
-            <Card
+        {/* Mission Highlights */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto mb-16">
+          {highlights.map((item, index) => (
+            <motion.div
               key={item.title}
-              className="text-center border-0 shadow-card hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              viewport={{ once: true }}
             >
-              <CardContent className="p-6 space-y-3">
-                <div className="w-14 h-14 bg-gradient-icon rounded-2xl flex items-center justify-center mx-auto shadow-md">
-                  <item.icon className="h-7 w-7 text-white" />
-                </div>
-                <h3 className="text-lg font-bold">
-                  {item.title}
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  {item.description}
-                </p>
-              </CardContent>
-            </Card>
+              <Card className="h-full text-center border-0 shadow-card hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                <CardContent className="p-6 space-y-3">
+                  <div className="w-14 h-14 bg-gradient-icon rounded-2xl flex items-center justify-center mx-auto shadow-md">
+                    <item.icon className="h-7 w-7 text-white" />
+                  </div>
+                  <h3 className="text-lg font-bold">{item.title}</h3>
+                  <p className="text-sm text-muted-foreground">{item.description}</p>
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
         </div>
 
-        <div className="bg-gradient-subtle rounded-3xl p-6 md:p-8 lg:p-12 max-w-5xl mx-auto shadow-glow">
-          <h3 className="text-xl md:text-2xl lg:text-3xl font-bold mb-6 text-center">
-            How We Make a Difference
-          </h3>
-          <div className="grid md:grid-cols-3 gap-6 md:gap-8 text-center">
-            <div>
-              <div className="text-3xl md:text-4xl font-bold text-accent mb-2">10,000+</div>
-              <p className="text-sm md:text-base text-muted-foreground">Students Placed</p>
-            </div>
-            <div>
-              <div className="text-3xl md:text-4xl font-bold text-accent mb-2">500+</div>
-              <p className="text-sm md:text-base text-muted-foreground">Partner Colleges</p>
-            </div>
-            <div>
-              <div className="text-3xl md:text-4xl font-bold text-accent mb-2">1,000+</div>
-              <p className="text-sm md:text-base text-muted-foreground">Registered Recruiters</p>
-            </div>
+        {/* Growth Timeline */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true }}
+          className="bg-gradient-subtle rounded-3xl p-8 md:p-12 max-w-5xl mx-auto shadow-glow"
+        >
+          <div className="flex items-center justify-center gap-2 mb-8">
+            <Calendar className="h-6 w-6 text-primary" />
+            <h3 className="text-2xl md:text-3xl font-bold text-center">
+              Our Growth Journey
+            </h3>
           </div>
-        </div>
+          
+          <div className="grid md:grid-cols-3 gap-8 relative">
+            {/* Connector Line */}
+            <div className="hidden md:block absolute top-8 left-[16.66%] right-[16.66%] h-0.5 bg-gradient-to-r from-primary via-primary to-primary/50" />
+            
+            {timeline.map((item, index) => (
+              <div key={item.year} className="relative text-center">
+                <div className="relative inline-flex items-center justify-center mb-4">
+                  <div className="w-16 h-16 bg-gradient-icon rounded-full flex items-center justify-center shadow-lg z-10">
+                    <span className="text-xl font-bold text-white">{item.year}</span>
+                  </div>
+                </div>
+                <h4 className="text-lg font-bold mb-2">{item.event}</h4>
+                <p className="text-sm text-muted-foreground">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </motion.div>
       </div>
     </section>
   );

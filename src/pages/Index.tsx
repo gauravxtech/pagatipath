@@ -2,12 +2,15 @@ import { TopBar } from "@/components/layout/TopBar";
 import { Marquee } from "@/components/landing/Marquee";
 import { Navbar } from "@/components/layout/Navbar";
 import { Hero } from "@/components/landing/Hero";
+import { Stats } from "@/components/landing/Stats";
 import { About } from "@/components/landing/About";
-import { Features } from "@/components/landing/Features";
+import { Differentiators } from "@/components/landing/Differentiators";
 import { RoleFeatures } from "@/components/landing/RoleFeatures";
-import { WhyJoin } from "@/components/landing/WhyJoin";
-import { HowItWorks } from "@/components/landing/HowItWorks";
-import { Contact } from "@/components/landing/Contact";
+import { PlatformCapabilities } from "@/components/landing/PlatformCapabilities";
+import { Testimonials } from "@/components/landing/Testimonials";
+import { SimpleSteps } from "@/components/landing/SimpleSteps";
+import { FAQ } from "@/components/landing/FAQ";
+import { ContactSupport } from "@/components/landing/ContactSupport";
 import { Footer } from "@/components/landing/Footer";
 
 const Index = () => {
@@ -17,12 +20,15 @@ const Index = () => {
       <Marquee />
       <Navbar />
       <Hero />
+      <Stats />
       <About />
-      <Features />
+      <Differentiators />
       <RoleFeatures />
-      <WhyJoin />
-      <HowItWorks />
-      <Contact />
+      <PlatformCapabilities />
+      <Testimonials />
+      <SimpleSteps />
+      <FAQ />
+      <ContactSupport />
       <Footer />
     </div>
   );
