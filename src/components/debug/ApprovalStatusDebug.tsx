@@ -24,7 +24,7 @@ export function ApprovalStatusDebug() {
       // Check user_roles table
       const { data: userRole, error: roleError } = await supabase
         .from('user_roles')
-        .select('role, approved, approved_by, created_at, updated_at')
+        .select('role, approved, approved_by, created_at')
         .eq('user_id', user.id)
         .maybeSingle();
 

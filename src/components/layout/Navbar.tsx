@@ -14,8 +14,8 @@ export const Navbar = () => {
   const { t } = useTranslation();
 
   const navLinks = [
-    { name: t('navigation.home'), href: "#hero" },
-    { name: t('navigation.about'), href: "#about", hasDropdown: true },
+    { name: t('navigation.home'), href: "/" },
+    { name: t('navigation.about'), href: "/about" },
     { name: t('navigation.programs'), href: "#features", hasDropdown: true },
     { name: t('navigation.departments'), href: "#departments", hasDropdown: true },
     { name: t('navigation.admissions'), href: "#admissions", hasDropdown: true },
@@ -40,18 +40,28 @@ export const Navbar = () => {
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-1">
               {navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  className="px-4 py-2 text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 rounded transition-all flex items-center gap-1"
-                >
-                  {link.name}
-                  {link.hasDropdown && (
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  )}
-                </a>
+                link.href.startsWith('/') ? (
+                  <Link
+                    key={link.name}
+                    to={link.href}
+                    className="px-4 py-2 text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 rounded transition-all flex items-center gap-1"
+                  >
+                    {link.name}
+                  </Link>
+                ) : (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    className="px-4 py-2 text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 rounded transition-all flex items-center gap-1"
+                  >
+                    {link.name}
+                    {link.hasDropdown && (
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    )}
+                  </a>
+                )
               ))}
             </div>
 
@@ -92,14 +102,25 @@ export const Navbar = () => {
               <SheetContent side="right" className="w-[300px]">
                 <div className="flex flex-col gap-4 mt-8">
                   {navLinks.map((link) => (
-                    <a
-                      key={link.name}
-                      href={link.href}
-                      onClick={() => setIsOpen(false)}
-                      className="text-lg font-medium hover:text-primary transition-colors"
-                    >
-                      {link.name}
-                    </a>
+                    link.href.startsWith('/') ? (
+                      <Link
+                        key={link.name}
+                        to={link.href}
+                        onClick={() => setIsOpen(false)}
+                        className="text-lg font-medium hover:text-primary transition-colors"
+                      >
+                        {link.name}
+                      </Link>
+                    ) : (
+                      <a
+                        key={link.name}
+                        href={link.href}
+                        onClick={() => setIsOpen(false)}
+                        className="text-lg font-medium hover:text-primary transition-colors"
+                      >
+                        {link.name}
+                      </a>
+                    )
                   ))}
                   <div className="border-t pt-4 mt-4">
                     {user ? (

@@ -75,6 +75,7 @@ import AdminRecruiters from "./pages/admin/AdminRecruiters";
 import NTORecruiters from "./pages/nto/NTORecruiters";
 import STORecruiters from "./pages/sto/STORecruiters";
 import DTORecruiters from "./pages/dto/DTORecruiters";
+import AboutUs from "./pages/AboutUs";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -88,6 +89,7 @@ const App = () => (
         <AuthProvider>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/about" element={<AboutUs />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/dashboard" element={<Dashboard />} />
