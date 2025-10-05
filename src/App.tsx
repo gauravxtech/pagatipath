@@ -79,6 +79,7 @@ import AboutUs from "./pages/AboutUs";
 import HowItWorksPage from "./pages/HowItWorks";
 import FeaturesPage from "./pages/Features";
 import PartnersPage from "./pages/Partners";
+import ContactPage from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -96,6 +97,7 @@ const App = () => (
             <Route path="/how-it-works" element={<HowItWorksPage />} />
             <Route path="/features" element={<FeaturesPage />} />
             <Route path="/partners" element={<PartnersPage />} />
+            <Route path="/contact" element={<ContactPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/dashboard" element={<Dashboard />} />

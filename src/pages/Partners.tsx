@@ -4,7 +4,7 @@ import { Footer } from "@/components/landing/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Building2, Award, Users, Star, Quote } from "lucide-react";
+import { Building2, Award, Users, Star, Quote, CheckCircle, TrendingUp } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const Partners = () => {
@@ -189,9 +189,36 @@ const Partners = () => {
                 </div>
             </section>
 
+            {/* Trust Badges */}
+            <section className="py-12 bg-white border-t border-b border-gray-200">
+                <div className="container mx-auto px-4">
+                    <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
+                        <div className="text-center">
+                            <Award className="h-12 w-12 text-accent mx-auto mb-2" />
+                            <p className="text-sm font-semibold text-gray-800">ISO Certified</p>
+                        </div>
+                        <div className="text-center">
+                            <CheckCircle className="h-12 w-12 text-green-600 mx-auto mb-2" />
+                            <p className="text-sm font-semibold text-gray-800">Govt. Verified</p>
+                        </div>
+                        <div className="text-center">
+                            <Users className="h-12 w-12 text-blue-600 mx-auto mb-2" />
+                            <p className="text-sm font-semibold text-gray-800">500+ Partners</p>
+                        </div>
+                        <div className="text-center">
+                            <TrendingUp className="h-12 w-12 text-purple-600 mx-auto mb-2" />
+                            <p className="text-sm font-semibold text-gray-800">95% Success Rate</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* Become a Partner */}
             <section className="py-16 bg-gradient-to-r from-primary to-primary/90 text-white">
                 <div className="container mx-auto px-4 text-center">
+                    <Badge className="bg-white/20 text-white border-white/30 mb-4 text-sm px-4 py-1">
+                        JOIN THE NETWORK
+                    </Badge>
                     <h2 className="text-3xl md:text-4xl font-bold mb-6">Become a Partner</h2>
                     <p className="text-xl text-white/90 mb-8 max-w-3xl mx-auto">
                         Join India's largest placement network and be part of the transformation in education and employment.
