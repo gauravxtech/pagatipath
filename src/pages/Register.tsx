@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { TopBar } from "@/components/layout/TopBar";
+import { Marquee } from "@/components/landing/Marquee";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/landing/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -107,109 +111,117 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-subtle p-4 py-12">
-      <div className="w-full max-w-2xl">
-        <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2 mb-4">
-            <div className="p-2 bg-gradient-hero rounded-lg"><GraduationCap className="h-8 w-8 text-primary-foreground" /></div>
-            <span className="font-bold text-2xl">PragatiPath</span>
-          </Link>
-          <p className="text-muted-foreground">Join the National Training Platform</p>
+    <div className="min-h-screen bg-gradient-subtle">
+      <TopBar />
+      <Marquee />
+      <Navbar />
+      
+      <div className="flex items-center justify-center py-12 px-4">
+        <div className="w-full max-w-2xl">
+          <div className="text-center mb-8">
+            <Link to="/" className="inline-flex items-center gap-2 mb-4">
+              <div className="p-2 bg-gradient-hero rounded-lg"><GraduationCap className="h-8 w-8 text-primary-foreground" /></div>
+              <span className="font-bold text-2xl">PragatiPath</span>
+            </Link>
+            <p className="text-muted-foreground">Join the National Training Platform</p>
+          </div>
+
+          <Card className="shadow-soft">
+            <CardHeader>
+              <CardTitle>Create Your Account</CardTitle>
+              <CardDescription>Register with your role-specific details</CardDescription>
+            </CardHeader>
+            <form onSubmit={handleSubmit}>
+              <CardContent className="space-y-4 max-h-[60vh] overflow-y-auto">
+                <div className="space-y-2">
+                  <Label>Select Role</Label>
+                  <Select value={formData.role} onValueChange={(value) => setFormData({ fullName: formData.fullName, email: formData.email, password: formData.password, confirmPassword: formData.confirmPassword, mobileNumber: formData.mobileNumber, role: value })}>
+                    <SelectTrigger><SelectValue placeholder="Choose your role" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="student">Student</SelectItem>
+                      <SelectItem value="recruiter">Recruiter</SelectItem>
+                      <SelectItem value="nto">National Training Officer (NTO)</SelectItem>
+                      <SelectItem value="sto">State Training Officer (STO)</SelectItem>
+                      <SelectItem value="dto">District Training Officer (DTO)</SelectItem>
+                      <SelectItem value="college_placement">College TPO</SelectItem>
+                      <SelectItem value="dept_coordinator">Department TPO / HOD</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {formData.role && (<>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2"><Label>Full Name</Label><Input value={formData.fullName} onChange={(e) => setFormData({ ...formData, fullName: e.target.value })} required /></div>
+                    <div className="space-y-2"><Label>Email</Label><Input type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} required /></div>
+                  </div>
+                  <div className="space-y-2"><Label>Mobile Number</Label><Input type="tel" value={formData.mobileNumber} onChange={(e) => setFormData({ ...formData, mobileNumber: e.target.value })} required /></div>
+
+                  {formData.role === 'nto' && <div className="space-y-2"><Label>National Officer ID</Label><Input value={formData.nationalOfficerId || ''} onChange={(e) => setFormData({ ...formData, nationalOfficerId: e.target.value })} required /></div>}
+
+                  {formData.role === 'sto' && (<>
+                    <div className="space-y-2"><Label>State</Label><Select value={formData.state} onValueChange={(v) => { setFormData({ ...formData, state: v }); setSelectedState(v); }}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{indianStates.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent></Select></div>
+                    <div className="space-y-2"><Label>State Officer ID</Label><Input value={formData.stateOfficerId || ''} onChange={(e) => setFormData({ ...formData, stateOfficerId: e.target.value })} required /></div>
+                  </>)}
+
+                  {formData.role === 'dto' && (<>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2"><Label>State</Label><Select value={formData.state} onValueChange={(v) => { setFormData({ ...formData, state: v, district: '' }); setSelectedState(v); }}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{indianStates.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent></Select></div>
+                      <div className="space-y-2"><Label>District</Label><Select value={formData.district} onValueChange={(v) => setFormData({ ...formData, district: v })} disabled={!formData.state}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{districts.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent></Select></div>
+                    </div>
+                    <div className="space-y-2"><Label>District Officer ID</Label><Input value={formData.districtOfficerId || ''} onChange={(e) => setFormData({ ...formData, districtOfficerId: e.target.value })} required /></div>
+                  </>)}
+
+                  {formData.role === 'college_placement' && (<>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2"><Label>College Reg. Number</Label><Input value={formData.collegeRegistrationNumber || ''} onChange={(e) => setFormData({ ...formData, collegeRegistrationNumber: e.target.value })} required /></div>
+                      <div className="space-y-2"><Label>College Name</Label><Input value={formData.collegeName || ''} onChange={(e) => setFormData({ ...formData, collegeName: e.target.value })} required /></div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2"><Label>State</Label><Select value={formData.state} onValueChange={(v) => { setFormData({ ...formData, state: v, district: '' }); setSelectedState(v); }}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{indianStates.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent></Select></div>
+                      <div className="space-y-2"><Label>District</Label><Select value={formData.district} onValueChange={(v) => setFormData({ ...formData, district: v })} disabled={!formData.state}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{districts.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent></Select></div>
+                    </div>
+                  </>)}
+
+                  {formData.role === 'dept_coordinator' && (<>
+                    <div className="space-y-2"><Label>College</Label><Select value={formData.collegeId} onValueChange={(v) => setFormData({ ...formData, collegeId: v })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{colleges.map(c => <SelectItem key={c.id} value={c.id}>{c.name} ({c.code})</SelectItem>)}</SelectContent></Select></div>
+                    <div className="space-y-2"><Label>Department Name</Label><Input value={formData.departmentName || ''} onChange={(e) => setFormData({ ...formData, departmentName: e.target.value })} required /></div>
+                  </>)}
+
+                  {formData.role === 'student' && (<>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2"><Label>ABC ID</Label><Input value={formData.abcId || ''} onChange={(e) => setFormData({ ...formData, abcId: e.target.value })} required /></div>
+                      <div className="space-y-2"><Label>Enrollment Number</Label><Input value={formData.enrollmentNumber || ''} onChange={(e) => setFormData({ ...formData, enrollmentNumber: e.target.value })} required /></div>
+                    </div>
+                    <div className="space-y-2"><Label>College</Label><Select value={formData.collegeId} onValueChange={(v) => setFormData({ ...formData, collegeId: v })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{colleges.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent></Select></div>
+                    {formData.collegeId && <div className="space-y-2"><Label>Department (Optional)</Label><Select value={formData.departmentId} onValueChange={(v) => setFormData({ ...formData, departmentId: v })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{departments.map(d => <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>)}</SelectContent></Select></div>}
+                    <div className="space-y-2"><Label>Year / Semester</Label><Select value={formData.yearSemester} onValueChange={(v) => setFormData({ ...formData, yearSemester: v })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{['1st Year / Sem 1', '1st Year / Sem 2', '2nd Year / Sem 3', '2nd Year / Sem 4', '3rd Year / Sem 5', '3rd Year / Sem 6', '4th Year / Sem 7', '4th Year / Sem 8'].map(y => <SelectItem key={y} value={y}>{y}</SelectItem>)}</SelectContent></Select></div>
+                  </>)}
+
+                  {formData.role === 'recruiter' && (<>
+                    <div className="space-y-2"><Label>Company Name</Label><Input value={formData.companyName || ''} onChange={(e) => setFormData({ ...formData, companyName: e.target.value })} required /></div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2"><Label>Company Website (Optional)</Label><Input type="url" value={formData.companyWebsite || ''} onChange={(e) => setFormData({ ...formData, companyWebsite: e.target.value })} /></div>
+                      <div className="space-y-2"><Label>Industry (Optional)</Label><Input value={formData.industry || ''} onChange={(e) => setFormData({ ...formData, industry: e.target.value })} /></div>
+                    </div>
+                  </>)}
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2"><Label>Password</Label><div className="relative"><Input type={showPassword ? "text" : "password"} value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} required /><button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-3 text-muted-foreground">{showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}</button></div></div>
+                    <div className="space-y-2"><Label>Confirm Password</Label><div className="relative"><Input type={showConfirmPassword ? "text" : "password"} value={formData.confirmPassword} onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })} required /><button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-3 text-muted-foreground">{showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}</button></div></div>
+                  </div>
+                </>)}
+              </CardContent>
+
+              <CardFooter className="flex flex-col space-y-4">
+                <Button type="submit" className="w-full bg-gradient-hero" size="lg" disabled={loading || !formData.role}>{loading ? "Creating Account..." : "Create Account"}</Button>
+                <p className="text-sm text-center text-muted-foreground">Already have an account? <Link to="/login" className="text-primary hover:underline font-medium">Sign in</Link></p>
+              </CardFooter>
+            </form>
+          </Card>
         </div>
-
-        <Card className="shadow-soft">
-          <CardHeader>
-            <CardTitle>Create Your Account</CardTitle>
-            <CardDescription>Register with your role-specific details</CardDescription>
-          </CardHeader>
-          <form onSubmit={handleSubmit}>
-            <CardContent className="space-y-4 max-h-[60vh] overflow-y-auto">
-              <div className="space-y-2">
-                <Label>Select Role</Label>
-                <Select value={formData.role} onValueChange={(value) => setFormData({ fullName: formData.fullName, email: formData.email, password: formData.password, confirmPassword: formData.confirmPassword, mobileNumber: formData.mobileNumber, role: value })}>
-                  <SelectTrigger><SelectValue placeholder="Choose your role" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="student">Student</SelectItem>
-                    <SelectItem value="recruiter">Recruiter</SelectItem>
-                    <SelectItem value="nto">National Training Officer (NTO)</SelectItem>
-                    <SelectItem value="sto">State Training Officer (STO)</SelectItem>
-                    <SelectItem value="dto">District Training Officer (DTO)</SelectItem>
-                    <SelectItem value="college_placement">College TPO</SelectItem>
-                    <SelectItem value="dept_coordinator">Department TPO / HOD</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {formData.role && (<>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2"><Label>Full Name</Label><Input value={formData.fullName} onChange={(e) => setFormData({ ...formData, fullName: e.target.value })} required /></div>
-                  <div className="space-y-2"><Label>Email</Label><Input type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} required /></div>
-                </div>
-                <div className="space-y-2"><Label>Mobile Number</Label><Input type="tel" value={formData.mobileNumber} onChange={(e) => setFormData({ ...formData, mobileNumber: e.target.value })} required /></div>
-
-                {formData.role === 'nto' && <div className="space-y-2"><Label>National Officer ID</Label><Input value={formData.nationalOfficerId || ''} onChange={(e) => setFormData({ ...formData, nationalOfficerId: e.target.value })} required /></div>}
-
-                {formData.role === 'sto' && (<>
-                  <div className="space-y-2"><Label>State</Label><Select value={formData.state} onValueChange={(v) => { setFormData({ ...formData, state: v }); setSelectedState(v); }}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{indianStates.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent></Select></div>
-                  <div className="space-y-2"><Label>State Officer ID</Label><Input value={formData.stateOfficerId || ''} onChange={(e) => setFormData({ ...formData, stateOfficerId: e.target.value })} required /></div>
-                </>)}
-
-                {formData.role === 'dto' && (<>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2"><Label>State</Label><Select value={formData.state} onValueChange={(v) => { setFormData({ ...formData, state: v, district: '' }); setSelectedState(v); }}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{indianStates.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent></Select></div>
-                    <div className="space-y-2"><Label>District</Label><Select value={formData.district} onValueChange={(v) => setFormData({ ...formData, district: v })} disabled={!formData.state}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{districts.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent></Select></div>
-                  </div>
-                  <div className="space-y-2"><Label>District Officer ID</Label><Input value={formData.districtOfficerId || ''} onChange={(e) => setFormData({ ...formData, districtOfficerId: e.target.value })} required /></div>
-                </>)}
-
-                {formData.role === 'college_placement' && (<>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2"><Label>College Reg. Number</Label><Input value={formData.collegeRegistrationNumber || ''} onChange={(e) => setFormData({ ...formData, collegeRegistrationNumber: e.target.value })} required /></div>
-                    <div className="space-y-2"><Label>College Name</Label><Input value={formData.collegeName || ''} onChange={(e) => setFormData({ ...formData, collegeName: e.target.value })} required /></div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2"><Label>State</Label><Select value={formData.state} onValueChange={(v) => { setFormData({ ...formData, state: v, district: '' }); setSelectedState(v); }}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{indianStates.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent></Select></div>
-                    <div className="space-y-2"><Label>District</Label><Select value={formData.district} onValueChange={(v) => setFormData({ ...formData, district: v })} disabled={!formData.state}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{districts.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent></Select></div>
-                  </div>
-                </>)}
-
-                {formData.role === 'dept_coordinator' && (<>
-                  <div className="space-y-2"><Label>College</Label><Select value={formData.collegeId} onValueChange={(v) => setFormData({ ...formData, collegeId: v })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{colleges.map(c => <SelectItem key={c.id} value={c.id}>{c.name} ({c.code})</SelectItem>)}</SelectContent></Select></div>
-                  <div className="space-y-2"><Label>Department Name</Label><Input value={formData.departmentName || ''} onChange={(e) => setFormData({ ...formData, departmentName: e.target.value })} required /></div>
-                </>)}
-
-                {formData.role === 'student' && (<>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2"><Label>ABC ID</Label><Input value={formData.abcId || ''} onChange={(e) => setFormData({ ...formData, abcId: e.target.value })} required /></div>
-                    <div className="space-y-2"><Label>Enrollment Number</Label><Input value={formData.enrollmentNumber || ''} onChange={(e) => setFormData({ ...formData, enrollmentNumber: e.target.value })} required /></div>
-                  </div>
-                  <div className="space-y-2"><Label>College</Label><Select value={formData.collegeId} onValueChange={(v) => setFormData({ ...formData, collegeId: v })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{colleges.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent></Select></div>
-                  {formData.collegeId && <div className="space-y-2"><Label>Department (Optional)</Label><Select value={formData.departmentId} onValueChange={(v) => setFormData({ ...formData, departmentId: v })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{departments.map(d => <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>)}</SelectContent></Select></div>}
-                  <div className="space-y-2"><Label>Year / Semester</Label><Select value={formData.yearSemester} onValueChange={(v) => setFormData({ ...formData, yearSemester: v })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{['1st Year / Sem 1', '1st Year / Sem 2', '2nd Year / Sem 3', '2nd Year / Sem 4', '3rd Year / Sem 5', '3rd Year / Sem 6', '4th Year / Sem 7', '4th Year / Sem 8'].map(y => <SelectItem key={y} value={y}>{y}</SelectItem>)}</SelectContent></Select></div>
-                </>)}
-
-                {formData.role === 'recruiter' && (<>
-                  <div className="space-y-2"><Label>Company Name</Label><Input value={formData.companyName || ''} onChange={(e) => setFormData({ ...formData, companyName: e.target.value })} required /></div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2"><Label>Company Website (Optional)</Label><Input type="url" value={formData.companyWebsite || ''} onChange={(e) => setFormData({ ...formData, companyWebsite: e.target.value })} /></div>
-                    <div className="space-y-2"><Label>Industry (Optional)</Label><Input value={formData.industry || ''} onChange={(e) => setFormData({ ...formData, industry: e.target.value })} /></div>
-                  </div>
-                </>)}
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2"><Label>Password</Label><div className="relative"><Input type={showPassword ? "text" : "password"} value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} required /><button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-3 text-muted-foreground">{showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}</button></div></div>
-                  <div className="space-y-2"><Label>Confirm Password</Label><div className="relative"><Input type={showConfirmPassword ? "text" : "password"} value={formData.confirmPassword} onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })} required /><button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-3 text-muted-foreground">{showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}</button></div></div>
-                </div>
-              </>)}
-            </CardContent>
-
-            <CardFooter className="flex flex-col space-y-4">
-              <Button type="submit" className="w-full bg-gradient-hero" size="lg" disabled={loading || !formData.role}>{loading ? "Creating Account..." : "Create Account"}</Button>
-              <p className="text-sm text-center text-muted-foreground">Already have an account? <Link to="/login" className="text-primary hover:underline font-medium">Sign in</Link></p>
-            </CardFooter>
-          </form>
-        </Card>
       </div>
+      
+      <Footer />
     </div>
   );
 };

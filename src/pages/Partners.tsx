@@ -1,4 +1,5 @@
 import { TopBar } from "@/components/layout/TopBar";
+import { Marquee } from "@/components/landing/Marquee";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { Card, CardContent } from "@/components/ui/card";
@@ -71,6 +72,7 @@ const Partners = () => {
     return (
         <div className="min-h-screen bg-gradient-subtle">
             <TopBar />
+            <Marquee />
             <Navbar />
 
             {/* Hero Section */}
