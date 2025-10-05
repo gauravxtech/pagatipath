@@ -14,14 +14,12 @@ export const Navbar = () => {
   const { t } = useTranslation();
 
   const navLinks = [
-    { name: t('navigation.home'), href: "/" },
-    { name: t('navigation.about'), href: "/about" },
-    { name: t('navigation.programs'), href: "#features", hasDropdown: true },
-    { name: t('navigation.departments'), href: "#departments", hasDropdown: true },
-    { name: t('navigation.admissions'), href: "#admissions", hasDropdown: true },
-    { name: t('navigation.placements'), href: "#placements", hasDropdown: true },
-    { name: t('navigation.lifeAtPragatiPath'), href: "#life", hasDropdown: true },
-    { name: t('navigation.contactUs'), href: "#contact", hasDropdown: true },
+    { name: "Home", href: "/" },
+    { name: "About Us", href: "/about" },
+    { name: "How It Works", href: "/how-it-works" },
+    { name: "Features", href: "/features" },
+    { name: "Partners", href: "/partners" },
+    { name: "Contact", href: "#contact" },
   ];
 
 
@@ -44,7 +42,7 @@ export const Navbar = () => {
                   <Link
                     key={link.name}
                     to={link.href}
-                    className="px-4 py-2 text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 rounded transition-all flex items-center gap-1"
+                    className="px-4 py-2 text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 rounded transition-all"
                   >
                     {link.name}
                   </Link>
@@ -52,14 +50,9 @@ export const Navbar = () => {
                   <a
                     key={link.name}
                     href={link.href}
-                    className="px-4 py-2 text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 rounded transition-all flex items-center gap-1"
+                    className="px-4 py-2 text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 rounded transition-all"
                   >
                     {link.name}
-                    {link.hasDropdown && (
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    )}
                   </a>
                 )
               ))}
@@ -71,12 +64,12 @@ export const Navbar = () => {
                   <Button variant="ghost" className="text-white hover:bg-white/10" asChild>
                     <Link to="/dashboard">
                       <LayoutDashboard className="mr-2 h-4 w-4" />
-                      {t('navigation.dashboard')}
+                      Dashboard
                     </Link>
                   </Button>
                   <Button variant="outline" className="border-white/30 text-white hover:bg-white/10" onClick={signOut}>
                     <LogOut className="mr-2 h-4 w-4" />
-                    {t('navigation.signOut')}
+                    Sign Out
                   </Button>
                 </>
               ) : (
@@ -86,7 +79,7 @@ export const Navbar = () => {
                     className="text-white hover:bg-white/10 font-semibold"
                     onClick={() => setLoginOpen(true)}
                   >
-                    {t('navigation.login')}
+                    Login
                   </Button>
                 </>
               )}
