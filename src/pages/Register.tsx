@@ -66,7 +66,16 @@ const Register = () => {
   };
 
   const fetchDepartments = async (collegeId: string) => {
-    const { data } = await supabase.from('departments').select('*').eq('college_id', collegeId).eq('approved', true).order('name');
+    const { data, error } = await supabase
+      .from('departments')
+      .select('*')
+      .eq('college_id', collegeId)
+      .order('name');
+    
+    if (error) {
+      console.error('Error fetching departments:', error);
+      toast.error('Failed to load departments');
+    }
     setDepartments(data || []);
   };
 
