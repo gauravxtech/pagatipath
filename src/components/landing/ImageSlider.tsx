@@ -23,7 +23,7 @@ export const ImageSlider = ({ onRegisterClick, onLoginClick }: ImageSliderProps)
       title: "Innovate. Create. Lead.",
       subtitle: "Empowering the next generation of tech leaders with industry-ready skills and real-world experience",
       cta: "Register Now",
-      gradient: "from-purple-600/90 via-blue-600/80 to-cyan-500/70"
+      gradient: "from-blue-950/95 via-blue-900/90 to-blue-950/95"
     },
     {
       image: placementImage,
@@ -32,7 +32,7 @@ export const ImageSlider = ({ onRegisterClick, onLoginClick }: ImageSliderProps)
       title: "Connect with Industry Leaders",
       subtitle: "Access exclusive opportunities from 500+ top companies and kickstart your dream career",
       cta: "Explore More",
-      gradient: "from-blue-600/90 via-indigo-600/80 to-purple-500/70"
+      gradient: "from-blue-950/95 via-blue-900/90 to-blue-950/95"
     },
     {
       image: successImage,
@@ -41,7 +41,7 @@ export const ImageSlider = ({ onRegisterClick, onLoginClick }: ImageSliderProps)
       title: "Your Future Starts Today",
       subtitle: "Join thousands of students who transformed their careers through our comprehensive training programs",
       cta: "Get Started",
-      gradient: "from-cyan-600/90 via-blue-600/80 to-indigo-500/70"
+      gradient: "from-blue-950/95 via-blue-900/90 to-blue-950/95"
     }
   ];
 
@@ -90,10 +90,10 @@ export const ImageSlider = ({ onRegisterClick, onLoginClick }: ImageSliderProps)
       ))}
 
       {/* Animated Particles Background Effect */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse" />
-        <div className="absolute top-1/3 right-1/4 w-72 h-72 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse delay-700" />
-        <div className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse delay-1000" />
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-orange-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse" />
+        <div className="absolute top-1/3 right-1/4 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse delay-700" />
+        <div className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-orange-600 rounded-full mix-blend-multiply filter blur-3xl animate-pulse delay-1000" />
       </div>
 
       {/* Content Overlay with Smooth Animations */}
@@ -104,7 +104,7 @@ export const ImageSlider = ({ onRegisterClick, onLoginClick }: ImageSliderProps)
             className="space-y-6 md:space-y-8 animate-fade-in"
           >
             {/* Badge with Icon */}
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-2xl border border-white/20 hover:bg-white/20 transition-colors">
+            <div className="inline-flex items-center gap-2 bg-orange-600 backdrop-blur-md text-white px-6 py-3 rounded-full text-sm font-bold shadow-2xl hover:bg-orange-700 transition-colors">
               <Sparkles className="w-4 h-4" />
               {slides[currentSlide].badge}
             </div>
@@ -126,7 +126,7 @@ export const ImageSlider = ({ onRegisterClick, onLoginClick }: ImageSliderProps)
               <Button 
                 size="lg" 
                 onClick={onRegisterClick}
-                className="bg-white text-primary hover:bg-white/90 font-bold shadow-2xl text-lg px-10 h-16 rounded-xl group transition-all hover:scale-105"
+                className="bg-orange-600 text-white hover:bg-orange-700 font-bold shadow-2xl text-lg px-10 h-16 rounded-lg group transition-all hover:scale-105"
               >
                 {slides[currentSlide].cta}
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
@@ -135,7 +135,7 @@ export const ImageSlider = ({ onRegisterClick, onLoginClick }: ImageSliderProps)
                 size="lg"
                 variant="outline"
                 onClick={onLoginClick}
-                className="bg-white/10 backdrop-blur-md text-white border-2 border-white/30 hover:bg-white/20 hover:border-white/50 font-bold text-lg px-10 h-16 rounded-xl transition-all hover:scale-105"
+                className="bg-transparent backdrop-blur-md text-white border-2 border-white hover:bg-white hover:text-blue-950 font-bold text-lg px-10 h-16 rounded-lg transition-all hover:scale-105"
               >
                 {t('navigation.login')}
               </Button>
