@@ -122,7 +122,7 @@ const HowItWorks = () => {
   ];
 
     return (
-        <div className="min-h-screen bg-gradient-subtle">
+        <div className="min-h-screen bg-gradient-subtle dark:bg-background">
             <TopBar />
             <Marquee />
             <Navbar />
@@ -149,7 +149,7 @@ const HowItWorks = () => {
                 className="animate-fade-in"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <Card className="bg-white shadow-card hover:shadow-xl transition-all duration-300 overflow-hidden">
+                <Card className="bg-white dark:bg-card shadow-card hover:shadow-xl transition-all duration-300 overflow-hidden border dark:border-border">
                   <CardContent className="p-0">
                     <div className="grid md:grid-cols-12 gap-0">
                       {/* Step Number & Icon */}
@@ -163,14 +163,14 @@ const HowItWorks = () => {
                       
                       {/* Step Content */}
                       <div className="md:col-span-9 p-8">
-                        <p className="text-lg text-gray-700 mb-6 font-medium">
+                        <p className="text-lg text-foreground mb-6 font-medium">
                           {step.description}
                         </p>
                         <ul className="space-y-3">
                           {step.details.map((detail, idx) => (
                             <li key={idx} className="flex items-start">
                               <CheckCircle className="h-5 w-5 text-green-500 mr-3 flex-shrink-0 mt-0.5" />
-                              <span className="text-gray-600">{detail}</span>
+                              <span className="text-muted-foreground">{detail}</span>
                             </li>
                           ))}
                         </ul>
@@ -194,9 +194,9 @@ const HowItWorks = () => {
       </section>
 
       {/* Visual Journey */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-card">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-foreground">
             Your Journey at a Glance
           </h2>
           <div className="max-w-5xl mx-auto">
@@ -212,10 +212,10 @@ const HowItWorks = () => {
                     className={`flex items-center ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}
                   >
                     <div className="flex-1 md:pr-8 md:text-right">
-                      <Card className="bg-gradient-subtle shadow-soft hover:shadow-card transition-shadow inline-block">
+                      <Card className="bg-gradient-subtle dark:bg-background shadow-soft hover:shadow-card transition-shadow inline-block border dark:border-border">
                         <CardContent className="p-6">
-                          <h3 className="text-xl font-bold text-gray-800 mb-2">{step.title}</h3>
-                          <p className="text-gray-600">{step.description}</p>
+                          <h3 className="text-xl font-bold text-foreground mb-2">{step.title}</h3>
+                          <p className="text-muted-foreground">{step.description}</p>
                         </CardContent>
                       </Card>
                     </div>
@@ -232,13 +232,13 @@ const HowItWorks = () => {
       </section>
 
       {/* Video Walkthrough Section */}
-      <section className="py-16 bg-gradient-subtle">
+      <section className="py-16 bg-gradient-subtle dark:bg-background">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-8 text-gray-800">
+          <h2 className="text-3xl md:text-4xl font-bold mb-8 text-foreground">
             Watch Our Platform in Action
           </h2>
           <div className="max-w-4xl mx-auto">
-            <Card className="bg-white shadow-soft border border-gray-100 overflow-hidden">
+            <Card className="bg-white dark:bg-card shadow-soft border border-gray-100 dark:border-border overflow-hidden">
               <CardContent className="p-0">
                 <div className="aspect-video bg-gradient-to-r from-primary to-primary/90 flex items-center justify-center">
                   <Button className="bg-accent hover:bg-accent/90 text-white px-8 py-4 text-lg">
@@ -248,7 +248,7 @@ const HowItWorks = () => {
                 </div>
               </CardContent>
             </Card>
-            <p className="text-gray-600 mt-6 text-lg">
+            <p className="text-muted-foreground mt-6 text-lg">
               Get a complete walkthrough of the PragatiPath platform and see how easy it is to
               connect talent with opportunity.
             </p>
@@ -257,13 +257,13 @@ const HowItWorks = () => {
       </section>
 
       {/* FAQs Section */}
-      <section className="py-16 md:py-20 bg-white">
+      <section className="py-16 md:py-20 bg-white dark:bg-card">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-800">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
               Frequently Asked Questions
             </h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
               Got questions? We've got answers. If you don't find what you're looking for, contact our support team.
             </p>
           </div>
@@ -272,7 +272,7 @@ const HowItWorks = () => {
             {faqs.map((faq, index) => (
               <Card 
                 key={index} 
-                className="bg-gradient-subtle shadow-soft hover:shadow-card transition-all cursor-pointer"
+                className="bg-gradient-subtle dark:bg-background shadow-soft hover:shadow-card transition-all cursor-pointer border dark:border-border"
                 onClick={() => setOpenFaq(openFaq === index ? null : index)}
               >
                 <CardContent className="p-6">
@@ -280,15 +280,15 @@ const HowItWorks = () => {
                     <div className="flex items-start flex-1">
                       <HelpCircle className="h-6 w-6 text-accent mr-3 flex-shrink-0 mt-0.5" />
                       <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-gray-800 mb-2">{faq.question}</h3>
+                        <h3 className="text-lg font-semibold text-foreground mb-2">{faq.question}</h3>
                         {openFaq === index && (
-                          <p className="text-gray-600 leading-relaxed animate-fade-in">{faq.answer}</p>
+                          <p className="text-muted-foreground leading-relaxed animate-fade-in">{faq.answer}</p>
                         )}
                       </div>
                     </div>
                     <div className="ml-4">
                       <div className={`transform transition-transform ${openFaq === index ? 'rotate-180' : ''}`}>
-                        <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-6 h-6 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                         </svg>
                       </div>
