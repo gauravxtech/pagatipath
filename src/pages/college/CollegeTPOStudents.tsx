@@ -21,7 +21,7 @@ export default function CollegeTPOStudents() {
   const [students, setStudents] = useState<any[]>([]);
   const [departments, setDepartments] = useState<any[]>([]);
   const [filters, setFilters] = useState({
-    department: "",
+    department: "all",
     year: "",
     search: "",
   });
@@ -113,7 +113,7 @@ export default function CollegeTPOStudents() {
   };
 
   const filteredStudents = students.filter(student => {
-    if (filters.department && student.department_id !== filters.department) return false;
+    if (filters.department && filters.department !== "all" && student.department_id !== filters.department) return false;
     if (filters.year && student.year_semester !== filters.year) return false;
     if (filters.search) {
       const search = filters.search.toLowerCase();
@@ -219,7 +219,7 @@ export default function CollegeTPOStudents() {
                     <SelectValue placeholder="All Departments" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Departments</SelectItem>
+                    <SelectItem value="all">All Departments</SelectItem>
                     {departments.map((dept) => (
                       <SelectItem key={dept.id} value={dept.id}>
                         {dept.name}
