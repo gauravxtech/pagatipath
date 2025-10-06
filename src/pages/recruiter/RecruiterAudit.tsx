@@ -2,19 +2,21 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useRecruiterInfo } from "@/hooks/useRecruiterInfo";
+import { DashboardLayout } from "@/components/shared/DashboardLayout";
+import { RecruiterSidebar } from "@/components/recruiter/RecruiterSidebar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Download } from "lucide-react";
 import { toast } from "sonner";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { RecruiterSidebar } from "@/components/recruiter/RecruiterSidebar";
 import { DataTable } from "@/components/shared/DataTable";
 
 export default function RecruiterAudit() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { companyName } = useRecruiterInfo();
   const [loading, setLoading] = useState(true);
   const [auditLogs, setAuditLogs] = useState<any[]>([]);
   const [filters, setFilters] = useState({
@@ -58,108 +60,98 @@ export default function RecruiterAudit() {
   };
 
   const exportLogs = () => {
-    const headers = ["Action", "Entity Type", "Details", "IP Address", "Timestamp"];
-    const rows = auditLogs.map(log => [
-      log.action,
-      log.entity_type,
-      JSON.stringify(log.details),
-      log.ip_address || "N/A",
-      new Date(log.created_at).toLocaleString(),
-    ]);
+    const csv = [
+      ["Action", "Entity Type", "Entity ID", "Timestamp", "IP Address"],
+      ...auditLogs.map(log => [
+        log.action,
+        log.entity_type,
+        log.entity_id,
+        new Date(log.created_at).toLocaleString(),
+        log.ip_address
+      ])
+    ].map(row => row.join(",")).join("\n");
 
-    const csvContent = [
-      headers.join(","),
-      ...rows.map(row => row.join(","))
-    ].join("\n");
-
-    const blob = new Blob([csvContent], { type: "text/csv" });
+    const blob = new Blob([csv], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `audit_logs_${new Date().toISOString().split("T")[0]}.csv`;
+    a.download = `audit-logs-${new Date().toISOString()}.csv`;
     a.click();
-    
-    toast.success("Logs exported successfully");
   };
 
   const columns = [
     {
-      key: "action",
-      label: "Action",
-      sortable: true,
+      key: 'action',
+      label: 'Action',
     },
     {
-      key: "entity_type",
-      label: "Entity Type",
-      sortable: true,
+      key: 'entity_type',
+      label: 'Entity Type',
     },
     {
-      key: "details",
-      label: "Details",
-      render: (row: any) => JSON.stringify(row.details).substring(0, 50) + "...",
-    },
-    {
-      key: "ip_address",
-      label: "IP Address",
-      render: (row: any) => row.ip_address || "N/A",
-    },
-    {
-      key: "created_at",
-      label: "Timestamp",
+      key: 'created_at',
+      label: 'Timestamp',
       render: (row: any) => new Date(row.created_at).toLocaleString(),
-      sortable: true,
+    },
+    {
+      key: 'ip_address',
+      label: 'IP Address',
     },
   ];
 
   if (loading) {
-    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+    return (
+      <DashboardLayout sidebar={<RecruiterSidebar />} title="Audit Logs" subtitle={companyName}>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Loading...</p>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
   }
 
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full">
-        <RecruiterSidebar />
-        <main className="flex-1 p-6">
-          <h1 className="text-3xl font-bold mb-6">Audit Logs</h1>
+    <DashboardLayout sidebar={<RecruiterSidebar />} title="Audit Logs" subtitle={companyName}>
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <p className="text-muted-foreground">View your activity history</p>
+          <Button onClick={exportLogs}>
+            <Download className="mr-2 h-4 w-4" />
+            Export Logs
+          </Button>
+        </div>
 
-          <Card className="p-6">
-            <div className="flex gap-4 mb-6">
-              <div className="flex-1">
-                <Label htmlFor="startDate">Start Date</Label>
-                <Input
-                  id="startDate"
-                  type="date"
-                  value={filters.startDate}
-                  onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
-                />
-              </div>
-              <div className="flex-1">
-                <Label htmlFor="endDate">End Date</Label>
-                <Input
-                  id="endDate"
-                  type="date"
-                  value={filters.endDate}
-                  onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
-                />
-              </div>
-              <div className="flex items-end gap-2">
-                <Button onClick={fetchAuditLogs}>Apply Filters</Button>
-                <Button variant="outline" onClick={exportLogs}>
-                  <Download className="mr-2 h-4 w-4" />
-                  Export
-                </Button>
-              </div>
+        <Card className="p-6">
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <div>
+              <Label htmlFor="startDate">Start Date</Label>
+              <Input
+                id="startDate"
+                type="date"
+                value={filters.startDate}
+                onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
+              />
             </div>
+            <div>
+              <Label htmlFor="endDate">End Date</Label>
+              <Input
+                id="endDate"
+                type="date"
+                value={filters.endDate}
+                onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
+              />
+            </div>
+          </div>
 
-            <DataTable
-              data={auditLogs}
-              columns={columns}
-              searchable
-              searchPlaceholder="Search logs..."
-            />
-          </Card>
-        </main>
+          <Button onClick={fetchAuditLogs} className="mb-4">
+            Apply Filters
+          </Button>
+
+          <DataTable data={auditLogs} columns={columns} />
+        </Card>
       </div>
-    </SidebarProvider>
+    </DashboardLayout>
   );
 }

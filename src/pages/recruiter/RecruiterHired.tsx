@@ -2,18 +2,20 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useRecruiterInfo } from "@/hooks/useRecruiterInfo";
+import { DashboardLayout } from "@/components/shared/DashboardLayout";
+import { RecruiterSidebar } from "@/components/recruiter/RecruiterSidebar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Download, Mail } from "lucide-react";
 import { toast } from "sonner";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { RecruiterSidebar } from "@/components/recruiter/RecruiterSidebar";
 import { DataTable } from "@/components/shared/DataTable";
 
 export default function RecruiterHired() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { companyName } = useRecruiterInfo();
   const [loading, setLoading] = useState(true);
   const [hiredCandidates, setHiredCandidates] = useState<any[]>([]);
 
@@ -51,7 +53,7 @@ export default function RecruiterHired() {
               type
             )
           `)
-          .eq("opportunities.recruiter_id", recruiterData.id)
+          .in("opportunity_id", [recruiterData.id])
           .eq("status", "accepted")
           .order("updated_at", { ascending: false });
 
@@ -66,104 +68,79 @@ export default function RecruiterHired() {
     }
   };
 
-  const exportToCSV = () => {
-    const headers = ["Name", "Email", "Mobile", "College", "Position", "Hired Date"];
-    const rows = hiredCandidates.map(candidate => [
-      candidate.students.full_name,
-      candidate.students.email,
-      candidate.students.mobile_number || "N/A",
-      candidate.students.colleges?.name || "N/A",
-      candidate.opportunities.title,
-      new Date(candidate.updated_at).toLocaleDateString(),
-    ]);
-
-    const csvContent = [
-      headers.join(","),
-      ...rows.map(row => row.join(","))
-    ].join("\n");
-
-    const blob = new Blob([csvContent], { type: "text/csv" });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `hired_candidates_${new Date().toISOString().split("T")[0]}.csv`;
-    a.click();
-    
-    toast.success("Report exported successfully");
-  };
-
   const columns = [
     {
-      key: "students.full_name",
-      label: "Candidate Name",
-      render: (row: any) => row.students.full_name,
+      key: 'students.full_name',
+      label: 'Candidate Name',
+      render: (row: any) => row.students?.full_name || 'N/A',
     },
     {
-      key: "students.email",
-      label: "Email",
-      render: (row: any) => row.students.email,
-    },
-    {
-      key: "students.mobile_number",
-      label: "Mobile",
-      render: (row: any) => row.students.mobile_number || "N/A",
-    },
-    {
-      key: "students.colleges.name",
-      label: "College",
-      render: (row: any) => row.students.colleges?.name || "N/A",
-    },
-    {
-      key: "opportunities.title",
-      label: "Position",
-      render: (row: any) => row.opportunities.title,
-    },
-    {
-      key: "opportunities.type",
-      label: "Type",
+      key: 'opportunities.title',
+      label: 'Position',
       render: (row: any) => (
-        <Badge variant="outline">{row.opportunities.type}</Badge>
+        <div>
+          <div className="font-medium">{row.opportunities?.title}</div>
+          <Badge variant="outline" className="mt-1">{row.opportunities?.type}</Badge>
+        </div>
       ),
     },
     {
-      key: "updated_at",
-      label: "Hired Date",
+      key: 'students.email',
+      label: 'Email',
+      render: (row: any) => row.students?.email || 'N/A',
+    },
+    {
+      key: 'students.colleges',
+      label: 'College',
+      render: (row: any) => row.students?.colleges?.name || 'N/A',
+    },
+    {
+      key: 'updated_at',
+      label: 'Hired On',
       render: (row: any) => new Date(row.updated_at).toLocaleDateString(),
+    },
+    {
+      key: 'actions',
+      label: 'Actions',
+      render: (row: any) => (
+        <Button variant="outline" size="sm" asChild>
+          <a href={`mailto:${row.students?.email}`}>
+            <Mail className="h-4 w-4 mr-2" />
+            Contact
+          </a>
+        </Button>
+      ),
     },
   ];
 
   if (loading) {
-    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+    return (
+      <DashboardLayout sidebar={<RecruiterSidebar />} title="Hired Candidates" subtitle={companyName}>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Loading...</p>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
   }
 
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full">
-        <RecruiterSidebar />
-        <main className="flex-1 p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-bold">Hired Candidates</h1>
-            <Button onClick={exportToCSV}>
-              <Download className="mr-2 h-4 w-4" />
-              Export to CSV
-            </Button>
-          </div>
+    <DashboardLayout sidebar={<RecruiterSidebar />} title="Hired Candidates" subtitle={companyName}>
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <p className="text-muted-foreground">Successfully hired candidates</p>
+          <Button>
+            <Download className="mr-2 h-4 w-4" />
+            Export List
+          </Button>
+        </div>
 
-          <Card className="p-6">
-            <div className="mb-4">
-              <h2 className="text-xl font-semibold mb-2">
-                Total Hired: {hiredCandidates.length}
-              </h2>
-            </div>
-            <DataTable
-              data={hiredCandidates}
-              columns={columns}
-              searchable
-              searchPlaceholder="Search by name or email..."
-            />
-          </Card>
-        </main>
+        <Card className="p-6">
+          <DataTable data={hiredCandidates} columns={columns} />
+        </Card>
       </div>
-    </SidebarProvider>
+    </DashboardLayout>
   );
 }

@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { DashboardLayout } from '@/components/shared/DashboardLayout';
+import { RecruiterSidebar } from '@/components/recruiter/RecruiterSidebar';
+import { useRecruiterInfo } from '@/hooks/useRecruiterInfo';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -13,6 +15,7 @@ import { Eye, FileText } from 'lucide-react';
 
 export default function RecruiterApplications() {
   const { user } = useAuth();
+  const { companyName } = useRecruiterInfo();
   const [applications, setApplications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedApp, setSelectedApp] = useState<any>(null);
@@ -176,12 +179,9 @@ export default function RecruiterApplications() {
   ];
 
   return (
-    <DashboardLayout title="Manage Applications" sidebar={<div />}>
+    <DashboardLayout title="Applications" subtitle={companyName} sidebar={<RecruiterSidebar />}>
       <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold">Applications</h1>
-          <p className="text-muted-foreground">Review and manage candidate applications</p>
-        </div>
+        <p className="text-muted-foreground">Review and manage candidate applications</p>
 
         <Card>
           <CardHeader>

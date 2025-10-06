@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { DashboardLayout } from '@/components/shared/DashboardLayout';
+import { RecruiterSidebar } from '@/components/recruiter/RecruiterSidebar';
+import { useRecruiterInfo } from '@/hooks/useRecruiterInfo';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,6 +17,7 @@ import { Plus, Edit, Trash } from 'lucide-react';
 
 export default function RecruiterOpportunities() {
   const { user } = useAuth();
+  const { companyName } = useRecruiterInfo();
   const [opportunities, setOpportunities] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -222,13 +225,10 @@ export default function RecruiterOpportunities() {
   ];
 
   return (
-    <DashboardLayout title="Manage Opportunities" sidebar={<div />}>
+    <DashboardLayout title="Opportunities" subtitle={companyName} sidebar={<RecruiterSidebar />}>
       <div className="space-y-6">
         <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold">Opportunities</h1>
-            <p className="text-muted-foreground">Post and manage job opportunities</p>
-          </div>
+          <p className="text-muted-foreground">Post and manage job opportunities</p>
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
               <Button onClick={() => { resetForm(); setDialogOpen(true); }}>

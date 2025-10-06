@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useRecruiterInfo } from "@/hooks/useRecruiterInfo";
+import { DashboardLayout } from "@/components/shared/DashboardLayout";
+import { RecruiterSidebar } from "@/components/recruiter/RecruiterSidebar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,17 +13,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Edit, Trash2 } from "lucide-react";
+import { Plus, Edit } from "lucide-react";
 import { toast } from "sonner";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { RecruiterSidebar } from "@/components/recruiter/RecruiterSidebar";
 
 export default function RecruiterJobs() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { companyName, recruiterId: recId } = useRecruiterInfo();
   const [loading, setLoading] = useState(true);
   const [opportunities, setOpportunities] = useState<any[]>([]);
-  const [recruiterId, setRecruiterId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingJob, setEditingJob] = useState<any>(null);
   const [formData, setFormData] = useState({
@@ -46,15 +47,8 @@ export default function RecruiterJobs() {
 
   const fetchRecruiterData = async () => {
     try {
-      const { data: recruiterData } = await supabase
-        .from("recruiters")
-        .select("id")
-        .eq("user_id", user?.id)
-        .single();
-
-      if (recruiterData) {
-        setRecruiterId(recruiterData.id);
-        await fetchOpportunities(recruiterData.id);
+      if (recId) {
+        await fetchOpportunities(recId);
       }
     } catch (error) {
       console.error("Error fetching recruiter data:", error);
@@ -84,7 +78,7 @@ export default function RecruiterJobs() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!recruiterId) {
+    if (!recId) {
       toast.error("Recruiter profile not found");
       return;
     }
@@ -100,7 +94,7 @@ export default function RecruiterJobs() {
       positions_available: parseInt(formData.positions_available) || 1,
       skills_required: formData.skills_required.split(",").map(s => s.trim()),
       deadline: formData.deadline || null,
-      recruiter_id: recruiterId,
+      recruiter_id: recId,
       created_by: user?.id,
       active: true,
     };
@@ -125,7 +119,7 @@ export default function RecruiterJobs() {
 
       setDialogOpen(false);
       resetForm();
-      fetchOpportunities(recruiterId);
+      if (recId) fetchOpportunities(recId);
     } catch (error: any) {
       console.error("Error saving job:", error);
       toast.error(error.message || "Failed to save job posting");
@@ -159,7 +153,7 @@ export default function RecruiterJobs() {
       toast.error("Failed to update job status");
     } else {
       toast.success(`Job ${!currentStatus ? "activated" : "deactivated"} successfully`);
-      if (recruiterId) fetchOpportunities(recruiterId);
+      if (recId) fetchOpportunities(recId);
     }
   };
 
@@ -180,16 +174,23 @@ export default function RecruiterJobs() {
   };
 
   if (loading) {
-    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+    return (
+      <DashboardLayout sidebar={<RecruiterSidebar />} title="Job Postings" subtitle={companyName}>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Loading...</p>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
   }
 
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full">
-        <RecruiterSidebar />
-        <main className="flex-1 p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-bold">Job Postings</h1>
+    <DashboardLayout sidebar={<RecruiterSidebar />} title="Job Postings" subtitle={companyName}>
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <p className="text-muted-foreground">Manage your job postings and track applications</p>
             <Dialog open={dialogOpen} onOpenChange={(open) => {
               setDialogOpen(open);
               if (!open) resetForm();
@@ -316,9 +317,9 @@ export default function RecruiterJobs() {
                 </form>
               </DialogContent>
             </Dialog>
-          </div>
+        </div>
 
-          <div className="grid gap-4">
+        <div className="grid gap-4">
             {opportunities.map((job) => (
               <Card key={job.id} className="p-6">
                 <div className="flex justify-between items-start">
@@ -363,9 +364,8 @@ export default function RecruiterJobs() {
                 </div>
               </Card>
             ))}
-          </div>
-        </main>
+        </div>
       </div>
-    </SidebarProvider>
+    </DashboardLayout>
   );
 }

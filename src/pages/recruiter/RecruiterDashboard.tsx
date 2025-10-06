@@ -3,6 +3,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { DashboardLayout } from '@/components/shared/DashboardLayout';
 import { RecruiterSidebar } from '@/components/recruiter/RecruiterSidebar';
+import { useRecruiterInfo } from '@/hooks/useRecruiterInfo';
 import { StatsCard } from '@/components/analytics/StatsCard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -28,7 +29,8 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { toast } from 'sonner';
 
 const RecruiterDashboard = () => {
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
+  const { companyName } = useRecruiterInfo();
   const [loading, setLoading] = useState(true);
   const [recruiterData, setRecruiterData] = useState<any>(null);
   const [opportunities, setOpportunities] = useState<any[]>([]);
@@ -203,12 +205,15 @@ const RecruiterDashboard = () => {
   }
 
   return (
-    <DashboardLayout sidebar={<RecruiterSidebar />}>
+    <DashboardLayout 
+      sidebar={<RecruiterSidebar />}
+      title="Recruiter Dashboard"
+      subtitle={companyName}
+    >
       <div className="space-y-6">
         {/* Header Section */}
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">{recruiterData?.company_name}</h1>
             <p className="text-muted-foreground mb-2">{recruiterData?.industry}</p>
             <div className="flex gap-2">
               <Badge variant={recruiterData?.verified ? 'default' : 'secondary'}>
