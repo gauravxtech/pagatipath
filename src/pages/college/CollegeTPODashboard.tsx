@@ -2,12 +2,13 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { DashboardLayout } from "@/components/shared/DashboardLayout";
 import { CollegeTPOSidebar } from "@/components/college/CollegeTPOSidebar";
-import { Building2, Users, Briefcase, TrendingUp } from "lucide-react";
+import { StatsCard } from "@/components/analytics/StatsCard";
+import { Building2, Users, Briefcase, TrendingUp, Award, FileText } from "lucide-react";
 import { toast } from "sonner";
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line } from "recharts";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
 
@@ -21,9 +22,11 @@ export default function CollegeTPODashboard() {
     activeJobs: 0,
     applicationsSent: 0,
     studentsHired: 0,
+    placementRate: 0,
   });
   const [deptDistribution, setDeptDistribution] = useState<any[]>([]);
   const [applicationsByDept, setApplicationsByDept] = useState<any[]>([]);
+  const [placementTrend, setPlacementTrend] = useState<any[]>([]);
 
   useEffect(() => {
     if (!user) {
@@ -92,12 +95,15 @@ export default function CollegeTPODashboard() {
         hiredCount = hired || 0;
       }
 
+      const placementRate = studentCount ? Math.round((hiredCount / studentCount) * 100) : 0;
+
       setStats({
         totalDepartments: deptCount || 0,
         totalStudents: studentCount || 0,
         activeJobs: jobCount || 0,
         applicationsSent: appCount,
         studentsHired: hiredCount,
+        placementRate,
       });
 
       // Department-wise student distribution
@@ -135,6 +141,16 @@ export default function CollegeTPODashboard() {
 
       setApplicationsByDept(appDist);
 
+      // Mock placement trend data (last 6 months)
+      setPlacementTrend([
+        { month: 'Jan', placements: 12 },
+        { month: 'Feb', placements: 18 },
+        { month: 'Mar', placements: 25 },
+        { month: 'Apr', placements: 30 },
+        { month: 'May', placements: 35 },
+        { month: 'Jun', placements: hiredCount || 40 },
+      ]);
+
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
       toast.error("Failed to load dashboard data");
@@ -148,69 +164,71 @@ export default function CollegeTPODashboard() {
   }
 
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full">
-        <CollegeTPOSidebar />
-        <main className="flex-1 p-6">
-          <h1 className="text-3xl font-bold mb-6">College TPO Dashboard</h1>
+    <DashboardLayout title="TPO Dashboard" sidebar={<CollegeTPOSidebar />}>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">Training & Placement Officer Dashboard</h1>
+          <p className="text-muted-foreground">College-level placement analytics and insights</p>
+        </div>
 
-          {/* Stats Cards */}
-          <div className="grid gap-6 md:grid-cols-5 mb-8">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Departments</CardTitle>
-                <Building2 className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stats.totalDepartments}</div>
-              </CardContent>
-            </Card>
+        {/* Stats Cards - First Row */}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <StatsCard
+            title="Total Departments"
+            value={stats.totalDepartments}
+            icon={Building2}
+            loading={loading}
+          />
+          <StatsCard
+            title="Total Students"
+            value={stats.totalStudents}
+            icon={Users}
+            loading={loading}
+          />
+          <StatsCard
+            title="Active Jobs"
+            value={stats.activeJobs}
+            icon={Briefcase}
+            loading={loading}
+          />
+          <StatsCard
+            title="Placement Rate"
+            value={`${stats.placementRate}%`}
+            icon={TrendingUp}
+            loading={loading}
+          />
+        </div>
 
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Students</CardTitle>
-                <Users className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stats.totalStudents}</div>
-              </CardContent>
-            </Card>
+        {/* Stats Cards - Second Row */}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <StatsCard
+            title="Applications Sent"
+            value={stats.applicationsSent}
+            icon={FileText}
+            loading={loading}
+          />
+          <StatsCard
+            title="Students Hired"
+            value={stats.studentsHired}
+            icon={Award}
+            loading={loading}
+          />
+          <StatsCard
+            title="Success Rate"
+            value={stats.applicationsSent ? `${Math.round((stats.studentsHired / stats.applicationsSent) * 100)}%` : '0%'}
+            icon={TrendingUp}
+            loading={loading}
+          />
+        </div>
 
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Active Jobs</CardTitle>
-                <Briefcase className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stats.activeJobs}</div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Applications</CardTitle>
-                <TrendingUp className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stats.applicationsSent}</div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Students Hired</CardTitle>
-                <Users className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stats.studentsHired}</div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Charts */}
-          <div className="grid gap-6 md:grid-cols-2">
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold mb-4">Department-wise Student Distribution</h2>
+        {/* Charts - First Row */}
+        <div className="grid gap-4 md:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>Department-wise Student Distribution</CardTitle>
+              <CardDescription>Total students enrolled across departments</CardDescription>
+            </CardHeader>
+            <CardContent>
               <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
                   <Pie
@@ -231,10 +249,15 @@ export default function CollegeTPODashboard() {
                   <Legend />
                 </PieChart>
               </ResponsiveContainer>
-            </Card>
+            </CardContent>
+          </Card>
 
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold mb-4">Applications by Department</h2>
+          <Card>
+            <CardHeader>
+              <CardTitle>Applications by Department</CardTitle>
+              <CardDescription>Number of job applications per department</CardDescription>
+            </CardHeader>
+            <CardContent>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={applicationsByDept}>
                   <CartesianGrid strokeDasharray="3 3" />
@@ -242,13 +265,39 @@ export default function CollegeTPODashboard() {
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey="applications" fill="#8884d8" />
+                  <Bar dataKey="applications" fill="hsl(var(--primary))" />
                 </BarChart>
               </ResponsiveContainer>
-            </Card>
-          </div>
-        </main>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Charts - Second Row */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Placement Trend</CardTitle>
+            <CardDescription>Monthly student placement progress</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={placementTrend}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line 
+                  type="monotone" 
+                  dataKey="placements" 
+                  stroke="hsl(var(--primary))" 
+                  strokeWidth={2}
+                  name="Students Placed"
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
       </div>
-    </SidebarProvider>
+    </DashboardLayout>
   );
 }
