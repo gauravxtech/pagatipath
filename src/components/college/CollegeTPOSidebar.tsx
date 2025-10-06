@@ -1,68 +1,49 @@
-import { 
-  LayoutDashboard, 
-  Building2, 
-  Users, 
-  Briefcase, 
-  FileText, 
-  Calendar, 
-  BarChart3, 
-  Bell, 
-  FileSearch, 
-  Settings,
-  FolderTree 
-} from "lucide-react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink } from 'react-router-dom';
+import { cn } from '@/lib/utils';
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from "@/components/ui/sidebar";
+  LayoutDashboard,
+  Building2,
+  Users,
+  Briefcase,
+  BarChart3,
+  Bell,
+  FileSearch,
+  Settings,
+  FolderTree,
+} from 'lucide-react';
 
-const menuItems = [
-  { title: "Dashboard", url: "/clg-tpo/dashboard", icon: LayoutDashboard },
-  { title: "Recruiters", url: "/clg-tpo/recruiters", icon: Building2 },
-  { title: "Job Drives", url: "/clg-tpo/jobs", icon: Briefcase },
-  { title: "Departments", url: "/clg-tpo/departments", icon: FolderTree },
-  { title: "Students", url: "/clg-tpo/students", icon: Users },
-  { title: "Reports", url: "/clg-tpo/reports", icon: BarChart3 },
-  { title: "Notifications", url: "/clg-tpo/notifications", icon: Bell },
-  { title: "Audit Logs", url: "/clg-tpo/audit", icon: FileSearch },
-  { title: "Settings", url: "/clg-tpo/settings", icon: Settings },
+const navItems = [
+  { to: '/clg-tpo/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/clg-tpo/recruiters', label: 'Recruiters', icon: Building2 },
+  { to: '/clg-tpo/jobs', label: 'Job Drives', icon: Briefcase },
+  { to: '/clg-tpo/departments', label: 'Departments', icon: FolderTree },
+  { to: '/clg-tpo/students', label: 'Students', icon: Users },
+  { to: '/clg-tpo/reports', label: 'Reports', icon: BarChart3 },
+  { to: '/clg-tpo/notifications', label: 'Notifications', icon: Bell },
+  { to: '/clg-tpo/audit', label: 'Audit Logs', icon: FileSearch },
+  { to: '/clg-tpo/settings', label: 'Settings', icon: Settings },
 ];
 
 export function CollegeTPOSidebar() {
-  const { open } = useSidebar();
-  const location = useLocation();
-
-  const isActive = (path: string) => location.pathname === path;
-
   return (
-    <Sidebar collapsible="icon">
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>College TPO Portal</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {menuItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={isActive(item.url)}>
-                    <NavLink to={item.url}>
-                      <item.icon className="h-4 w-4" />
-                      {open && <span>{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-    </Sidebar>
+    <nav className="p-4 space-y-2">
+      {navItems.map((item) => (
+        <NavLink
+          key={item.to}
+          to={item.to}
+          className={({ isActive }) =>
+            cn(
+              'flex items-center gap-3 px-4 py-3 rounded-lg transition-colors',
+              isActive
+                ? 'bg-primary text-primary-foreground'
+                : 'hover:bg-muted'
+            )
+          }
+        >
+          <item.icon className="h-5 w-5" />
+          <span>{item.label}</span>
+        </NavLink>
+      ))}
+    </nav>
   );
 }
