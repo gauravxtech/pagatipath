@@ -75,8 +75,7 @@ export const Navbar = () => {
               ) : (
                 <>
                   <Button
-                    variant="secondary"
-                    className="font-semibold shadow-lg hover:shadow-xl transition-shadow"
+                    className="bg-orange-600 text-white hover:bg-orange-700 font-semibold shadow-lg hover:shadow-xl transition-all"
                     onClick={() => setLoginOpen(true)}
                   >
                     Login
@@ -132,8 +131,7 @@ export const Navbar = () => {
                     ) : (
                       <>
                         <Button
-                          variant="default"
-                          className="w-full font-semibold"
+                          className="w-full bg-orange-600 text-white hover:bg-orange-700 font-semibold"
                           onClick={() => {
                             setIsOpen(false);
                             setLoginOpen(true);
