@@ -363,10 +363,10 @@ const Contact = () => {
             Check out our frequently asked questions or browse our help center for quick answers.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button variant="outline" className="border-2 border-primary text-primary hover:bg-primary hover:text-white px-8 py-3 text-lg">
+            <Button variant="outline" className="border-2 border-primary dark:border-orange-600 text-primary dark:text-orange-600 hover:bg-primary dark:hover:bg-orange-600 hover:text-white px-8 py-3 text-lg">
               Visit Help Center
             </Button>
-            <Button variant="outline" className="border-2 border-primary text-primary hover:bg-primary hover:text-white px-8 py-3 text-lg">
+            <Button variant="outline" className="border-2 border-primary dark:border-orange-600 text-primary dark:text-orange-600 hover:bg-primary dark:hover:bg-orange-600 hover:text-white px-8 py-3 text-lg">
               View FAQs
             </Button>
           </div>
