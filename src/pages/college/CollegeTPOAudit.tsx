@@ -2,19 +2,21 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useCollegeInfo } from "@/hooks/useCollegeInfo";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Download } from "lucide-react";
 import { toast } from "sonner";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { DashboardLayout } from "@/components/shared/DashboardLayout";
 import { CollegeTPOSidebar } from "@/components/college/CollegeTPOSidebar";
 import { DataTable } from "@/components/shared/DataTable";
 
 export default function CollegeTPOAudit() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { collegeName } = useCollegeInfo();
   const [loading, setLoading] = useState(true);
   const [auditLogs, setAuditLogs] = useState<any[]>([]);
   const [filters, setFilters] = useState({
@@ -116,50 +118,43 @@ export default function CollegeTPOAudit() {
   }
 
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full">
-        <CollegeTPOSidebar />
-        <main className="flex-1 p-6">
-          <h1 className="text-3xl font-bold mb-6">Audit Logs</h1>
-
-          <Card className="p-6">
-            <div className="flex gap-4 mb-6">
-              <div className="flex-1">
-                <Label htmlFor="startDate">Start Date</Label>
-                <Input
-                  id="startDate"
-                  type="date"
-                  value={filters.startDate}
-                  onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
-                />
-              </div>
-              <div className="flex-1">
-                <Label htmlFor="endDate">End Date</Label>
-                <Input
-                  id="endDate"
-                  type="date"
-                  value={filters.endDate}
-                  onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
-                />
-              </div>
-              <div className="flex items-end gap-2">
-                <Button onClick={fetchAuditLogs}>Apply Filters</Button>
-                <Button variant="outline" onClick={exportLogs}>
-                  <Download className="mr-2 h-4 w-4" />
-                  Export
-                </Button>
-              </div>
-            </div>
-
-            <DataTable
-              data={auditLogs}
-              columns={columns}
-              searchable
-              searchPlaceholder="Search logs..."
+    <DashboardLayout title="Audit Logs" subtitle={collegeName} sidebar={<CollegeTPOSidebar />}>
+      <Card className="p-6">
+        <div className="flex gap-4 mb-6">
+          <div className="flex-1">
+            <Label htmlFor="startDate">Start Date</Label>
+            <Input
+              id="startDate"
+              type="date"
+              value={filters.startDate}
+              onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
             />
-          </Card>
-        </main>
-      </div>
-    </SidebarProvider>
+          </div>
+          <div className="flex-1">
+            <Label htmlFor="endDate">End Date</Label>
+            <Input
+              id="endDate"
+              type="date"
+              value={filters.endDate}
+              onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
+            />
+          </div>
+          <div className="flex items-end gap-2">
+            <Button onClick={fetchAuditLogs}>Apply Filters</Button>
+            <Button variant="outline" onClick={exportLogs}>
+              <Download className="mr-2 h-4 w-4" />
+              Export
+            </Button>
+          </div>
+        </div>
+
+        <DataTable
+          data={auditLogs}
+          columns={columns}
+          searchable
+          searchPlaceholder="Search logs..."
+        />
+      </Card>
+    </DashboardLayout>
   );
 }

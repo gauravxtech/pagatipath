@@ -2,11 +2,12 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useCollegeInfo } from "@/hooks/useCollegeInfo";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { toast } from "sonner";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { DashboardLayout } from "@/components/shared/DashboardLayout";
 import { CollegeTPOSidebar } from "@/components/college/CollegeTPOSidebar";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
@@ -15,6 +16,7 @@ const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
 export default function CollegeTPOReports() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { collegeName } = useCollegeInfo();
   const [loading, setLoading] = useState(true);
   const [analytics, setAnalytics] = useState<any>({
     deptWisePlacement: [],
@@ -139,72 +141,65 @@ export default function CollegeTPOReports() {
   }
 
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full">
-        <CollegeTPOSidebar />
-        <main className="flex-1 p-6">
-          <h1 className="text-3xl font-bold mb-6">College Placement Reports</h1>
-
-          <div className="grid gap-6">
-            <Card className="p-6">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold">Department-wise Placement Summary</h2>
-                <Button variant="outline" size="sm" onClick={() => exportReport("dept")}>
-                  <Download className="mr-2 h-4 w-4" />
-                  Export
-                </Button>
-              </div>
-              {analytics.deptWisePlacement.length > 0 ? (
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={analytics.deptWisePlacement}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Bar dataKey="placements" fill="#8884d8" />
-                  </BarChart>
-                </ResponsiveContainer>
-              ) : (
-                <p className="text-center text-muted-foreground">No placement data available</p>
-              )}
-            </Card>
-
-            <Card className="p-6">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold">Company-wise Hiring Count</h2>
-                <Button variant="outline" size="sm" onClick={() => exportReport("company")}>
-                  <Download className="mr-2 h-4 w-4" />
-                  Export
-                </Button>
-              </div>
-              {analytics.companyWiseHiring.length > 0 ? (
-                <ResponsiveContainer width="100%" height={300}>
-                  <PieChart>
-                    <Pie
-                      data={analytics.companyWiseHiring}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      label={(entry) => `${entry.name}: ${entry.value}`}
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="value"
-                    >
-                      {analytics.companyWiseHiring.map((entry: any, index: number) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              ) : (
-                <p className="text-center text-muted-foreground">No hiring data available</p>
-              )}
-            </Card>
+    <DashboardLayout title="College Placement Reports" subtitle={collegeName} sidebar={<CollegeTPOSidebar />}>
+      <div className="grid gap-6">
+        <Card className="p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-semibold">Department-wise Placement Summary</h2>
+            <Button variant="outline" size="sm" onClick={() => exportReport("dept")}>
+              <Download className="mr-2 h-4 w-4" />
+              Export
+            </Button>
           </div>
-        </main>
+          {analytics.deptWisePlacement.length > 0 ? (
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={analytics.deptWisePlacement}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="placements" fill="#8884d8" />
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <p className="text-center text-muted-foreground">No placement data available</p>
+          )}
+        </Card>
+
+        <Card className="p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-semibold">Company-wise Hiring Count</h2>
+            <Button variant="outline" size="sm" onClick={() => exportReport("company")}>
+              <Download className="mr-2 h-4 w-4" />
+              Export
+            </Button>
+          </div>
+          {analytics.companyWiseHiring.length > 0 ? (
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={analytics.companyWiseHiring}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={(entry) => `${entry.name}: ${entry.value}`}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {analytics.companyWiseHiring.map((entry: any, index: number) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          ) : (
+            <p className="text-center text-muted-foreground">No hiring data available</p>
+          )}
+        </Card>
       </div>
-    </SidebarProvider>
+    </DashboardLayout>
   );
 }

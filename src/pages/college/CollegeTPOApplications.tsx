@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useCollegeInfo } from "@/hooks/useCollegeInfo";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -9,13 +10,14 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Eye } from "lucide-react";
 import { toast } from "sonner";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { DashboardLayout } from "@/components/shared/DashboardLayout";
 import { CollegeTPOSidebar } from "@/components/college/CollegeTPOSidebar";
 import { DataTable } from "@/components/shared/DataTable";
 
 export default function CollegeTPOApplications() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { collegeName } = useCollegeInfo();
   const [loading, setLoading] = useState(true);
   const [applications, setApplications] = useState<any[]>([]);
   const [departments, setDepartments] = useState<any[]>([]);
@@ -157,63 +159,56 @@ export default function CollegeTPOApplications() {
   }
 
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full">
-        <CollegeTPOSidebar />
-        <main className="flex-1 p-6">
-          <h1 className="text-3xl font-bold mb-6">Student Applications</h1>
+    <DashboardLayout title="Student Applications" subtitle={collegeName} sidebar={<CollegeTPOSidebar />}>
+      <Card className="p-6">
+        <div className="flex gap-4 mb-6">
+          <div className="w-48">
+            <Label htmlFor="department">Department</Label>
+            <Select
+              value={filters.department}
+              onValueChange={(value) => setFilters({ ...filters, department: value })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="All Departments" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">All Departments</SelectItem>
+                {departments.map((dept) => (
+                  <SelectItem key={dept.id} value={dept.name}>
+                    {dept.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="w-48">
+            <Label htmlFor="status">Status</Label>
+            <Select
+              value={filters.status}
+              onValueChange={(value) => setFilters({ ...filters, status: value })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="All Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">All Status</SelectItem>
+                <SelectItem value="applied">Applied</SelectItem>
+                <SelectItem value="under_review">Under Review</SelectItem>
+                <SelectItem value="interview_scheduled">Interview Scheduled</SelectItem>
+                <SelectItem value="accepted">Accepted</SelectItem>
+                <SelectItem value="rejected">Rejected</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
 
-          <Card className="p-6">
-            <div className="flex gap-4 mb-6">
-              <div className="w-48">
-                <Label htmlFor="department">Department</Label>
-                <Select
-                  value={filters.department}
-                  onValueChange={(value) => setFilters({ ...filters, department: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="All Departments" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">All Departments</SelectItem>
-                    {departments.map((dept) => (
-                      <SelectItem key={dept.id} value={dept.name}>
-                        {dept.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="w-48">
-                <Label htmlFor="status">Status</Label>
-                <Select
-                  value={filters.status}
-                  onValueChange={(value) => setFilters({ ...filters, status: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="All Status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">All Status</SelectItem>
-                    <SelectItem value="applied">Applied</SelectItem>
-                    <SelectItem value="under_review">Under Review</SelectItem>
-                    <SelectItem value="interview_scheduled">Interview Scheduled</SelectItem>
-                    <SelectItem value="accepted">Accepted</SelectItem>
-                    <SelectItem value="rejected">Rejected</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <DataTable
-              data={filteredApplications}
-              columns={columns}
-              searchable
-              searchPlaceholder="Search applications..."
-            />
-          </Card>
-        </main>
-      </div>
-    </SidebarProvider>
+        <DataTable
+          data={filteredApplications}
+          columns={columns}
+          searchable
+          searchPlaceholder="Search applications..."
+        />
+      </Card>
+    </DashboardLayout>
   );
 }

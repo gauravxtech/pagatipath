@@ -2,17 +2,19 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useCollegeInfo } from "@/hooks/useCollegeInfo";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock } from "lucide-react";
 import { toast } from "sonner";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { DashboardLayout } from "@/components/shared/DashboardLayout";
 import { CollegeTPOSidebar } from "@/components/college/CollegeTPOSidebar";
 import { format } from "date-fns";
 
 export default function CollegeTPOInterviews() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { collegeName } = useCollegeInfo();
   const [loading, setLoading] = useState(true);
   const [interviews, setInterviews] = useState<any[]>([]);
 
@@ -97,75 +99,68 @@ export default function CollegeTPOInterviews() {
   }
 
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full">
-        <CollegeTPOSidebar />
-        <main className="flex-1 p-6">
-          <h1 className="text-3xl font-bold mb-6">Interview Schedule</h1>
-
-          <div className="grid gap-4">
-            {interviews.length === 0 ? (
-              <Card className="p-6 text-center">
-                <p className="text-muted-foreground">No interviews scheduled yet.</p>
-              </Card>
-            ) : (
-              interviews.map((interview) => (
-                <Card key={interview.id} className="p-6">
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <h3 className="text-lg font-semibold">
-                          {interview.applications?.students?.full_name}
-                        </h3>
-                        <Badge variant={getStatusColor(interview.status)}>
-                          {interview.status}
-                        </Badge>
-                      </div>
-                      <p className="text-muted-foreground mb-2">
-                        {interview.applications?.opportunities?.title} at{" "}
-                        {interview.applications?.opportunities?.recruiters?.company_name}
-                      </p>
-                      <div className="flex flex-wrap gap-4 text-sm">
-                        <span className="flex items-center gap-1">
-                          <Calendar className="h-4 w-4" />
-                          {format(new Date(interview.scheduled_at), "PPP")}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Clock className="h-4 w-4" />
-                          {format(new Date(interview.scheduled_at), "p")} ({interview.duration_minutes} min)
-                        </span>
-                      </div>
-                      {interview.meeting_link && (
-                        <p className="text-sm mt-2">
-                          <strong>Link:</strong>{" "}
-                          <a
-                            href={interview.meeting_link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-primary"
-                          >
-                            {interview.meeting_link}
-                          </a>
-                        </p>
-                      )}
-                      {interview.location && (
-                        <p className="text-sm mt-1">
-                          <strong>Location:</strong> {interview.location}
-                        </p>
-                      )}
-                      {interview.interviewer_name && (
-                        <p className="text-sm mt-1">
-                          <strong>Interviewer:</strong> {interview.interviewer_name}
-                        </p>
-                      )}
-                    </div>
+    <DashboardLayout title="Interview Schedule" subtitle={collegeName} sidebar={<CollegeTPOSidebar />}>
+      <div className="grid gap-4">
+        {interviews.length === 0 ? (
+          <Card className="p-6 text-center">
+            <p className="text-muted-foreground">No interviews scheduled yet.</p>
+          </Card>
+        ) : (
+          interviews.map((interview) => (
+            <Card key={interview.id} className="p-6">
+              <div className="flex justify-between items-start">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <h3 className="text-lg font-semibold">
+                      {interview.applications?.students?.full_name}
+                    </h3>
+                    <Badge variant={getStatusColor(interview.status)}>
+                      {interview.status}
+                    </Badge>
                   </div>
-                </Card>
-              ))
-            )}
-          </div>
-        </main>
+                  <p className="text-muted-foreground mb-2">
+                    {interview.applications?.opportunities?.title} at{" "}
+                    {interview.applications?.opportunities?.recruiters?.company_name}
+                  </p>
+                  <div className="flex flex-wrap gap-4 text-sm">
+                    <span className="flex items-center gap-1">
+                      <Calendar className="h-4 w-4" />
+                      {format(new Date(interview.scheduled_at), "PPP")}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Clock className="h-4 w-4" />
+                      {format(new Date(interview.scheduled_at), "p")} ({interview.duration_minutes} min)
+                    </span>
+                  </div>
+                  {interview.meeting_link && (
+                    <p className="text-sm mt-2">
+                      <strong>Link:</strong>{" "}
+                      <a
+                        href={interview.meeting_link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary"
+                      >
+                        {interview.meeting_link}
+                      </a>
+                    </p>
+                  )}
+                  {interview.location && (
+                    <p className="text-sm mt-1">
+                      <strong>Location:</strong> {interview.location}
+                    </p>
+                  )}
+                  {interview.interviewer_name && (
+                    <p className="text-sm mt-1">
+                      <strong>Interviewer:</strong> {interview.interviewer_name}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </Card>
+          ))
+        )}
       </div>
-    </SidebarProvider>
+    </DashboardLayout>
   );
 }
