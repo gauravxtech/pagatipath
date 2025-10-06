@@ -109,7 +109,21 @@ export const LoginDialog = ({ open, onOpenChange }: LoginDialogProps) => {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="password">Password</Label>
+              <button
+                type="button"
+                className="text-sm text-primary hover:underline font-medium"
+                onClick={() => {
+                  toast({
+                    title: "Password Reset",
+                    description: "Please contact your administrator for password reset assistance.",
+                  });
+                }}
+              >
+                Forgot Password?
+              </button>
+            </div>
             <Input
               id="password"
               type="password"
@@ -122,6 +136,27 @@ export const LoginDialog = ({ open, onOpenChange }: LoginDialogProps) => {
 
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? "Logging in..." : "Login"}
+          </Button>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">Or</span>
+            </div>
+          </div>
+
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all"
+            onClick={() => {
+              onOpenChange(false);
+              navigate("/register");
+            }}
+          >
+            Create New Account
           </Button>
         </form>
       </DialogContent>
