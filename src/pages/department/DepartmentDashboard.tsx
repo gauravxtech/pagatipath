@@ -128,6 +128,16 @@ const DepartmentDashboard = () => {
       subtitle={`${departmentData?.colleges?.name || ""} • Code: ${departmentData?.code || ""}`}
     >
       <div className="space-y-8">
+        {/* Header Section */}
+        <div className="bg-white dark:bg-card rounded-xl p-6 shadow-soft border border-gray-100 dark:border-border">
+          <h1 className="text-3xl font-bold tracking-tight text-gray-800 dark:text-foreground">
+            {departmentData?.name || "Department Dashboard"}
+          </h1>
+          <p className="text-gray-600 dark:text-muted-foreground mt-2">
+            {departmentData?.colleges?.name || ""} • Code: {departmentData?.code || ""} • Performance metrics and student analytics
+          </p>
+        </div>
+
         {/* Stats Cards */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <StatsCard
@@ -168,8 +178,8 @@ const DepartmentDashboard = () => {
         <div className="grid gap-6 md:grid-cols-2">
           <Card className="bg-white dark:bg-card shadow-soft border border-gray-100 dark:border-border">
             <CardHeader className="pb-4">
-              <CardTitle className="text-lg font-semibold">Application Trends</CardTitle>
-              <CardDescription>Monthly application submissions</CardDescription>
+              <CardTitle className="text-lg font-semibold text-gray-800 dark:text-foreground">Application Trends</CardTitle>
+              <CardDescription className="text-gray-600 dark:text-muted-foreground">Monthly application submissions</CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
@@ -194,8 +204,8 @@ const DepartmentDashboard = () => {
 
           <Card className="bg-white dark:bg-card shadow-soft border border-gray-100 dark:border-border">
             <CardHeader className="pb-4">
-              <CardTitle className="text-lg font-semibold">Skills Distribution</CardTitle>
-              <CardDescription>Student skills breakdown</CardDescription>
+              <CardTitle className="text-lg font-semibold text-gray-800 dark:text-foreground">Skills Distribution</CardTitle>
+              <CardDescription className="text-gray-600 dark:text-muted-foreground">Student skills breakdown</CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
@@ -229,272 +239,290 @@ const DepartmentDashboard = () => {
         </div>
 
         {/* Main Content Tabs */}
-        <Tabs defaultValue="students" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-gray-100 dark:bg-muted p-1 rounded-lg">
-            <TabsTrigger value="students" className="data-[state=active]:bg-white dark:data-[state=active]:bg-card">Students</TabsTrigger>
-            <TabsTrigger value="applications" className="data-[state=active]:bg-white dark:data-[state=active]:bg-card">Applications</TabsTrigger>
-            <TabsTrigger value="opportunities" className="data-[state=active]:bg-white dark:data-[state=active]:bg-card">Opportunities</TabsTrigger>
-            <TabsTrigger value="analytics" className="data-[state=active]:bg-white dark:data-[state=active]:bg-card">Analytics</TabsTrigger>
-          </TabsList>
-
-          {/* Students Tab */}
-          <TabsContent value="students" className="space-y-4">
-            {students.length === 0 ? (
-              <Card className="bg-white dark:bg-card shadow-soft border border-gray-100 dark:border-border">
-                <CardContent className="pt-12 pb-12 text-center">
-                  <Users className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground text-lg">No students enrolled yet</p>
-                </CardContent>
-              </Card>
-            ) : (
-              students.map((student) => (
-                <Card key={student.id} className="bg-white dark:bg-card shadow-soft border border-gray-100 dark:border-border hover:shadow-md transition-all duration-200">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-start gap-3">
-                        <div className="p-2 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
-                          <Users className="h-5 w-5 text-orange-600 dark:text-orange-400" />
-                        </div>
-                        <div>
-                          <CardTitle className="text-lg font-semibold">{student.full_name}</CardTitle>
-                          <CardDescription className="text-sm">{student.abc_id} • {student.email}</CardDescription>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-3xl font-bold text-orange-600 dark:text-orange-400">{student.employability_score}</div>
-                        <p className="text-xs text-muted-foreground font-medium">Score</p>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      <Badge variant={student.profile_completed ? 'default' : 'secondary'} className="font-medium">
-                        {student.profile_completed ? '✓ Profile Complete' : 'Profile Incomplete'}
-                      </Badge>
-                      {student.placed && (
-                        <Badge className="bg-green-600 hover:bg-green-700 text-white font-medium">
-                          <CheckCircle2 className="h-3 w-3 mr-1" />
-                          Placed
-                        </Badge>
-                      )}
-                      {student.skills && student.skills.length > 0 && (
-                        <Badge variant="outline" className="font-medium">{student.skills.length} Skills</Badge>
-                      )}
-                    </div>
-                    {student.skills && student.skills.length > 0 && (
-                      <div className="pt-3 border-t border-gray-100 dark:border-border">
-                        <p className="text-sm font-semibold mb-2 text-gray-700 dark:text-foreground">Skills:</p>
-                        <div className="flex flex-wrap gap-2">
-                          {student.skills.slice(0, 5).map((skill: string, idx: number) => (
-                            <Badge key={idx} variant="secondary" className="font-medium">{skill}</Badge>
-                          ))}
-                          {student.skills.length > 5 && (
-                            <Badge variant="outline" className="font-medium">+{student.skills.length - 5} more</Badge>
-                          )}
-                        </div>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              ))
-            )}
-          </TabsContent>
-
-          {/* Applications Tab */}
-          <TabsContent value="applications" className="space-y-4">
-            {applications.length === 0 ? (
-              <Card className="bg-white dark:bg-card shadow-soft border border-gray-100 dark:border-border">
-                <CardContent className="pt-12 pb-12 text-center">
-                  <Briefcase className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground text-lg">No applications yet from department students</p>
-                </CardContent>
-              </Card>
-            ) : (
-              applications.map((app) => (
-                <Card key={app.id} className="bg-white dark:bg-card shadow-soft border border-gray-100 dark:border-border hover:shadow-md transition-all duration-200">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-start gap-3">
-                        <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                          <Briefcase className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                        </div>
-                        <div>
-                          <CardTitle className="text-lg font-semibold">{app.students.full_name}</CardTitle>
-                          <CardDescription className="text-sm">Applied for: {app.opportunities.title}</CardDescription>
-                        </div>
-                      </div>
-                      <Badge className="font-medium">{app.status.replace('_', ' ')}</Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">
-                        Applied: {new Date(app.applied_at).toLocaleDateString()}
-                      </span>
-                      <Badge variant="outline" className="font-medium">{app.opportunities.type}</Badge>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            )}
-          </TabsContent>
-
-          {/* Opportunities Tab */}
-          <TabsContent value="opportunities" className="space-y-4">
-            {opportunities.length === 0 ? (
-              <Card className="bg-white dark:bg-card shadow-soft border border-gray-100 dark:border-border">
-                <CardContent className="pt-12 pb-12 text-center">
-                  <Briefcase className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground text-lg">No opportunities available for this department yet</p>
-                </CardContent>
-              </Card>
-            ) : (
-              opportunities.map((opp) => (
-                <Card key={opp.id} className="bg-white dark:bg-card shadow-soft border border-gray-100 dark:border-border hover:shadow-md transition-all duration-200">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-start gap-3">
-                        <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                          <Briefcase className="h-5 w-5 text-green-600 dark:text-green-400" />
-                        </div>
-                        <div className="flex-1">
-                          <CardTitle className="text-lg font-semibold">{opp.title}</CardTitle>
-                          <CardDescription className="text-sm">{opp.recruiters.company_name}</CardDescription>
-                        </div>
-                      </div>
-                      <Badge variant={opp.type === 'job' ? 'default' : 'secondary'} className="font-medium">
-                        {opp.type}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm mb-4 text-gray-600 dark:text-muted-foreground line-clamp-2">{opp.description}</p>
-                    <div className="flex flex-wrap gap-4 text-sm">
-                      {opp.location && (
-                        <span className="flex items-center gap-1 text-muted-foreground">
-                          📍 {opp.location}
-                        </span>
-                      )}
-                      {opp.stipend_min && opp.stipend_max && (
-                        <span className="flex items-center gap-1 text-muted-foreground">
-                          💰 ₹{opp.stipend_min} - ₹{opp.stipend_max}
-                        </span>
-                      )}
-                      {opp.positions_available && (
-                        <span className="flex items-center gap-1 text-muted-foreground">
-                          👥 {opp.positions_available} positions
-                        </span>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            )}
-          </TabsContent>
-
-          {/* Analytics Tab */}
-          <TabsContent value="analytics" className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-2">
-              <Card className="bg-white dark:bg-card shadow-soft border border-gray-100 dark:border-border">
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-lg font-semibold">Department Analytics</CardTitle>
-                  <CardDescription>Performance and placement statistics</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-1">
-                  <div className="flex justify-between items-center text-sm py-3 border-b border-gray-100 dark:border-border">
-                    <span className="text-muted-foreground font-medium">Total Students:</span>
-                    <span className="font-bold text-gray-800 dark:text-foreground">{stats.totalStudents}</span>
-                  </div>
-                  <div className="flex justify-between items-center text-sm py-3 border-b border-gray-100 dark:border-border">
-                    <span className="text-muted-foreground font-medium">Placed:</span>
-                    <span className="font-bold text-green-600 dark:text-green-400">{stats.placedStudents}</span>
-                  </div>
-                  <div className="flex justify-between items-center text-sm py-3 border-b border-gray-100 dark:border-border">
-                    <span className="text-muted-foreground font-medium">Unplaced:</span>
-                    <span className="font-bold text-orange-600 dark:text-orange-400">
-                      {stats.totalStudents - stats.placedStudents}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center text-sm py-3 border-b border-gray-100 dark:border-border">
-                    <span className="text-muted-foreground font-medium">Placement Rate:</span>
-                    <span className="font-bold text-gray-800 dark:text-foreground">{placementRate}%</span>
-                  </div>
-                  <div className="flex justify-between items-center text-sm py-3 border-b border-gray-100 dark:border-border">
-                    <span className="text-muted-foreground font-medium">Avg Employability Score:</span>
-                    <span className="font-bold text-gray-800 dark:text-foreground">{stats.avgScore}/100</span>
-                  </div>
-                  <div className="flex justify-between items-center text-sm py-3">
-                    <span className="text-muted-foreground font-medium">Complete Profiles:</span>
-                    <span className="font-bold text-gray-800 dark:text-foreground">
-                      {stats.completedProfiles}/{stats.totalStudents}
-                    </span>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-white dark:bg-card shadow-soft border border-gray-100 dark:border-border">
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-lg font-semibold">Application Activity</CardTitle>
-                  <CardDescription>Student application breakdown</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-1">
-                  <div className="flex justify-between items-center text-sm py-3 border-b border-gray-100 dark:border-border">
-                    <span className="text-muted-foreground font-medium">Total Applications:</span>
-                    <span className="font-bold text-gray-800 dark:text-foreground">{applications.length}</span>
-                  </div>
-                  <div className="flex justify-between items-center text-sm py-3 border-b border-gray-100 dark:border-border">
-                    <span className="text-muted-foreground font-medium">Active Applications:</span>
-                    <span className="font-bold text-blue-600 dark:text-blue-400">
-                      {applications.filter(a => ['under_review', 'interview_scheduled', 'interviewed'].includes(a.status)).length}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center text-sm py-3 border-b border-gray-100 dark:border-border">
-                    <span className="text-muted-foreground font-medium">Offers Received:</span>
-                    <span className="font-bold text-green-600 dark:text-green-400">
-                      {applications.filter(a => a.status === 'offered').length}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center text-sm py-3">
-                    <span className="text-muted-foreground font-medium">Accepted Offers:</span>
-                    <span className="font-bold text-green-600 dark:text-green-400">
-                      {applications.filter(a => a.status === 'accepted').length}
-                    </span>
-                  </div>
-                </CardContent>
-              </Card>
+        <Card className="bg-white dark:bg-card shadow-soft border border-gray-100 dark:border-border">
+          <Tabs defaultValue="students" className="w-full">
+            <div className="border-b border-gray-100 dark:border-border px-6">
+              <TabsList className="bg-transparent h-auto p-0 space-x-6">
+                <TabsTrigger 
+                  value="students" 
+                  className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-0 pb-3 font-medium"
+                >
+                  Students
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="applications"
+                  className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-0 pb-3 font-medium"
+                >
+                  Applications
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="opportunities"
+                  className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-0 pb-3 font-medium"
+                >
+                  Opportunities
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="analytics"
+                  className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-0 pb-3 font-medium"
+                >
+                  Analytics
+                </TabsTrigger>
+              </TabsList>
             </div>
 
-            {/* Recent Activity */}
-            <Card className="bg-white dark:bg-card shadow-soft border border-gray-100 dark:border-border">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-lg font-semibold">Recent Activity</CardTitle>
-                <CardDescription>Latest department updates</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {applications.slice(0, 3).map((app, idx) => (
-                    <div key={idx} className="flex items-center justify-between border-b border-gray-100 dark:border-border pb-3 last:border-0 last:pb-0">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                          <UserCheck className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+            {/* Students Tab */}
+            <TabsContent value="students" className="p-6 space-y-4 mt-0">
+              {students.length === 0 ? (
+                <div className="pt-12 pb-12 text-center">
+                  <Users className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground text-lg">No students enrolled yet</p>
+                </div>
+              ) : (
+                students.map((student) => (
+                  <Card key={student.id} className="bg-gray-50 dark:bg-muted/30 shadow-sm border border-gray-200 dark:border-border hover:shadow-md transition-all duration-200">
+                    <CardHeader className="pb-3">
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-start gap-3">
+                          <div className="p-2 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+                            <Users className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+                          </div>
+                          <div>
+                            <CardTitle className="text-lg font-semibold text-gray-800 dark:text-foreground">{student.full_name}</CardTitle>
+                            <CardDescription className="text-sm text-gray-600 dark:text-muted-foreground">{student.abc_id} • {student.email}</CardDescription>
+                          </div>
                         </div>
-                        <span className="text-sm font-medium text-gray-700 dark:text-foreground">
-                          {app.students.full_name} applied for {app.opportunities.title}
-                        </span>
+                        <div className="text-right">
+                          <div className="text-3xl font-bold text-orange-600 dark:text-orange-400">{student.employability_score}</div>
+                          <p className="text-xs text-gray-600 dark:text-muted-foreground font-medium">Score</p>
+                        </div>
                       </div>
-                      <span className="text-xs text-gray-500 dark:text-muted-foreground font-medium">
-                        {new Date(app.applied_at).toLocaleDateString()}
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        <Badge variant={student.profile_completed ? 'default' : 'secondary'} className="font-medium">
+                          {student.profile_completed ? '✓ Profile Complete' : 'Profile Incomplete'}
+                        </Badge>
+                        {student.placed && (
+                          <Badge className="bg-green-600 hover:bg-green-700 text-white font-medium">
+                            <CheckCircle2 className="h-3 w-3 mr-1" />
+                            Placed
+                          </Badge>
+                        )}
+                        {student.skills && student.skills.length > 0 && (
+                          <Badge variant="outline" className="font-medium">{student.skills.length} Skills</Badge>
+                        )}
+                      </div>
+                      {student.skills && student.skills.length > 0 && (
+                        <div className="pt-3 border-t border-gray-200 dark:border-border">
+                          <p className="text-sm font-semibold mb-2 text-gray-700 dark:text-foreground">Skills:</p>
+                          <div className="flex flex-wrap gap-2">
+                            {student.skills.slice(0, 5).map((skill: string, idx: number) => (
+                              <Badge key={idx} variant="secondary" className="font-medium">{skill}</Badge>
+                            ))}
+                            {student.skills.length > 5 && (
+                              <Badge variant="outline" className="font-medium">+{student.skills.length - 5} more</Badge>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))
+              )}
+            </TabsContent>
+
+            {/* Applications Tab */}
+            <TabsContent value="applications" className="p-6 space-y-4 mt-0">
+              {applications.length === 0 ? (
+                <div className="pt-12 pb-12 text-center">
+                  <Briefcase className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground text-lg">No applications yet from department students</p>
+                </div>
+              ) : (
+                applications.map((app) => (
+                  <Card key={app.id} className="bg-gray-50 dark:bg-muted/30 shadow-sm border border-gray-200 dark:border-border hover:shadow-md transition-all duration-200">
+                    <CardHeader className="pb-3">
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-start gap-3">
+                          <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                            <Briefcase className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                          </div>
+                          <div>
+                            <CardTitle className="text-lg font-semibold text-gray-800 dark:text-foreground">{app.students.full_name}</CardTitle>
+                            <CardDescription className="text-sm text-gray-600 dark:text-muted-foreground">Applied for: {app.opportunities.title}</CardDescription>
+                          </div>
+                        </div>
+                        <Badge className="font-medium">{app.status.replace('_', ' ')}</Badge>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-600 dark:text-muted-foreground">
+                          Applied: {new Date(app.applied_at).toLocaleDateString()}
+                        </span>
+                        <Badge variant="outline" className="font-medium">{app.opportunities.type}</Badge>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              )}
+            </TabsContent>
+
+            {/* Opportunities Tab */}
+            <TabsContent value="opportunities" className="p-6 space-y-4 mt-0">
+              {opportunities.length === 0 ? (
+                <div className="pt-12 pb-12 text-center">
+                  <Briefcase className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground text-lg">No opportunities available for this department yet</p>
+                </div>
+              ) : (
+                opportunities.map((opp) => (
+                  <Card key={opp.id} className="bg-gray-50 dark:bg-muted/30 shadow-sm border border-gray-200 dark:border-border hover:shadow-md transition-all duration-200">
+                    <CardHeader className="pb-3">
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-start gap-3">
+                          <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                            <Briefcase className="h-5 w-5 text-green-600 dark:text-green-400" />
+                          </div>
+                          <div className="flex-1">
+                            <CardTitle className="text-lg font-semibold text-gray-800 dark:text-foreground">{opp.title}</CardTitle>
+                            <CardDescription className="text-sm text-gray-600 dark:text-muted-foreground">{opp.recruiters.company_name}</CardDescription>
+                          </div>
+                        </div>
+                        <Badge variant={opp.type === 'job' ? 'default' : 'secondary'} className="font-medium">
+                          {opp.type}
+                        </Badge>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm mb-4 text-gray-600 dark:text-muted-foreground line-clamp-2">{opp.description}</p>
+                      <div className="flex flex-wrap gap-4 text-sm">
+                        {opp.location && (
+                          <span className="flex items-center gap-1 text-gray-600 dark:text-muted-foreground">
+                            📍 {opp.location}
+                          </span>
+                        )}
+                        {opp.stipend_min && opp.stipend_max && (
+                          <span className="flex items-center gap-1 text-gray-600 dark:text-muted-foreground">
+                            💰 ₹{opp.stipend_min} - ₹{opp.stipend_max}
+                          </span>
+                        )}
+                        {opp.positions_available && (
+                          <span className="flex items-center gap-1 text-gray-600 dark:text-muted-foreground">
+                            👥 {opp.positions_available} positions
+                          </span>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              )}
+            </TabsContent>
+
+            {/* Analytics Tab */}
+            <TabsContent value="analytics" className="p-6 space-y-6 mt-0">
+              <div className="grid gap-6 md:grid-cols-2">
+                <Card className="bg-gray-50 dark:bg-muted/30 shadow-sm border border-gray-200 dark:border-border">
+                  <CardHeader className="pb-4">
+                    <CardTitle className="text-lg font-semibold text-gray-800 dark:text-foreground">Department Analytics</CardTitle>
+                    <CardDescription className="text-gray-600 dark:text-muted-foreground">Performance and placement statistics</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-1">
+                    <div className="flex justify-between items-center text-sm py-3 border-b border-gray-200 dark:border-border">
+                      <span className="text-gray-600 dark:text-muted-foreground font-medium">Total Students:</span>
+                      <span className="font-bold text-gray-800 dark:text-foreground">{stats.totalStudents}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm py-3 border-b border-gray-200 dark:border-border">
+                      <span className="text-gray-600 dark:text-muted-foreground font-medium">Placed:</span>
+                      <span className="font-bold text-green-600 dark:text-green-400">{stats.placedStudents}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm py-3 border-b border-gray-200 dark:border-border">
+                      <span className="text-gray-600 dark:text-muted-foreground font-medium">Unplaced:</span>
+                      <span className="font-bold text-orange-600 dark:text-orange-400">
+                        {stats.totalStudents - stats.placedStudents}
                       </span>
                     </div>
-                  ))}
-                  {applications.length === 0 && (
-                    <p className="text-center text-muted-foreground py-4">No recent activity</p>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+                    <div className="flex justify-between items-center text-sm py-3 border-b border-gray-200 dark:border-border">
+                      <span className="text-gray-600 dark:text-muted-foreground font-medium">Placement Rate:</span>
+                      <span className="font-bold text-gray-800 dark:text-foreground">{placementRate}%</span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm py-3 border-b border-gray-200 dark:border-border">
+                      <span className="text-gray-600 dark:text-muted-foreground font-medium">Avg Employability Score:</span>
+                      <span className="font-bold text-gray-800 dark:text-foreground">{stats.avgScore}/100</span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm py-3">
+                      <span className="text-gray-600 dark:text-muted-foreground font-medium">Complete Profiles:</span>
+                      <span className="font-bold text-gray-800 dark:text-foreground">
+                        {stats.completedProfiles}/{stats.totalStudents}
+                      </span>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-gray-50 dark:bg-muted/30 shadow-sm border border-gray-200 dark:border-border">
+                  <CardHeader className="pb-4">
+                    <CardTitle className="text-lg font-semibold text-gray-800 dark:text-foreground">Application Activity</CardTitle>
+                    <CardDescription className="text-gray-600 dark:text-muted-foreground">Student application breakdown</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-1">
+                    <div className="flex justify-between items-center text-sm py-3 border-b border-gray-200 dark:border-border">
+                      <span className="text-gray-600 dark:text-muted-foreground font-medium">Total Applications:</span>
+                      <span className="font-bold text-gray-800 dark:text-foreground">{applications.length}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm py-3 border-b border-gray-200 dark:border-border">
+                      <span className="text-gray-600 dark:text-muted-foreground font-medium">Active Applications:</span>
+                      <span className="font-bold text-blue-600 dark:text-blue-400">
+                        {applications.filter(a => ['under_review', 'interview_scheduled', 'interviewed'].includes(a.status)).length}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm py-3 border-b border-gray-200 dark:border-border">
+                      <span className="text-gray-600 dark:text-muted-foreground font-medium">Offers Received:</span>
+                      <span className="font-bold text-green-600 dark:text-green-400">
+                        {applications.filter(a => a.status === 'offered').length}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm py-3">
+                      <span className="text-gray-600 dark:text-muted-foreground font-medium">Accepted Offers:</span>
+                      <span className="font-bold text-green-600 dark:text-green-400">
+                        {applications.filter(a => a.status === 'accepted').length}
+                      </span>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Recent Activity */}
+              <Card className="bg-gray-50 dark:bg-muted/30 shadow-sm border border-gray-200 dark:border-border">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-lg font-semibold text-gray-800 dark:text-foreground">Recent Activity</CardTitle>
+                  <CardDescription className="text-gray-600 dark:text-muted-foreground">Latest department updates</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {applications.slice(0, 3).map((app, idx) => (
+                      <div key={idx} className="flex items-center justify-between border-b border-gray-200 dark:border-border pb-3 last:border-0 last:pb-0">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                            <UserCheck className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                          </div>
+                          <span className="text-sm font-medium text-gray-700 dark:text-foreground">
+                            {app.students.full_name} applied for {app.opportunities.title}
+                          </span>
+                        </div>
+                        <span className="text-xs text-gray-500 dark:text-muted-foreground font-medium">
+                          {new Date(app.applied_at).toLocaleDateString()}
+                        </span>
+                      </div>
+                    ))}
+                    {applications.length === 0 && (
+                      <p className="text-center text-muted-foreground py-4">No recent activity</p>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </Card>
       </div>
     </DashboardLayout>
   );
