@@ -18,9 +18,10 @@ interface DashboardLayoutProps {
   children: ReactNode;
   sidebar: ReactNode;
   title?: string;
+  subtitle?: string;
 }
 
-export function DashboardLayout({ children, sidebar, title }: DashboardLayoutProps) {
+export function DashboardLayout({ children, sidebar, title, subtitle }: DashboardLayoutProps) {
   const { user, signOut } = useAuth();
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
@@ -69,7 +70,12 @@ export function DashboardLayout({ children, sidebar, title }: DashboardLayoutPro
           </div>
 
           {title && (
-            <h1 className="hidden md:block text-xl font-semibold text-white">{title}</h1>
+            <div className="hidden md:block">
+              <h1 className="text-xl font-semibold text-white">{title}</h1>
+              {subtitle && (
+                <p className="text-sm text-white/80">{subtitle}</p>
+              )}
+            </div>
           )}
 
           <div className="flex items-center gap-2">

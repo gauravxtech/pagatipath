@@ -125,35 +125,52 @@ export default function CollegeTPODashboard() {
       // Department-wise student distribution
       const { data: depts } = await supabase
         .from("departments")
-        .select(`
-          name,
-          students (count)
-        `)
+        .select("id, name")
         .eq("college_id", tpoData.college_id);
 
-      const deptDist = depts?.map(dept => ({
-        name: dept.name,
-        value: dept.students[0]?.count || 0,
-      })) || [];
+      // Get student counts per department
+      const deptDist = await Promise.all(
+        (depts || []).map(async (dept) => {
+          const { count } = await supabase
+            .from("students")
+            .select("*", { count: "exact", head: true })
+            .eq("department_id", dept.id);
+          
+          return {
+            name: dept.name,
+            value: count || 0,
+          };
+        })
+      );
 
       setDeptDistribution(deptDist);
 
       // Applications by department
-      const { data: appsByDept } = await supabase
-        .from("departments")
-        .select(`
-          name,
-          students!inner (
-            id,
-            applications (count)
-          )
-        `)
-        .eq("college_id", tpoData.college_id);
+      const appDist = await Promise.all(
+        (depts || []).map(async (dept) => {
+          // Get students in this department
+          const { data: deptStudents } = await supabase
+            .from("students")
+            .select("id")
+            .eq("department_id", dept.id);
 
-      const appDist = appsByDept?.map(dept => ({
-        name: dept.name,
-        applications: dept.students.reduce((sum: number, s: any) => sum + (s.applications[0]?.count || 0), 0),
-      })) || [];
+          const deptStudentIds = deptStudents?.map(s => s.id) || [];
+          
+          let appCount = 0;
+          if (deptStudentIds.length > 0) {
+            const { count } = await supabase
+              .from("applications")
+              .select("*", { count: "exact", head: true })
+              .in("student_id", deptStudentIds);
+            appCount = count || 0;
+          }
+
+          return {
+            name: dept.name,
+            applications: appCount,
+          };
+        })
+      );
 
       setApplicationsByDept(appDist);
 
@@ -180,7 +197,11 @@ export default function CollegeTPODashboard() {
   }
 
   return (
-    <DashboardLayout title="TPO Dashboard" sidebar={<CollegeTPOSidebar />}>
+    <DashboardLayout 
+      title="TPO Dashboard" 
+      subtitle={collegeInfo?.name}
+      sidebar={<CollegeTPOSidebar />}
+    >
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold mb-2">Training & Placement Officer Dashboard</h1>
