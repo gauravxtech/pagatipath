@@ -57,8 +57,21 @@ const Register = () => {
   useEffect(() => { if (formData.collegeId) fetchDepartments(formData.collegeId); }, [formData.collegeId]);
 
   const fetchColleges = async () => {
-    const { data } = await supabase.from('colleges').select('*').eq('approved', true).order('name');
-    setColleges(data || []);
+    // Fetch from college_tpo table to show colleges with registered TPOs
+    const { data } = await supabase
+      .from('college_tpo')
+      .select('id, college_registration_number, tpo_full_name, college_id, approved')
+      .eq('approved', true)
+      .order('college_registration_number');
+    
+    // If no college_id exists, use the college_tpo id and registration number
+    const formattedColleges = (data || []).map(tpo => ({
+      id: tpo.college_id || tpo.id,
+      name: tpo.college_registration_number,
+      code: tpo.college_registration_number
+    }));
+    
+    setColleges(formattedColleges);
   };
 
   const fetchDepartments = async (collegeId: string) => {
