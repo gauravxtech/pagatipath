@@ -60,7 +60,7 @@ export const TopBar = () => {
             </div>
 
             {/* Vertical Button Stack */}
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-0.5">
               {/* Language Converter */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
