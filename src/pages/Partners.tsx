@@ -70,7 +70,7 @@ const Partners = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-subtle">
+        <div className="min-h-screen bg-gradient-subtle dark:bg-background">
             <TopBar />
             <Marquee />
             <Navbar />
@@ -90,22 +90,22 @@ const Partners = () => {
             {/* Partner Colleges */}
             <section className="py-16 md:py-20">
                 <div className="container mx-auto px-4">
-                    <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800">
+                    <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-foreground">
                         Partner Colleges
                     </h2>
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
                         {partnerColleges.map((college, index) => (
-                            <Card key={index} className="bg-white shadow-soft border border-gray-100 hover:shadow-card transition-shadow">
+                            <Card key={index} className="bg-white dark:bg-card shadow-soft border border-gray-100 dark:border-border hover:shadow-card transition-shadow">
                                 <CardContent className="p-6 text-center">
                                     <div className="text-4xl mb-4">{college.logo}</div>
-                                    <h3 className="text-lg font-bold mb-3 text-gray-800">{college.name}</h3>
+                                    <h3 className="text-lg font-bold mb-3 text-foreground">{college.name}</h3>
                                     <div className="space-y-2">
                                         <div className="flex justify-between text-sm">
-                                            <span className="text-gray-600">Students:</span>
+                                            <span className="text-muted-foreground">Students:</span>
                                             <span className="font-semibold text-accent">{college.students}</span>
                                         </div>
                                         <div className="flex justify-between text-sm">
-                                            <span className="text-gray-600">Placement Rate:</span>
+                                            <span className="text-muted-foreground">Placement Rate:</span>
                                             <span className="font-semibold text-green-600">{college.placements}</span>
                                         </div>
                                     </div>
@@ -117,17 +117,17 @@ const Partners = () => {
             </section>
 
             {/* Government Bodies */}
-            <section className="py-16 bg-white">
+            <section className="py-16 bg-white dark:bg-card">
                 <div className="container mx-auto px-4">
-                    <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800">
+                    <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-foreground">
                         Government Bodies
                     </h2>
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
                         {governmentBodies.map((body, index) => (
-                            <Card key={index} className="bg-gradient-subtle shadow-soft border border-gray-100 hover:shadow-card transition-shadow">
+                            <Card key={index} className="bg-gradient-subtle dark:bg-background shadow-soft border border-gray-100 dark:border-border hover:shadow-card transition-shadow">
                                 <CardContent className="p-6 text-center">
                                     <div className="text-4xl mb-4">{body.logo}</div>
-                                    <h3 className="text-lg font-bold mb-2 text-gray-800">{body.name}</h3>
+                                    <h3 className="text-lg font-bold mb-2 text-foreground">{body.name}</h3>
                                     <Badge variant="outline" className="border-accent text-accent">
                                         {body.role}
                                     </Badge>
@@ -139,18 +139,18 @@ const Partners = () => {
             </section>
 
             {/* Corporate Partners */}
-            <section className="py-16 bg-gradient-subtle">
+            <section className="py-16 bg-gradient-subtle dark:bg-background">
                 <div className="container mx-auto px-4">
-                    <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800">
+                    <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-foreground">
                         Corporate Partners
                     </h2>
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
                         {corporatePartners.map((partner, index) => (
-                            <Card key={index} className="bg-white shadow-soft border border-gray-100 hover:shadow-card transition-shadow">
+                            <Card key={index} className="bg-white dark:bg-card shadow-soft border border-gray-100 dark:border-border hover:shadow-card transition-shadow">
                                 <CardContent className="p-6 text-center">
                                     <div className="text-4xl mb-4">{partner.logo}</div>
-                                    <h3 className="text-lg font-bold mb-3 text-gray-800">{partner.name}</h3>
-                                    <div className="text-sm text-gray-600">
+                                    <h3 className="text-lg font-bold mb-3 text-foreground">{partner.name}</h3>
+                                    <div className="text-sm text-muted-foreground">
                                         <span className="font-semibold text-accent">{partner.hired}</span> students hired
                                     </div>
                                 </CardContent>
@@ -161,24 +161,24 @@ const Partners = () => {
             </section>
 
             {/* Testimonials */}
-            <section className="py-16 md:py-20 bg-white">
+            <section className="py-16 md:py-20 bg-white dark:bg-card">
                 <div className="container mx-auto px-4">
-                    <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800">
+                    <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-foreground">
                         What Our Partners Say
                     </h2>
                     <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
                         {testimonials.map((testimonial, index) => (
-                            <Card key={index} className="bg-gradient-subtle shadow-soft border border-gray-100 hover:shadow-card transition-shadow">
+                            <Card key={index} className="bg-gradient-subtle dark:bg-background shadow-soft border border-gray-100 dark:border-border hover:shadow-card transition-shadow">
                                 <CardContent className="p-6">
                                     <div className="flex items-start mb-4">
                                         <div className="text-4xl mr-4">{testimonial.image}</div>
                                         <div>
-                                            <h3 className="text-lg font-bold text-gray-800">{testimonial.name}</h3>
-                                            <p className="text-sm text-gray-600">{testimonial.role}</p>
+                                            <h3 className="text-lg font-bold text-foreground">{testimonial.name}</h3>
+                                            <p className="text-sm text-muted-foreground">{testimonial.role}</p>
                                         </div>
                                         <Quote className="h-6 w-6 text-accent ml-auto" />
                                     </div>
-                                    <p className="text-gray-700 italic leading-relaxed">"{testimonial.quote}"</p>
+                                    <p className="text-foreground italic leading-relaxed">"{testimonial.quote}"</p>
                                     <div className="flex mt-4">
                                         {[1, 2, 3, 4, 5].map((star) => (
                                             <Star key={star} className="h-4 w-4 text-yellow-400 fill-current" />
@@ -192,24 +192,24 @@ const Partners = () => {
             </section>
 
             {/* Trust Badges */}
-            <section className="py-12 bg-white border-t border-b border-gray-200">
+            <section className="py-12 bg-white dark:bg-card border-t border-b border-gray-200 dark:border-border">
                 <div className="container mx-auto px-4">
                     <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
                         <div className="text-center">
                             <Award className="h-12 w-12 text-accent mx-auto mb-2" />
-                            <p className="text-sm font-semibold text-gray-800">ISO Certified</p>
+                            <p className="text-sm font-semibold text-foreground">ISO Certified</p>
                         </div>
                         <div className="text-center">
                             <CheckCircle className="h-12 w-12 text-green-600 mx-auto mb-2" />
-                            <p className="text-sm font-semibold text-gray-800">Govt. Verified</p>
+                            <p className="text-sm font-semibold text-foreground">Govt. Verified</p>
                         </div>
                         <div className="text-center">
                             <Users className="h-12 w-12 text-blue-600 mx-auto mb-2" />
-                            <p className="text-sm font-semibold text-gray-800">500+ Partners</p>
+                            <p className="text-sm font-semibold text-foreground">500+ Partners</p>
                         </div>
                         <div className="text-center">
                             <TrendingUp className="h-12 w-12 text-purple-600 mx-auto mb-2" />
-                            <p className="text-sm font-semibold text-gray-800">95% Success Rate</p>
+                            <p className="text-sm font-semibold text-foreground">95% Success Rate</p>
                         </div>
                     </div>
                 </div>

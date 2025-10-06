@@ -93,7 +93,7 @@ const Features = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-subtle">
+        <div className="min-h-screen bg-gradient-subtle dark:bg-background">
             <TopBar />
             <Marquee />
             <Navbar />
@@ -124,10 +124,10 @@ const Features = () => {
             <section className="py-16 md:py-20">
                 <div className="container mx-auto px-4">
                     <div className="text-center mb-12">
-                        <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-800">
+                        <h2 className="text-3xl md:text-4xl font-bold mb-6 text-foreground">
                             Powerful Features That Set Us Apart
                         </h2>
-                        <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+                        <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
                             Our platform offers cutting-edge features that make placement processes seamless,
                             secure, and efficient for all stakeholders.
                         </p>
@@ -137,7 +137,7 @@ const Features = () => {
                         {keyFeatures.map((feature, index) => (
                             <Card 
                                 key={index} 
-                                className="bg-white shadow-card hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group overflow-hidden"
+                                className="bg-white dark:bg-card shadow-card hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group overflow-hidden border dark:border-border"
                             >
                                 <CardContent className="p-0">
                                     {/* Icon Section */}
@@ -150,11 +150,11 @@ const Features = () => {
                                     
                                     {/* Content Section */}
                                     <div className="p-6">
-                                        <h3 className="text-lg font-bold mb-3 text-gray-800">{feature.title}</h3>
-                                        <p className="text-sm text-gray-600 mb-4 leading-relaxed">{feature.description}</p>
+                                        <h3 className="text-lg font-bold mb-3 text-foreground">{feature.title}</h3>
+                                        <p className="text-sm text-muted-foreground mb-4 leading-relaxed">{feature.description}</p>
                                         <div className="space-y-2">
                                             {feature.benefits.map((benefit, idx) => (
-                                                <div key={idx} className="flex items-start text-xs text-gray-500">
+                                                <div key={idx} className="flex items-start text-xs text-muted-foreground">
                                                     <CheckCircle className="h-3.5 w-3.5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
                                                     <span>{benefit}</span>
                                                 </div>
@@ -169,20 +169,20 @@ const Features = () => {
             </section>
 
             {/* Additional Features */}
-            <section className="py-16 bg-white">
+            <section className="py-16 bg-white dark:bg-card">
                 <div className="container mx-auto px-4">
-                    <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800">
+                    <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-foreground">
                         Additional Features
                     </h2>
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
                         {additionalFeatures.map((feature, index) => (
-                            <Card key={index} className="bg-gradient-subtle shadow-soft border border-gray-100 hover:shadow-card transition-shadow text-center">
+                            <Card key={index} className="bg-gradient-subtle dark:bg-background shadow-soft border border-gray-100 dark:border-border hover:shadow-card transition-shadow text-center">
                                 <CardContent className="p-6">
                                     <div className="w-12 h-12 bg-gradient-to-r from-accent/10 to-orange-500/10 rounded-xl flex items-center justify-center mx-auto mb-4">
                                         <feature.icon className="h-6 w-6 text-accent" />
                                     </div>
-                                    <h3 className="text-lg font-semibold mb-2 text-gray-800">{feature.title}</h3>
-                                    <p className="text-sm text-gray-600">{feature.description}</p>
+                                    <h3 className="text-lg font-semibold mb-2 text-foreground">{feature.title}</h3>
+                                    <p className="text-sm text-muted-foreground">{feature.description}</p>
                                 </CardContent>
                             </Card>
                         ))}
@@ -191,13 +191,13 @@ const Features = () => {
             </section>
 
             {/* Comparison Section */}
-            <section className="py-16 bg-gradient-subtle">
+            <section className="py-16 bg-gradient-subtle dark:bg-background">
                 <div className="container mx-auto px-4">
                     <div className="text-center mb-12">
-                        <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-800">
+                        <h2 className="text-3xl md:text-4xl font-bold mb-6 text-foreground">
                             Why Switch to PragatiPath?
                         </h2>
-                        <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+                        <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
                             See how we're transforming the traditional placement process with technology
                         </p>
                     </div>
@@ -205,13 +205,13 @@ const Features = () => {
                     <div className="max-w-6xl mx-auto">
                         <div className="grid md:grid-cols-2 gap-6">
                             {/* Traditional System */}
-                            <Card className="bg-white shadow-soft border-2 border-red-200">
+                            <Card className="bg-white dark:bg-card shadow-soft border-2 border-red-200 dark:border-red-900/50">
                                 <CardContent className="p-8">
                                     <div className="flex items-center mb-6">
-                                        <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
+                                        <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mr-4">
                                             <X className="h-6 w-6 text-red-600" />
                                         </div>
-                                        <h3 className="text-2xl font-bold text-gray-800">Traditional Placement</h3>
+                                        <h3 className="text-2xl font-bold text-foreground">Traditional Placement</h3>
                                     </div>
                                     <ul className="space-y-4">
                                         {[
@@ -224,7 +224,7 @@ const Features = () => {
                                             "Limited analytics and insights",
                                             "Office hours support only"
                                         ].map((item, idx) => (
-                                            <li key={idx} className="flex items-start text-gray-600">
+                                            <li key={idx} className="flex items-start text-muted-foreground">
                                                 <X className="h-5 w-5 text-red-500 mr-3 flex-shrink-0 mt-0.5" />
                                                 {item}
                                             </li>
@@ -234,7 +234,7 @@ const Features = () => {
                             </Card>
 
                             {/* PragatiPath System */}
-                            <Card className="bg-white shadow-xl border-2 border-green-300 relative overflow-hidden">
+                            <Card className="bg-white dark:bg-card shadow-xl border-2 border-green-300 dark:border-green-900/50 relative overflow-hidden">
                                 <div className="absolute top-0 right-0 bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-1 text-xs font-bold rounded-bl-lg">
                                     RECOMMENDED
                                 </div>
@@ -243,7 +243,7 @@ const Features = () => {
                                         <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center mr-4">
                                             <CheckCircle className="h-6 w-6 text-white" />
                                         </div>
-                                        <h3 className="text-2xl font-bold text-gray-800">PragatiPath</h3>
+                                        <h3 className="text-2xl font-bold text-foreground">PragatiPath</h3>
                                     </div>
                                     <ul className="space-y-4">
                                         {[
@@ -256,7 +256,7 @@ const Features = () => {
                                             "Real-time analytics dashboard",
                                             "24/7 integrated support"
                                         ].map((item, idx) => (
-                                            <li key={idx} className="flex items-start text-gray-700 font-medium">
+                                            <li key={idx} className="flex items-start text-foreground font-medium">
                                                 <CheckCircle className="h-5 w-5 text-green-500 mr-3 flex-shrink-0 mt-0.5" />
                                                 {item}
                                             </li>
@@ -270,10 +270,10 @@ const Features = () => {
             </section>
 
             {/* Security & Compliance */}
-            <section className="py-16 bg-white">
+            <section className="py-16 bg-white dark:bg-card">
                 <div className="container mx-auto px-4">
                     <div className="max-w-4xl mx-auto text-center">
-                        <h2 className="text-3xl md:text-4xl font-bold mb-8 text-gray-800">
+                        <h2 className="text-3xl md:text-4xl font-bold mb-8 text-foreground">
                             Security & Compliance
                         </h2>
                         <div className="grid md:grid-cols-3 gap-8">
@@ -281,22 +281,22 @@ const Features = () => {
                                 <div className="w-16 h-16 bg-gradient-to-r from-accent to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
                                     <Lock className="h-8 w-8 text-white" />
                                 </div>
-                                <h3 className="text-lg font-semibold mb-2 text-gray-800">Data Encryption</h3>
-                                <p className="text-gray-600">End-to-end encryption for all sensitive data</p>
+                                <h3 className="text-lg font-semibold mb-2 text-foreground">Data Encryption</h3>
+                                <p className="text-muted-foreground">End-to-end encryption for all sensitive data</p>
                             </div>
                             <div className="text-center">
                                 <div className="w-16 h-16 bg-gradient-to-r from-accent to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
                                     <Shield className="h-8 w-8 text-white" />
                                 </div>
-                                <h3 className="text-lg font-semibold mb-2 text-gray-800">Government Compliance</h3>
-                                <p className="text-gray-600">Fully compliant with Indian data protection laws</p>
+                                <h3 className="text-lg font-semibold mb-2 text-foreground">Government Compliance</h3>
+                                <p className="text-muted-foreground">Fully compliant with Indian data protection laws</p>
                             </div>
                             <div className="text-center">
                                 <div className="w-16 h-16 bg-gradient-to-r from-accent to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
                                     <CheckCircle className="h-8 w-8 text-white" />
                                 </div>
-                                <h3 className="text-lg font-semibold mb-2 text-gray-800">Regular Audits</h3>
-                                <p className="text-gray-600">Continuous security monitoring and audits</p>
+                                <h3 className="text-lg font-semibold mb-2 text-foreground">Regular Audits</h3>
+                                <p className="text-muted-foreground">Continuous security monitoring and audits</p>
                             </div>
                         </div>
                     </div>
