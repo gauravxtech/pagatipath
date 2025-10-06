@@ -1,4 +1,4 @@
-import { GraduationCap, Phone, Mail, Moon, Sun, Languages } from "lucide-react";
+import { GraduationCap, Phone, Mail, Moon, Sun, Languages, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -46,7 +46,7 @@ export const TopBar = () => {
             </div>
           </div>
 
-          {/* Contact Info, Language Converter and Dark Mode Toggle */}
+          {/* Contact Info and Action Buttons */}
           <div className="flex items-center gap-3">
             <div className="hidden lg:flex flex-col items-end gap-1">
               <div className="flex items-center gap-2 text-gray-700 dark:text-foreground text-sm">
@@ -59,47 +59,59 @@ export const TopBar = () => {
               </div>
             </div>
 
-            {/* Language Converter */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-gray-700 dark:text-foreground hover:bg-gray-100 dark:hover:bg-muted"
-                >
-                  <Languages className="h-5 w-5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="bg-white dark:bg-card shadow-soft border border-gray-200 dark:border-border">
-                {languages.map((lang) => (
-                  <DropdownMenuItem
-                    key={lang.code}
-                    onClick={() => handleLanguageChange(lang.code)}
-                    className={`flex items-center gap-2 cursor-pointer ${i18n.language === lang.code
-                      ? 'bg-accent/10 dark:bg-accent/20 text-accent'
-                      : 'text-gray-700 dark:text-foreground hover:bg-gray-50 dark:hover:bg-muted'
-                      }`}
+            {/* Vertical Button Stack */}
+            <div className="flex flex-col gap-1">
+              {/* Language Converter */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-gray-700 dark:text-foreground hover:bg-gray-100 dark:hover:bg-muted"
                   >
-                    <span className="text-lg">{lang.flag}</span>
-                    <span className="font-medium">{lang.name}</span>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+                    <Languages className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="bg-white dark:bg-card shadow-soft border border-gray-200 dark:border-border">
+                  {languages.map((lang) => (
+                    <DropdownMenuItem
+                      key={lang.code}
+                      onClick={() => handleLanguageChange(lang.code)}
+                      className={`flex items-center gap-2 cursor-pointer ${i18n.language === lang.code
+                        ? 'bg-accent/10 dark:bg-accent/20 text-accent'
+                        : 'text-gray-700 dark:text-foreground hover:bg-gray-50 dark:hover:bg-muted'
+                        }`}
+                    >
+                      <span className="text-lg">{lang.flag}</span>
+                      <span className="font-medium">{lang.name}</span>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
 
-            {/* Dark Mode Toggle */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleTheme}
-              className="text-gray-700 dark:text-foreground hover:bg-gray-100 dark:hover:bg-muted"
-            >
-              {theme === 'light' ? (
-                <Moon className="h-5 w-5" />
-              ) : (
-                <Sun className="h-5 w-5" />
-              )}
-            </Button>
+              {/* Dark Mode Toggle */}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleTheme}
+                className="h-8 w-8 text-gray-700 dark:text-foreground hover:bg-gray-100 dark:hover:bg-muted"
+              >
+                {theme === 'light' ? (
+                  <Moon className="h-4 w-4" />
+                ) : (
+                  <Sun className="h-4 w-4" />
+                )}
+              </Button>
+
+              {/* Search Button */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-gray-700 dark:text-foreground hover:bg-gray-100 dark:hover:bg-muted"
+              >
+                <Search className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </div>
