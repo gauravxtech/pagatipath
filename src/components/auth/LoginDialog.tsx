@@ -150,7 +150,7 @@ export const LoginDialog = ({ open, onOpenChange }: LoginDialogProps) => {
           <Button
             type="button"
             variant="outline"
-            className="w-full border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all"
+            className="w-full border-2 border-primary dark:border-orange-600 text-primary dark:text-orange-600 hover:bg-primary dark:hover:bg-orange-600 hover:text-white transition-all"
             onClick={() => {
               onOpenChange(false);
               navigate("/register");
