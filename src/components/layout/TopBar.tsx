@@ -1,4 +1,4 @@
-import { GraduationCap, Phone, Mail, Moon, Sun, Languages, Search } from "lucide-react";
+import { GraduationCap, Phone, Mail, Moon, Sun, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -101,15 +101,6 @@ export const TopBar = () => {
                 ) : (
                   <Sun className="h-4 w-4" />
                 )}
-              </Button>
-
-              {/* Search Button */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-gray-700 dark:text-foreground hover:bg-gray-100 dark:hover:bg-muted"
-              >
-                <Search className="h-4 w-4" />
               </Button>
             </div>
           </div>
