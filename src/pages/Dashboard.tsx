@@ -66,7 +66,7 @@ const Dashboard = () => {
               navigate('/recruiter/dashboard');
               break;
             case 'college_placement':
-              navigate('/college/dashboard');
+              navigate('/clg-tpo/dashboard');
               break;
             case 'dept_coordinator':
               navigate('/department/dashboard');

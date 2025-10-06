@@ -125,8 +125,7 @@ const App = () => (
             <Route path="/recruiter/audit" element={<RecruiterAudit />} />
             <Route path="/recruiter/settings" element={<RecruiterSettings />} />
 
-            {/* College Routes */}
-            <Route path="/college/dashboard" element={<CollegeDashboard />} />
+            {/* College Routes - Redirects handled by Dashboard.tsx */}
 
             {/* College TPO Routes */}
             <Route path="/clg-tpo/dashboard" element={<CollegeTPODashboard />} />
