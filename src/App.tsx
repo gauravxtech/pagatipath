@@ -38,6 +38,7 @@ import CollegeTPOReports from "./pages/college/CollegeTPOReports";
 import CollegeTPONotifications from "./pages/college/CollegeTPONotifications";
 import CollegeTPOAudit from "./pages/college/CollegeTPOAudit";
 import CollegeTPOSettings from "./pages/college/CollegeTPOSettings";
+import CollegeTPORecruiters from "./pages/college/CollegeTPORecruiters";
 import DepartmentDashboard from "./pages/department/DepartmentDashboard";
 import DTODashboard from "./pages/dto/DTODashboard";
 import DTOColleges from "./pages/dto/DTOColleges";
@@ -129,9 +130,10 @@ const App = () => (
 
             {/* College TPO Routes */}
             <Route path="/clg-tpo/dashboard" element={<CollegeTPODashboard />} />
+            <Route path="/clg-tpo/recruiters" element={<CollegeTPORecruiters />} />
+            <Route path="/clg-tpo/jobs" element={<CollegeTPOJobs />} />
             <Route path="/clg-tpo/departments" element={<CollegeTPODepartments />} />
             <Route path="/clg-tpo/students" element={<CollegeTPOStudents />} />
-            <Route path="/clg-tpo/jobs" element={<CollegeTPOJobs />} />
             <Route path="/clg-tpo/applications" element={<CollegeTPOApplications />} />
             <Route path="/clg-tpo/interviews" element={<CollegeTPOInterviews />} />
             <Route path="/clg-tpo/reports" element={<CollegeTPOReports />} />

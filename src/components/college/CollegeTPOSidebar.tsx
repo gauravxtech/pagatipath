@@ -8,7 +8,8 @@ import {
   BarChart3, 
   Bell, 
   FileSearch, 
-  Settings 
+  Settings,
+  FolderTree 
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
@@ -25,12 +26,11 @@ import {
 
 const menuItems = [
   { title: "Dashboard", url: "/clg-tpo/dashboard", icon: LayoutDashboard },
-  { title: "Departments", url: "/clg-tpo/departments", icon: Building2 },
+  { title: "Recruiters", url: "/clg-tpo/recruiters", icon: Building2 },
+  { title: "Job Drives", url: "/clg-tpo/jobs", icon: Briefcase },
+  { title: "Departments", url: "/clg-tpo/departments", icon: FolderTree },
   { title: "Students", url: "/clg-tpo/students", icon: Users },
-  { title: "Jobs", url: "/clg-tpo/jobs", icon: Briefcase },
-  { title: "Applications", url: "/clg-tpo/applications", icon: FileText },
-  { title: "Interviews", url: "/clg-tpo/interviews", icon: Calendar },
-  { title: "Reports & Analytics", url: "/clg-tpo/reports", icon: BarChart3 },
+  { title: "Reports", url: "/clg-tpo/reports", icon: BarChart3 },
   { title: "Notifications", url: "/clg-tpo/notifications", icon: Bell },
   { title: "Audit Logs", url: "/clg-tpo/audit", icon: FileSearch },
   { title: "Settings", url: "/clg-tpo/settings", icon: Settings },
