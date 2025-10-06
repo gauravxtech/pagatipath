@@ -22,6 +22,7 @@ export default function CollegeTPODashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
+  const [collegeInfo, setCollegeInfo] = useState<any>(null);
   const [stats, setStats] = useState({
     totalDepartments: 0,
     totalStudents: 0,
@@ -55,6 +56,15 @@ export default function CollegeTPODashboard() {
         toast.error("College not found");
         return;
       }
+
+      // Get college details
+      const { data: college } = await supabase
+        .from("colleges")
+        .select("*")
+        .eq("id", tpoData.college_id)
+        .single();
+
+      setCollegeInfo(college);
 
       // Total departments
       const { count: deptCount } = await supabase
@@ -176,6 +186,55 @@ export default function CollegeTPODashboard() {
           <h1 className="text-3xl font-bold mb-2">Training & Placement Officer Dashboard</h1>
           <p className="text-muted-foreground">College-level placement analytics and insights</p>
         </div>
+
+        {/* College Information Card */}
+        {collegeInfo && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Building2 className="h-5 w-5" />
+                {collegeInfo.name}
+              </CardTitle>
+              <CardDescription>College Details</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Code</p>
+                  <p className="text-base">{collegeInfo.code}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">State</p>
+                  <p className="text-base">{collegeInfo.state}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">District</p>
+                  <p className="text-base">{collegeInfo.district}</p>
+                </div>
+                {collegeInfo.phone && (
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Phone</p>
+                    <p className="text-base">{collegeInfo.phone}</p>
+                  </div>
+                )}
+                {collegeInfo.email && (
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Email</p>
+                    <p className="text-base">{collegeInfo.email}</p>
+                  </div>
+                )}
+                {collegeInfo.website && (
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Website</p>
+                    <a href={collegeInfo.website} target="_blank" rel="noopener noreferrer" className="text-base text-primary hover:underline">
+                      {collegeInfo.website}
+                    </a>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Stats Cards - First Row */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
