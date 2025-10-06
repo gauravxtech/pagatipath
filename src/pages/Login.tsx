@@ -91,7 +91,16 @@ const Login = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-semibold">Password</Label>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="password" className="text-sm font-semibold">Password</Label>
+                  <button
+                    type="button"
+                    className="text-sm text-primary hover:underline font-medium"
+                    onClick={() => toast({ title: "Password Reset", description: "Please contact your administrator for password reset assistance." })}
+                  >
+                    Forgot Password?
+                  </button>
+                </div>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                   <Input
@@ -114,14 +123,24 @@ const Login = () => {
                 {loading ? "Signing in..." : "Sign In"}
               </Button>
 
-              <div className="text-center pt-4 border-t">
-                <p className="text-sm text-muted-foreground">
-                  Don't have an account?{" "}
-                  <Link to="/register" className="text-primary font-semibold hover:underline">
-                    Create account
-                  </Link>
-                </p>
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-white px-2 text-muted-foreground">Or</span>
+                </div>
               </div>
+
+              <Link to="/register">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full h-14 border-2 border-primary text-primary hover:bg-primary hover:text-white text-lg font-semibold transition-all"
+                >
+                  Create New Account
+                </Button>
+              </Link>
             </form>
           </CardContent>
         </Card>
