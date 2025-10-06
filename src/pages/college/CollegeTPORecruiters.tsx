@@ -22,8 +22,8 @@ export default function CollegeTPORecruiters() {
   const [recruiters, setRecruiters] = useState<any[]>([]);
   const [filteredRecruiters, setFilteredRecruiters] = useState<any[]>([]);
   const [filters, setFilters] = useState({
-    industry: "",
-    status: "",
+    industry: "all",
+    status: "all",
     search: "",
   });
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -78,7 +78,7 @@ export default function CollegeTPORecruiters() {
   const applyFilters = () => {
     let filtered = [...recruiters];
 
-    if (filters.industry) {
+    if (filters.industry && filters.industry !== "all") {
       filtered = filtered.filter(r => r.industry === filters.industry);
     }
 
@@ -275,7 +275,7 @@ export default function CollegeTPORecruiters() {
                     <SelectValue placeholder="All Industries" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Industries</SelectItem>
+                    <SelectItem value="all">All Industries</SelectItem>
                     {industries.map((industry) => (
                       <SelectItem key={industry} value={industry}>
                         {industry}
@@ -294,7 +294,7 @@ export default function CollegeTPORecruiters() {
                     <SelectValue placeholder="All Status" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Status</SelectItem>
+                    <SelectItem value="all">All Status</SelectItem>
                     <SelectItem value="verified">Verified</SelectItem>
                     <SelectItem value="pending">Pending</SelectItem>
                   </SelectContent>
