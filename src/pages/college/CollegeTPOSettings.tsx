@@ -2,18 +2,20 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useCollegeInfo } from "@/hooks/useCollegeInfo";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { DashboardLayout } from "@/components/shared/DashboardLayout";
 import { CollegeTPOSidebar } from "@/components/college/CollegeTPOSidebar";
 
 export default function CollegeTPOSettings() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { collegeName } = useCollegeInfo();
   const [loading, setLoading] = useState(false);
   const [tpoData, setTpoData] = useState<any>(null);
   const [collegeData, setCollegeData] = useState<any>(null);
@@ -121,122 +123,122 @@ export default function CollegeTPOSettings() {
   };
 
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full">
-        <CollegeTPOSidebar />
-        <main className="flex-1 p-6">
-          <h1 className="text-3xl font-bold mb-6">Settings</h1>
+    <DashboardLayout title="Settings" subtitle={collegeName} sidebar={<CollegeTPOSidebar />}>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">TPO Settings</h1>
+          <p className="text-muted-foreground">Manage your profile and security settings</p>
+        </div>
 
-          <Tabs defaultValue="profile" className="max-w-2xl">
-            <TabsList>
-              <TabsTrigger value="profile">Profile</TabsTrigger>
-              <TabsTrigger value="college">College Info</TabsTrigger>
-              <TabsTrigger value="security">Security</TabsTrigger>
-            </TabsList>
+        <Tabs defaultValue="profile" className="max-w-2xl">
+          <TabsList>
+            <TabsTrigger value="profile">Profile</TabsTrigger>
+            <TabsTrigger value="college">College Info</TabsTrigger>
+            <TabsTrigger value="security">Security</TabsTrigger>
+          </TabsList>
 
-            <TabsContent value="profile">
-              <Card className="p-6">
-                <h2 className="text-xl font-semibold mb-4">TPO Profile</h2>
-                <form onSubmit={handleProfileUpdate} className="space-y-4">
-                  <div>
-                    <Label htmlFor="name">Full Name</Label>
-                    <Input
-                      id="name"
-                      value={profileData.tpo_full_name}
-                      onChange={(e) => setProfileData({ ...profileData, tpo_full_name: e.target.value })}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={profileData.email}
-                      onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="mobile">Mobile Number</Label>
-                    <Input
-                      id="mobile"
-                      value={profileData.mobile_number}
-                      onChange={(e) => setProfileData({ ...profileData, mobile_number: e.target.value })}
-                    />
-                  </div>
-                  <Button type="submit" disabled={loading}>
-                    {loading ? "Updating..." : "Update Profile"}
-                  </Button>
-                </form>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="college">
-              <Card className="p-6">
-                <h2 className="text-xl font-semibold mb-4">College Information</h2>
-                <div className="space-y-4">
-                  <div>
-                    <Label>College Name</Label>
-                    <p className="text-lg">{collegeData?.name || "N/A"}</p>
-                  </div>
-                  <div>
-                    <Label>Registration Number</Label>
-                    <p className="text-lg">{collegeData?.code || "N/A"}</p>
-                  </div>
-                  <div>
-                    <Label>State</Label>
-                    <p className="text-lg">{collegeData?.state || "N/A"}</p>
-                  </div>
-                  <div>
-                    <Label>District</Label>
-                    <p className="text-lg">{collegeData?.district || "N/A"}</p>
-                  </div>
+          <TabsContent value="profile">
+            <Card className="p-6">
+              <h2 className="text-xl font-semibold mb-4">TPO Profile</h2>
+              <form onSubmit={handleProfileUpdate} className="space-y-4">
+                <div>
+                  <Label htmlFor="name">Full Name</Label>
+                  <Input
+                    id="name"
+                    value={profileData.tpo_full_name}
+                    onChange={(e) => setProfileData({ ...profileData, tpo_full_name: e.target.value })}
+                  />
                 </div>
-              </Card>
-            </TabsContent>
+                <div>
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={profileData.email}
+                    onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="mobile">Mobile Number</Label>
+                  <Input
+                    id="mobile"
+                    value={profileData.mobile_number}
+                    onChange={(e) => setProfileData({ ...profileData, mobile_number: e.target.value })}
+                  />
+                </div>
+                <Button type="submit" disabled={loading}>
+                  {loading ? "Updating..." : "Update Profile"}
+                </Button>
+              </form>
+            </Card>
+          </TabsContent>
 
-            <TabsContent value="security">
-              <Card className="p-6">
-                <h2 className="text-xl font-semibold mb-4">Change Password</h2>
-                <form onSubmit={handlePasswordChange} className="space-y-4">
-                  <div>
-                    <Label htmlFor="current">Current Password</Label>
-                    <Input
-                      id="current"
-                      type="password"
-                      value={passwordData.currentPassword}
-                      onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="new">New Password</Label>
-                    <Input
-                      id="new"
-                      type="password"
-                      value={passwordData.newPassword}
-                      onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="confirm">Confirm New Password</Label>
-                    <Input
-                      id="confirm"
-                      type="password"
-                      value={passwordData.confirmPassword}
-                      onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                      required
-                    />
-                  </div>
-                  <Button type="submit" disabled={loading}>
-                    {loading ? "Changing..." : "Change Password"}
-                  </Button>
-                </form>
-              </Card>
-            </TabsContent>
-          </Tabs>
-        </main>
+          <TabsContent value="college">
+            <Card className="p-6">
+              <h2 className="text-xl font-semibold mb-4">College Information</h2>
+              <div className="space-y-4">
+                <div>
+                  <Label>College Name</Label>
+                  <p className="text-lg">{collegeData?.name || "N/A"}</p>
+                </div>
+                <div>
+                  <Label>Registration Number</Label>
+                  <p className="text-lg">{collegeData?.code || "N/A"}</p>
+                </div>
+                <div>
+                  <Label>State</Label>
+                  <p className="text-lg">{collegeData?.state || "N/A"}</p>
+                </div>
+                <div>
+                  <Label>District</Label>
+                  <p className="text-lg">{collegeData?.district || "N/A"}</p>
+                </div>
+              </div>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="security">
+            <Card className="p-6">
+              <h2 className="text-xl font-semibold mb-4">Change Password</h2>
+              <form onSubmit={handlePasswordChange} className="space-y-4">
+                <div>
+                  <Label htmlFor="current">Current Password</Label>
+                  <Input
+                    id="current"
+                    type="password"
+                    value={passwordData.currentPassword}
+                    onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="new">New Password</Label>
+                  <Input
+                    id="new"
+                    type="password"
+                    value={passwordData.newPassword}
+                    onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="confirm">Confirm New Password</Label>
+                  <Input
+                    id="confirm"
+                    type="password"
+                    value={passwordData.confirmPassword}
+                    onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                    required
+                  />
+                </div>
+                <Button type="submit" disabled={loading}>
+                  {loading ? "Changing..." : "Change Password"}
+                </Button>
+              </form>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
-    </SidebarProvider>
+    </DashboardLayout>
   );
 }

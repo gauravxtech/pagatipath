@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useCollegeInfo } from "@/hooks/useCollegeInfo";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Download, Power } from "lucide-react";
 import { toast } from "sonner";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { DashboardLayout } from "@/components/shared/DashboardLayout";
 import { CollegeTPOSidebar } from "@/components/college/CollegeTPOSidebar";
 import { DataTable } from "@/components/shared/DataTable";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +18,7 @@ import { Badge } from "@/components/ui/badge";
 export default function CollegeTPOStudents() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { collegeName } = useCollegeInfo();
   const [loading, setLoading] = useState(true);
   const [students, setStudents] = useState<any[]>([]);
   const [departments, setDepartments] = useState<any[]>([]);
@@ -186,57 +188,57 @@ export default function CollegeTPOStudents() {
   }
 
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full">
-        <CollegeTPOSidebar />
-        <main className="flex-1 p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-bold">Student Management</h1>
-            <Button onClick={exportToCSV}>
-              <Download className="mr-2 h-4 w-4" />
-              Export to CSV
-            </Button>
+    <DashboardLayout title="Students" subtitle={collegeName} sidebar={<CollegeTPOSidebar />}>
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">Student Management</h1>
+            <p className="text-muted-foreground">View and manage students in your college</p>
+          </div>
+          <Button onClick={exportToCSV}>
+            <Download className="mr-2 h-4 w-4" />
+            Export to CSV
+          </Button>
+        </div>
+
+        <Card className="p-6">
+          <div className="flex gap-4 mb-6">
+            <div className="flex-1">
+              <Label htmlFor="search">Search</Label>
+              <Input
+                id="search"
+                placeholder="Search by name, ABC ID, email..."
+                value={filters.search}
+                onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+              />
+            </div>
+            <div className="w-48">
+              <Label htmlFor="department">Department</Label>
+              <Select
+                value={filters.department}
+                onValueChange={(value) => setFilters({ ...filters, department: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="All Departments" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Departments</SelectItem>
+                  {departments.map((dept) => (
+                    <SelectItem key={dept.id} value={dept.id}>
+                      {dept.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
-          <Card className="p-6">
-            <div className="flex gap-4 mb-6">
-              <div className="flex-1">
-                <Label htmlFor="search">Search</Label>
-                <Input
-                  id="search"
-                  placeholder="Search by name, ABC ID, email..."
-                  value={filters.search}
-                  onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-                />
-              </div>
-              <div className="w-48">
-                <Label htmlFor="department">Department</Label>
-                <Select
-                  value={filters.department}
-                  onValueChange={(value) => setFilters({ ...filters, department: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="All Departments" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Departments</SelectItem>
-                    {departments.map((dept) => (
-                      <SelectItem key={dept.id} value={dept.id}>
-                        {dept.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <DataTable
-              data={filteredStudents}
-              columns={columns}
-            />
-          </Card>
-        </main>
+          <DataTable
+            data={filteredStudents}
+            columns={columns}
+          />
+        </Card>
       </div>
-    </SidebarProvider>
+    </DashboardLayout>
   );
 }

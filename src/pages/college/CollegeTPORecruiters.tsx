@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useCollegeInfo } from "@/hooks/useCollegeInfo";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +19,7 @@ import { toast } from "sonner";
 export default function CollegeTPORecruiters() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { collegeName } = useCollegeInfo();
   const [loading, setLoading] = useState(true);
   const [recruiters, setRecruiters] = useState<any[]>([]);
   const [filteredRecruiters, setFilteredRecruiters] = useState<any[]>([]);
@@ -207,7 +209,7 @@ export default function CollegeTPORecruiters() {
   const industries = [...new Set(recruiters.map(r => r.industry).filter(Boolean))];
 
   return (
-    <DashboardLayout title="Manage Recruiters" sidebar={<CollegeTPOSidebar />}>
+    <DashboardLayout title="Recruiters" subtitle={collegeName} sidebar={<CollegeTPOSidebar />}>
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>

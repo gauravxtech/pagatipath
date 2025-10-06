@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useCollegeInfo } from "@/hooks/useCollegeInfo";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { DashboardLayout } from "@/components/shared/DashboardLayout";
 import { CollegeTPOSidebar } from "@/components/college/CollegeTPOSidebar";
@@ -21,6 +22,7 @@ const COLORS = [
 export default function CollegeTPODashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { collegeName, collegeId } = useCollegeInfo();
   const [loading, setLoading] = useState(true);
   const [collegeInfo, setCollegeInfo] = useState<any>(null);
   const [stats, setStats] = useState({
@@ -40,28 +42,20 @@ export default function CollegeTPODashboard() {
       navigate("/login");
       return;
     }
-    fetchDashboardData();
-  }, [user, navigate]);
+    if (collegeId) {
+      fetchDashboardData();
+    }
+  }, [user, navigate, collegeId]);
 
   const fetchDashboardData = async () => {
+    if (!collegeId) return;
+    
     try {
-      // Get TPO's college
-      const { data: tpoData } = await supabase
-        .from("college_tpo")
-        .select("college_id")
-        .eq("user_id", user?.id)
-        .single();
-
-      if (!tpoData?.college_id) {
-        toast.error("College not found");
-        return;
-      }
-
       // Get college details
       const { data: college } = await supabase
         .from("colleges")
         .select("*")
-        .eq("id", tpoData.college_id)
+        .eq("id", collegeId)
         .single();
 
       setCollegeInfo(college);
@@ -70,13 +64,13 @@ export default function CollegeTPODashboard() {
       const { count: deptCount } = await supabase
         .from("departments")
         .select("*", { count: "exact", head: true })
-        .eq("college_id", tpoData.college_id);
+        .eq("college_id", collegeId);
 
       // Total students
       const { count: studentCount } = await supabase
         .from("students")
         .select("*", { count: "exact", head: true })
-        .eq("college_id", tpoData.college_id);
+        .eq("college_id", collegeId);
 
       // Active jobs
       const { count: jobCount } = await supabase
@@ -88,7 +82,7 @@ export default function CollegeTPODashboard() {
       const { data: students } = await supabase
         .from("students")
         .select("id")
-        .eq("college_id", tpoData.college_id);
+        .eq("college_id", collegeId);
 
       const studentIds = students?.map(s => s.id) || [];
 
@@ -126,7 +120,7 @@ export default function CollegeTPODashboard() {
       const { data: depts } = await supabase
         .from("departments")
         .select("id, name")
-        .eq("college_id", tpoData.college_id);
+        .eq("college_id", collegeId);
 
       // Get student counts per department
       const deptDist = await Promise.all(
@@ -198,8 +192,8 @@ export default function CollegeTPODashboard() {
 
   return (
     <DashboardLayout 
-      title="TPO Dashboard" 
-      subtitle={collegeInfo?.name}
+      title="Dashboard" 
+      subtitle={collegeName}
       sidebar={<CollegeTPOSidebar />}
     >
       <div className="space-y-6">
