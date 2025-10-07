@@ -54,15 +54,19 @@ export default function AdminUsers() {
     }
   };
 
-  const handleApprove = async (userId: string, table: string) => {
+  const handleApprove = async (userId: string, table: string, itemId?: string) => {
     try {
       // Recruiters use 'verified' field, others use 'approved'
       const updateField = table === 'recruiters' ? { verified: true } : { approved: true };
       
+      // For students table, use 'id' field instead of 'user_id'
+      const matchField = table === 'students' ? 'id' : 'user_id';
+      const matchValue = table === 'students' ? itemId : userId;
+      
       const { error: officerError } = await (supabase as any)
         .from(table)
         .update(updateField)
-        .eq('user_id', userId);
+        .eq(matchField, matchValue);
       
       if (officerError) {
         console.error("Officer update error:", officerError);
@@ -87,15 +91,19 @@ export default function AdminUsers() {
     }
   };
 
-  const handleDeactivate = async (userId: string, table: string) => {
+  const handleDeactivate = async (userId: string, table: string, itemId?: string) => {
     try {
       // Recruiters use 'verified' field, others use 'approved'
       const updateField = table === 'recruiters' ? { verified: false } : { approved: false };
       
+      // For students table, use 'id' field instead of 'user_id'
+      const matchField = table === 'students' ? 'id' : 'user_id';
+      const matchValue = table === 'students' ? itemId : userId;
+      
       const { error: officerError } = await (supabase as any)
         .from(table)
         .update(updateField)
-        .eq('user_id', userId);
+        .eq(matchField, matchValue);
       
       if (officerError) {
         console.error("Officer deactivate error:", officerError);
@@ -163,12 +171,12 @@ export default function AdminUsers() {
         return (
           <div className="flex gap-2">
             {!isActive && (
-              <Button size="sm" onClick={() => handleApprove(item.user_id, tableName)}>
+              <Button size="sm" onClick={() => handleApprove(item.user_id, tableName, item.id)}>
                 Approve
               </Button>
             )}
             {isActive && (
-              <Button size="sm" variant="outline" onClick={() => handleDeactivate(item.user_id, tableName)}>
+              <Button size="sm" variant="outline" onClick={() => handleDeactivate(item.user_id, tableName, item.id)}>
                 Deactivate
               </Button>
             )}
